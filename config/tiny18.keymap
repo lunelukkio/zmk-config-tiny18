@@ -111,6 +111,30 @@
             key-positions = <16 10>;
             layers = <0>;
         };
+
+        to_layer6_l {
+            bindings = <&to 6>;
+            key-positions = <0 2 14>;
+            layers = <0>;
+        };
+
+        to_layer6_r {
+            bindings = <&to 6>;
+            key-positions = <3 5 17>;
+            layers = <0>;
+        };
+
+        to_layer0_l {
+            bindings = <&to 0>;
+            key-positions = <0 2 15>;
+            layers = <6>;
+        };
+
+        to_layer0_r {
+            bindings = <&to 0>;
+            key-positions = <3 5 16>;
+            layers = <6>;
+        };
     };
 
     keymap {
@@ -149,6 +173,12 @@
         layer_5 {
             bindings = <
 &trans  &trans  &trans  &trans  &trans  &trans  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+            >;
+        };
+
+        layer_6 {
+            bindings = <
+&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp LEFT_ALT  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp ENTER  &kp SPACE  &kp ENTER  &kp LEFT_ALT  &kp SPACE
             >;
         };
     };

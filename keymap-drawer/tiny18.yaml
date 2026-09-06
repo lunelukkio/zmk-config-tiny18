@@ -114,6 +114,8 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
+  '6': [ESCAPE, UP ARROW, BACKSPACE, ESCAPE, UP ARROW, BACKSPACE, LEFT ALT, LEFT ARROW, DOWN ARROW, RIGHT ARROW, LEFT ARROW, DOWN ARROW, RIGHT ARROW, ENTER, SPACE,
+    ENTER, LEFT ALT, SPACE]
 combos:
 - p: [1, 0]
   k: Q
@@ -166,3 +168,15 @@ combos:
 - p: [16, 10]
   k: V
   l: [default]
+- p: [0, 2, 14]
+  k: {t: '6', h: toggle}
+  l: [default]
+- p: [3, 5, 17]
+  k: {t: '6', h: toggle}
+  l: [default]
+- p: [0, 2, 15]
+  k: {t: default, h: toggle}
+  l: ['6']
+- p: [3, 5, 16]
+  k: {t: default, h: toggle}
+  l: ['6']

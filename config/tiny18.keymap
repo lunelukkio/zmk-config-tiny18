@@ -99,7 +99,6 @@
         };
 
         lsft {
-            timeout-ms = <35>;
             bindings = <&kp LSHFT>;
             key-positions = <6 7>;
             layers = <0>;

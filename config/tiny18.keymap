@@ -6,24 +6,55 @@
 #include <dt-bindings/zmk/keys.h>
 
 /*
+ * Three modes, switched by combo:
+ *   text entry  layer 0    green    3+5
+ *   AI          layer 2    blue     7+9
+ *   game        layer 10   white    10+12
+ *   number      layer 11   yellow   0+2
+ * Every switch works from every mode.
+ *
  * Layer map
- *   0  base letters          green    (always active)
+ *   0  base letters          green
  *   1  bluetooth profiles    red      combo 10+12+17 from layer 0, same combo to leave
- *   2  navigation / symbols  blue     combo 7+9 from layer 0, combo 0+2 to leave
+ *   2  navigation            blue
  *   3  digits 1-9            magenta  hold key 15 on layer 2
  *   4  digit 0 / symbols     yellow   hold key 14 on layer 2
  *   5  function keys         cyan     hold key 17 on layer 2
+ *   6  clipboard / IME       green    hold key 14 on layer 0
+ *   7  digits 1-3, x c v     green    hold key 15 on layer 0
+ *   8  right punctuation     green    hold key 16 on layer 0
+ *   9  right modifiers       green    hold key 17 on layer 0
+ *  10  game                  white
+ *  11  number                yellow
+ *
+ * Layers 2-5 still describe the previous base layout and are due for a redesign.
  *
  * Key positions (see tiny18.dtsi default_transform):
- *   left hand  0 1 2 / 6 7 8 9 / 14 15
- *   right hand 3 4 5 / 10 11 12 13 / 16 17
+ *         0   1   2         3   4   5
+ *   6     7   8   9        10  11  12  13
+ *         14  15           16  17
+ *
+ * The right hand rests on a trackball, so everything used daily has to be
+ * reachable with the left nine keys: 0 1 2 6 7 8 9 14 15.
+ *
+ * An unassigned key is &none, not &trans, so it does nothing rather than
+ * falling through to the layer below: holding 15 and pressing J stays silent
+ * instead of typing a letter. The two exceptions are positions 6 and 13 on
+ * the held layers, kept transparent so Shift and Enter work whichever key
+ * went down first. Without that, pressing 15 before Shift would leave Shift
+ * dead and 15 plus Shift plus 0 could not produce an exclamation mark.
+ *
+ * Every layer is still escapable: the held layers end on key release, and the
+ * mode and profile layers are left by combo, which ZMK matches independently
+ * of what the keys are bound to.
  */
 
 / {
     combos {
         compatible = "zmk,combos";
 
-        /* Letter combos on the base layer: 17 letters sit on keys, 9 are combos. */
+        /* Letter combos on the base layer. Key 6 is a plain Shift and moves no
+         * layer, so these keep working, shifted, while it is held. */
         q {
             bindings = <&kp Q>;
             key-positions = <0 1>;
@@ -48,6 +79,12 @@
             layers = <0>;
         };
 
+        a {
+            bindings = <&kp A>;
+            key-positions = <7 8>;
+            layers = <0>;
+        };
+
         g {
             bindings = <&kp G>;
             key-positions = <8 9>;
@@ -60,68 +97,75 @@
             layers = <0>;
         };
 
-        b {
-            bindings = <&kp B>;
-            key-positions = <14 15>;
-            layers = <0>;
-        };
-
-        z {
-            bindings = <&kp Z>;
-            key-positions = <8 14>;
-            layers = <0>;
-        };
-
-        x {
-            bindings = <&kp X>;
-            key-positions = <9 15>;
-            layers = <0>;
-        };
-
-        /* Punctuation on the right thumbs. */
-        comma {
-            bindings = <&kp COMMA>;
-            key-positions = <10 16>;
-            layers = <0>;
-        };
-
-        period {
-            bindings = <&kp PERIOD>;
-            key-positions = <11 17>;
-            layers = <0>;
-        };
-
-        /* Japanese/English input toggle, configured as Ctrl+Space in both OSes. */
-        jp_en {
-            bindings = <&kp LC(SPACE)>;
-            key-positions = <6 14>;
-            layers = <0>;
-        };
-
-        lsft {
-            bindings = <&kp LSHFT>;
-            key-positions = <6 7>;
-            layers = <0>;
-        };
-
-        /* Available on both the base and the navigation layer. */
-        f10 {
-            bindings = <&kp F10>;
-            key-positions = <2 6>;
-            layers = <0 2>;
+        slash {
+            bindings = <&kp SLASH>;
+            key-positions = <11 12>;
+            layers = <0 7>;
         };
 
         lalt {
             bindings = <&kp LEFT_ALT>;
-            key-positions = <2 15>;
-            layers = <0 2>;
+            key-positions = <14 15>;
+            layers = <0>;
         };
 
-        /* Layer switching. Entry and exit use the same gesture for layer 1. */
-        to_nav {
+        /* Z and B share their positions with x and c on the layer 15 opens, so
+         * typing xc or cv faster than the combo window gives the combo instead. */
+        z {
+            bindings = <&kp Z>;
+            key-positions = <7 8>;
+            layers = <7>;
+        };
+
+        b {
+            bindings = <&kp B>;
+            key-positions = <8 9>;
+            layers = <7>;
+        };
+
+        n {
+            bindings = <&kp N>;
+            key-positions = <10 11>;
+            layers = <7>;
+        };
+
+        /*
+         * Mode switching. One gesture per mode, live in every mode, so any
+         * mode reaches any other directly.
+         *
+         * require-prior-idle-ms is what makes this safe. In number mode the
+         * switch positions carry digits - 3 and 5 are 7 and 9, and both 7+9
+         * and 10+12 are 4 and 6 - so typing 79 or 46 quickly would otherwise
+         * throw you into another mode. Holding off for 150 ms after the last
+         * keypress means a switch only fires from a standstill. It also stops
+         * 0+2 and 3+5 misfiring between Q, T, Y and P while typing.
+         */
+        mode_text {
+            bindings = <&to 0>;
+            key-positions = <3 5>;
+            layers = <0 2 10 11>;
+            require-prior-idle-ms = <150>;
+        };
+
+        mode_num {
+            bindings = <&to 11>;
+            key-positions = <0 2>;
+            layers = <0 2 10 11>;
+            require-prior-idle-ms = <150>;
+        };
+
+        mode_ai {
             bindings = <&to 2>;
             key-positions = <7 9>;
-            layers = <0>;
+            layers = <0 2 10 11>;
+            require-prior-idle-ms = <150>;
+        };
+
+        mode_game {
+            bindings = <&to 10>;
+            key-positions = <10 12>;
+            layers = <0 2 10 11>;
+            require-prior-idle-ms = <150>;
         };
 
         to_bt {
@@ -136,15 +180,48 @@
             layers = <1>;
         };
 
-        from_nav {
-            bindings = <&to 0>;
-            key-positions = <0 2>;
-            layers = <2>;
+        /* Number mode. Both hands get a 0 and a decimal point, mirrored:
+         * the pair holding 1 and 2 gives 0, the pair holding 2 and 3 gives
+         * the point. */
+        num_zero_l {
+            bindings = <&kp N0>;
+            key-positions = <6 14>;
+            layers = <11>;
+        };
+
+        num_dot_l {
+            bindings = <&kp PERIOD>;
+            key-positions = <14 15>;
+            layers = <11>;
+        };
+
+        num_zero_r {
+            bindings = <&kp N0>;
+            key-positions = <16 17>;
+            layers = <11>;
+        };
+
+        num_dot_r {
+            bindings = <&kp PERIOD>;
+            key-positions = <13 17>;
+            layers = <11>;
         };
 
         nav_tab {
             bindings = <&kp TAB>;
             key-positions = <0 6>;
+            layers = <2>;
+        };
+
+        nav_f10 {
+            bindings = <&kp F10>;
+            key-positions = <2 6>;
+            layers = <2>;
+        };
+
+        nav_lalt {
+            bindings = <&kp LEFT_ALT>;
+            key-positions = <2 15>;
             layers = <2>;
         };
 
@@ -183,13 +260,13 @@
 
         default_layer {
             bindings = <
-&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &kp A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &mt RIGHT_SHIFT ENTER  &kp C  &kp V  &kp N  &kp M
+&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &kp LSHFT  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &kp ENTER  &mo 6  &mo 7  &mo 8  &mo 9
             >;
         };
 
         bluetooth_layer {
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&none  &none  &none  &none  &none  &none  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &none  &none  &none  &none  &none  &none  &none
             >;
         };
 
@@ -201,19 +278,78 @@
 
         digit_layer {
             bindings = <
-&kp N1  &kp N2  &kp N3  &kp N1  &kp N2  &kp N3  &kp AT  &kp N4  &kp N5  &kp N6  &kp N4  &kp N5  &kp N6  &kp N9  &trans  &trans  &kp N7  &kp N8
+&kp N1  &kp N2  &kp N3  &kp N1  &kp N2  &kp N3  &kp AT  &kp N4  &kp N5  &kp N6  &kp N4  &kp N5  &kp N6  &kp N9  &none  &none  &kp N7  &kp N8
             >;
         };
 
         symbol_layer {
             bindings = <
-&kp N7  &kp N8  &kp N9  &kp N0  &kp MINUS  &kp PLUS  &kp HASH  &kp N0  &kp COMMA  &kp PERIOD  &kp HOME  &kp END  &kp PAGE_UP  &kp PAGE_DOWN  &trans  &trans  &kp TILDE  &kp PRINTSCREEN
+&kp N7  &kp N8  &kp N9  &kp N0  &kp MINUS  &kp PLUS  &kp HASH  &kp N0  &kp COMMA  &kp PERIOD  &kp HOME  &kp END  &kp PAGE_UP  &kp PAGE_DOWN  &none  &none  &kp TILDE  &kp PRINTSCREEN
             >;
         };
 
         function_layer {
             bindings = <
-&kp F1  &kp F2  &kp F3  &kp F10  &kp F11  &kp F12  &kp F4  &kp F5  &kp F6  &kp F7  &trans  &trans  &trans  &trans  &kp F8  &kp F9  &trans  &trans
+&kp F1  &kp F2  &kp F3  &kp F10  &kp F11  &kp F12  &kp F4  &kp F5  &kp F6  &kp F7  &none  &none  &none  &none  &kp F8  &kp F9  &none  &none
+            >;
+        };
+
+        /* Hold key 14. Clipboard, IME, punctuation and the modifier pairs.
+         * The IME toggle is Ctrl+Space on both OSes. */
+        edit_layer {
+            bindings = <
+&kp LC(SPACE)  &kp LC(C)  &kp LC(V)  &kp COLON  &kp DOUBLE_QUOTES  &kp SLASH  &trans  &kp LCTRL  &kp LALT  &kp SPACE  &kp SPACE  &kp RALT  &kp RCTRL  &trans  &none  &none  &none  &none
+            >;
+        };
+
+        /* Hold key 15. Shift stays a real modifier, so Shift plus these digits
+         * gives ! @ # without a separate symbol layer. Digits 4-7 have no home
+         * in this mode. Z, B and N are combos here and share positions with
+         * x, c, v, M and the comma. */
+        num_layer {
+            bindings = <
+&kp N1  &kp N2  &kp N3  &kp N8  &kp N9  &kp N0  &trans  &kp X  &kp C  &kp V  &kp M  &kp COMMA  &kp PERIOD  &trans  &none  &none  &none  &none
+            >;
+        };
+
+        /* Hold keys 16 and 17. F1-F12 live entirely in text entry mode now,
+         * so the function layer under AI mode is no longer the only way in.
+         * Both the thumb and the keys are on the right half, so these need the
+         * hand off the trackball. */
+        rpunct_layer {
+            bindings = <
+&none  &none  &none  &kp F1  &kp F2  &kp F3  &trans  &none  &none  &none  &kp F4  &kp F5  &kp F6  &trans  &none  &none  &none  &none
+            >;
+        };
+
+        rmod_layer {
+            bindings = <
+&none  &none  &none  &kp F7  &kp F8  &kp F9  &trans  &none  &none  &none  &kp F10  &kp F11  &kp F12  &trans  &none  &none  &none  &none
+            >;
+        };
+
+        /*
+         * VRChat. W sits directly above S, so 1/7/8/9 form the usual WASD
+         * diamond. Unassigned keys are &none rather than &none: falling
+         * through to the letters would type into the game.
+         *
+         * Jump, menu and chat are not assigned yet.
+         */
+        game_layer {
+            bindings = <
+&none  &kp W  &none  &none  &none  &none  &kp LSHFT  &kp A  &kp S  &kp D  &none  &none  &none  &none  &kp C  &kp V  &none  &none
+            >;
+        };
+
+        /*
+         * Number mode: the same keypad under each hand, so digits can be
+         * entered without leaving the trackball or without leaving the left
+         * half. There is no Enter, Shift or Backspace here - all 18 keys are
+         * digits.
+         */
+        number_layer {
+            bindings = <
+&kp N7  &kp N8  &kp N9  &kp N7  &kp N8  &kp N9  &kp N1  &kp N4  &kp N5  &kp N6  &kp N4  &kp N5  &kp N6  &kp N3  &kp N2  &kp N3  &kp N1  &kp N2
             >;
         };
     };

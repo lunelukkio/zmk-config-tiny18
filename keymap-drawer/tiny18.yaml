@@ -1,7 +1,7 @@
 layout: {zmk_keyboard: tiny18}
 layers:
   default:
-  - {t: W, h: '2'}
+  - W
   - E
   - R
   - U
@@ -10,98 +10,22 @@ layers:
   - A
   - S
   - D
-  - T
-  - H
-  - {t: K, h: '3'}
-  - {t: L, h: '1'}
+  - F
+  - J
+  - K
+  - L
   - {t: ENTER, h: RIGHT SHIFT}
-  - Z
-  - G
+  - C
+  - V
   - N
   - M
-  '1':
-  - ''''
-  - \
-  - '='
-  - /
-  - '`'
-  - RIGHT ALT
-  - '['
-  - ']'
-  - ','
-  - .
-  - SPACE
-  - RIGHT GUI
-  - {type: held}
-  - RIGHT SHIFT
-  - ;
-  - '-'
-  - ENTER
-  - BACKSPACE
-  '2':
-  - {type: held}
-  - LEFT SHIFT
-  - RIGHT GUI
-  - {t: ▽, type: trans}
-  - '|'
-  - UP ARROW
-  - ESCAPE
-  - {t: ▽, type: trans}
-  - DEL
-  - RIGHT ARROW
-  - BACKSPACE
-  - LEFT
-  - DOWN ARROW
-  - RIGHT ARROW
-  - TAB
-  - LEFT
-  - TAB
-  - Gui+ENTER
-  '3':
-  - '1'
-  - '2'
-  - '3'
-  - +
-  - {t: ▽, type: trans}
-  - '4'
-  - '7'
-  - '4'
-  - '5'
-  - '6'
-  - '*'
-  - {type: held}
-  - RIGHT SHIFT
-  - RIGHT GUI
-  - '8'
-  - '9'
-  - '0'
-  - .
-  '4':
-  - F1
-  - F2
-  - F3
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {type: held}
-  - F7
-  - F4
-  - F5
-  - F6
-  - F12
-  - {type: held}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - F8
-  - F9
-  - F10
-  - F11
-  '5':
+  bluetooth:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {type: held}
+  - {t: ▽, type: trans}
   - {t: BT, h: '0'}
   - {t: BT, h: '1'}
   - {t: BT, h: '2'}
@@ -109,129 +33,157 @@ layers:
   - {t: BT, h: '4'}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {type: held}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  '6':
+  - {t: ▽, type: trans}
+  nav:
   - ESCAPE
   - UP ARROW
   - BACKSPACE
-  - ESCAPE
-  - UP ARROW
-  - BACKSPACE
-  - LEFT ALT
+  - F10
+  - F11
+  - F12
+  - LEFT CONTROL
   - LEFT ARROW
   - DOWN ARROW
   - RIGHT ARROW
-  - LEFT ARROW
-  - DOWN ARROW
-  - RIGHT ARROW
-  - {t: ENTER, h: '8'}
-  - {t: SPACE, h: '8'}
-  - {t: ENTER, h: '7'}
-  - LEFT ALT
-  - {t: SPACE, h: '7'}
-  '7':
+  - ','
+  - .
+  - /
+  - Ctl+SPACE
+  - {t: SPACE, h: symbol}
+  - {t: ENTER, h: digit}
+  - LEFT GUI
+  - function
+  digit:
   - '1'
   - '2'
   - '3'
   - '1'
   - '2'
   - '3'
-  - {t: ▽, type: trans}
+  - '@'
   - '4'
   - '5'
   - '6'
   - '4'
   - '5'
   - '6'
-  - {t: ▽, type: trans}
+  - '9'
   - {t: ▽, type: trans}
   - {type: held}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  '8':
+  - '7'
+  - '8'
+  symbol:
   - '7'
   - '8'
   - '9'
-  - '7'
-  - '8'
-  - '9'
-  - {t: ▽, type: trans}
+  - '0'
+  - '-'
+  - +
+  - '#'
   - '0'
   - ','
   - .
-  - '0'
-  - ','
-  - .
+  - HOME
+  - END
+  - PAGE UP
+  - PAGE DOWN
   - {type: held}
   - {t: ▽, type: trans}
+  - '~'
+  - PRINTSCREEN
+  function:
+  - F1
+  - F2
+  - F3
+  - F10
+  - F11
+  - F12
+  - F4
+  - F5
+  - F6
+  - F7
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - F8
+  - F9
+  - {t: ▽, type: trans}
+  - {type: held}
 combos:
-- p: [1, 0]
+- p: [0, 1]
   k: Q
   l: [default]
-- p: [9, 7]
-  k: F
+- p: [1, 2]
+  k: T
   l: [default]
-- p: [10, 9]
+- p: [3, 4]
   k: Y
   l: [default]
 - p: [4, 5]
   k: P
   l: [default]
 - p: [8, 9]
-  k: B
+  k: G
   l: [default]
 - p: [10, 11]
-  k: J
+  k: H
   l: [default]
-- p: [7, 8]
-  k: {t: LANGUAGE 2, h: LEFT GUI}
-  l: [default, '1', '2', '3', '4']
-- p: [11, 12]
-  k: {t: LANG1, h: RIGHT GUI}
-  l: [default, '1', '2', '3', '4']
+- p: [14, 15]
+  k: B
+  l: [default]
+- p: [8, 14]
+  k: Z
+  l: [default]
+- p: [9, 15]
+  k: X
+  l: [default]
+- p: [10, 16]
+  k: ','
+  l: [default]
+- p: [11, 17]
+  k: .
+  l: [default]
+- p: [6, 14]
+  k: Ctl+SPACE
+  l: [default]
 - p: [6, 7]
   k: LSHFT
   l: [default]
-- p: [14, 15]
-  k: LCTRL
-  l: [default, '1', '2', '3', '4']
-- p: [16, 17]
-  k: RIGHT ALT
-  l: [default, '1', '2', '3', '4']
-- p: [5, 13]
-  k: '5'
-  l: [default]
-- p: [1, 2, 0]
+- p: [2, 6]
+  k: F10
+  l: [default, nav]
+- p: [2, 15]
   k: LEFT ALT
-  l: [default, '1', '2', '3', '4']
-- p: [3, 4, 5]
-  k: RCTRL
-  l: [default, '1', '2', '3', '4']
-- p: [14, 8]
-  k: X
+  l: [default, nav]
+- p: [7, 9]
+  k: {t: nav, h: toggle}
   l: [default]
-- p: [15, 9]
-  k: C
+- p: [10, 12, 17]
+  k: {t: bluetooth, h: toggle}
   l: [default]
-- p: [16, 10]
-  k: V
-  l: [default]
-- p: [0, 2, 14]
-  k: {t: '6', h: toggle}
-  l: [default]
-- p: [3, 5, 17]
-  k: {t: '6', h: toggle}
-  l: [default]
-- p: [0, 2, 15]
+- p: [10, 12, 17]
   k: {t: default, h: toggle}
-  l: ['6']
-- p: [3, 5, 16]
+  l: [bluetooth]
+- p: [0, 2]
   k: {t: default, h: toggle}
-  l: ['6']
+  l: [nav]
+- p: [0, 6]
+  k: TAB
+  l: [nav]
+- p: [6, 14]
+  k: Ctl+C
+  l: [nav]
+- p: [6, 15]
+  k: Ctl+V
+  l: [nav]
+- p: [6, 8, 14]
+  k: Ctl+Z
+  l: [nav]
+- p: [6, 9, 15]
+  k: Ctl+X
+  l: [nav]

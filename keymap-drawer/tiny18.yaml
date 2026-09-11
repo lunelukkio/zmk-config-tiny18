@@ -72,10 +72,10 @@ layers:
   - '-'
   - '='
   - LSHFT
-  - {t: ;, type: held}
+  - {type: held}
+  - ''
+  - ;
   - ''''
-  - ','
-  - .
   edit_bracket:
   - ESCAPE
   - '~'

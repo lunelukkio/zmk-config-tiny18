@@ -72,9 +72,9 @@ layers:
   - '-'
   - '='
   - LSHFT
-  - ''
-  - {type: held}
-  - ''''
+  - ;
+  - {t: '''', type: held}
+  - ','
   - .
   edit_bracket:
   - ESCAPE

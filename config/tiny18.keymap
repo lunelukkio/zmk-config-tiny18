@@ -245,12 +245,13 @@
          * except key 15, which holds Shift instead of the editing page: the
          * arrows are all on the left hand, so a left thumb Shift is what
          * makes selecting text a one-hand job. The editing page is still
-         * reachable from key 16. Only F10 survives on the right top row;
-         * F11 and F12 are dead keys, not transparent ones.
+         * reachable from key 16. The right top row is dead: the F keys that
+         * used to sit there live in function mode now, and &none rather
+         * than &trans keeps the base layer's letters from leaking through.
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp F10  &none  &none  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &lt 3 BACKSPACE  &bmt LSHFT SPACE  &lt 4 N  &bmt LCTRL M
+&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &none  &none  &none  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &lt 3 BACKSPACE  &bmt LSHFT SPACE  &lt 4 N  &bmt LCTRL M
             >;
         };
 
@@ -260,7 +261,7 @@
          * from whichever hand is free. */
         digit_symbol_layer {
             bindings = <
-&kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &kp LSHFT  &kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &kp LSHFT  &none  &none  &kp SEMICOLON  &kp SINGLE_QUOTE
+&kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &kp LSHFT  &kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &kp LSHFT  &none  &none  &kp SINGLE_QUOTE  &kp PERIOD
             >;
         };
 
@@ -292,12 +293,14 @@
          * Number mode. The left hand is a keypad and key 13 is Shift, so the
          * shifted digits come straight off the left. The right hand therefore
          * carries what Shift cannot reach from a number: zero, minus, equals,
-         * the brackets, the backslash, semicolon and apostrophe. There is no
-         * Enter or Backspace here.
+         * the brackets, the backslash, an apostrophe and the decimal point.
+         * The point has a key of its own here as well as the 14+15 chord,
+         * because typing a decimal is the whole reason for this mode. There
+         * is no Enter or Backspace, and no semicolon.
          */
         number_layer {
             bindings = <
-&kp N7  &kp N8  &kp N9  &kp N0  &kp MINUS  &kp EQUAL  &kp N1  &kp N4  &kp N5  &kp N6  &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp BACKSLASH  &kp LSHFT  &kp N2  &kp N3  &kp SEMICOLON  &kp SINGLE_QUOTE
+&kp N7  &kp N8  &kp N9  &kp N0  &kp MINUS  &kp EQUAL  &kp N1  &kp N4  &kp N5  &kp N6  &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp BACKSLASH  &kp LSHFT  &kp N2  &kp N3  &kp SINGLE_QUOTE  &kp PERIOD
             >;
         };
 

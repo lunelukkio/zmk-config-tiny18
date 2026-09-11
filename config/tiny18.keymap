@@ -260,14 +260,18 @@
          * 13 where the base layer has Enter. The thumbs match the base layer
          * except key 15, which holds Shift instead of the editing page: the
          * arrows are all on the left hand, so a left thumb Shift is what
-         * makes selecting text a one-hand job. The editing page is still
-         * reachable from key 16. The right top row is dead: the F keys that
+         * makes selecting text a one-hand job.
+         *
+         * The right thumbs drop their letters here: this mode is for moving
+         * around, not for typing, so key 16 is a plain momentary layer and
+         * key 17 a plain Ctrl. Neither waits out a tapping term, and neither
+         * can leak an N or an M. The right top row is dead: the F keys that
          * used to sit there live in function mode now, and &none rather
          * than &trans keeps the base layer's letters from leaking through.
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &none  &none  &none  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &lt 3 BACKSPACE  &bmt LSHFT SPACE  &lt 4 N  &bmt LCTRL M
+&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &none  &none  &none  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &lt 3 BACKSPACE  &bmt LSHFT SPACE  &mo 4  &kp LCTRL
             >;
         };
 

@@ -1,6 +1,24 @@
 layout: {zmk_keyboard: tiny18}
 layers:
-  default: [W, E, R, U, I, O, LSHFT, S, D, F, J, K, L, ENTER, edit, num, num, edit]
+  default:
+  - W
+  - E
+  - R
+  - U
+  - I
+  - O
+  - {t: A, h: LSHFT}
+  - S
+  - D
+  - F
+  - J
+  - K
+  - L
+  - ENTER
+  - {t: C, h: edit}
+  - {t: V, h: num}
+  - {t: N, h: num}
+  - {t: M, h: edit}
   bluetooth:
   - ''
   - ''
@@ -27,7 +45,7 @@ layers:
   - F10
   - F11
   - F12
-  - LEFT CONTROL
+  - ENTER
   - LEFT ARROW
   - DOWN ARROW
   - RIGHT ARROW
@@ -35,67 +53,29 @@ layers:
   - .
   - /
   - Ctl+SPACE
-  - {t: SPACE, h: symbol}
-  - {t: ENTER, h: digit}
+  - ai_edit
+  - {t: SPACE, h: LSHFT}
   - LEFT GUI
-  - ai_fn
-  digit:
-  - '1'
-  - '2'
-  - '3'
-  - '1'
-  - '2'
-  - '3'
-  - '@'
-  - '4'
-  - '5'
-  - '6'
-  - '4'
-  - '5'
-  - '6'
-  - '9'
-  - ''
-  - {type: held}
-  - '7'
-  - '8'
-  symbol:
-  - '7'
-  - '8'
-  - '9'
-  - '0'
-  - '-'
-  - +
-  - '#'
-  - '0'
+  - LSHFT
+  ai_edit:
   - ','
   - .
-  - HOME
-  - END
-  - PAGE UP
-  - PAGE DOWN
+  - /
+  - ''
+  - ''
+  - ''
+  - Ctl+Z
+  - Ctl+X
+  - Ctl+C
+  - Ctl+V
+  - ''
+  - ''
+  - ''
+  - ''
   - {type: held}
   - ''
-  - '~'
-  - PRINTSCREEN
-  ai_fn:
-  - F1
-  - F2
-  - F3
-  - F10
-  - F11
-  - F12
-  - F4
-  - F5
-  - F6
-  - F7
   - ''
   - ''
-  - ''
-  - ''
-  - F8
-  - F9
-  - ''
-  - {type: held}
   edit:
   - Ctl+SPACE
   - Ctl+C
@@ -162,14 +142,14 @@ combos:
 - p: [1, 2]
   k: T
   l: [default]
+- p: [7, 8]
+  k: A
+  l: [default]
 - p: [3, 4]
   k: Y
   l: [default]
 - p: [4, 5]
   k: P
-  l: [default]
-- p: [7, 8]
-  k: A
   l: [default]
 - p: [8, 9]
   k: G
@@ -180,9 +160,6 @@ combos:
 - p: [11, 12]
   k: /
   l: [default, num]
-- p: [14, 15]
-  k: LEFT ALT
-  l: [default]
 - p: [7, 8]
   k: Z
   l: [num]
@@ -192,6 +169,9 @@ combos:
 - p: [10, 11]
   k: N
   l: [num]
+- p: [9, 15]
+  k: LEFT ALT
+  l: [default, nav]
 - p: [10, 12]
   k: {t: default, h: toggle}
   l: [default, bluetooth, nav, game, number, fn]
@@ -222,24 +202,3 @@ combos:
 - p: [13, 17]
   k: .
   l: [number]
-- p: [0, 6]
-  k: TAB
-  l: [nav]
-- p: [2, 6]
-  k: F10
-  l: [nav]
-- p: [2, 15]
-  k: LEFT ALT
-  l: [nav]
-- p: [6, 14]
-  k: Ctl+C
-  l: [nav]
-- p: [6, 15]
-  k: Ctl+V
-  l: [nav]
-- p: [6, 8, 14]
-  k: Ctl+Z
-  l: [nav]
-- p: [6, 9, 15]
-  k: Ctl+X
-  l: [nav]

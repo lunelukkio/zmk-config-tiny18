@@ -15,10 +15,10 @@ layers:
   - K
   - L
   - ENTER
-  - {t: C, h: edit}
-  - {t: V, h: num}
-  - {t: N, h: num}
-  - {t: M, h: LSHFT}
+  - {t: BACKSPACE, h: digit_symbol}
+  - {t: SPACE, h: edit_bracket}
+  - {t: N, h: edit_bracket}
+  - {t: M, h: LCTRL}
   bluetooth:
   - ''
   - ''
@@ -41,7 +41,7 @@ layers:
   nav:
   - ESCAPE
   - UP ARROW
-  - BACKSPACE
+  - ''
   - F10
   - F11
   - F12
@@ -52,70 +52,51 @@ layers:
   - ','
   - .
   - /
-  - Ctl+SPACE
-  - {t: SPACE, h: LSHFT}
-  - ai_edit
+  - ENTER
+  - {t: BACKSPACE, h: digit_symbol}
+  - {t: SPACE, h: edit_bracket}
   - LEFT GUI
   - LSHFT
-  ai_edit:
-  - ','
-  - .
-  - /
-  - ''
-  - ''
-  - ''
-  - Ctl+Z
-  - Ctl+X
-  - Ctl+C
-  - Ctl+V
-  - ''
-  - ''
-  - ''
-  - ''
-  - ''
-  - {type: held}
-  - ''
-  - ''
-  edit:
-  - Ctl+SPACE
-  - Ctl+C
-  - Ctl+V
-  - ':'
-  - '"'
-  - /
-  - {t: ▽, type: trans}
-  - LCTRL
-  - LALT
-  - SPACE
-  - SPACE
-  - RALT
-  - RCTRL
-  - {t: ▽, type: trans}
-  - {type: held}
-  - ''
-  - ''
-  - ''
-  num:
+  digit_symbol:
   - '1'
   - '2'
   - '3'
-  - F10
+  - '7'
+  - '8'
+  - '9'
+  - LSHFT
+  - '4'
+  - '5'
+  - '6'
+  - '0'
+  - '-'
+  - '='
+  - LSHFT
+  - {type: held}
+  - ''
   - ;
   - ''''
-  - {t: ▽, type: trans}
+  edit_bracket:
+  - ESCAPE
+  - '~'
+  - TAB
+  - '['
+  - ']'
+  - \
+  - Z
   - X
   - C
   - V
-  - Ctl+SPACE
   - ','
   - .
-  - {t: ▽, type: trans}
+  - /
+  - LSHFT
   - ''
   - {type: held}
-  - SPACE
-  - /
-  game: ['', W, '', '', '', '', LSHFT, A, S, D, '', '', '', '', C, V, '', '']
-  number: ['7', '8', '9', '&', '*', (, '1', '4', '5', '6', $, '%', ^, '#', '2', '3', '!', '@']
+  - Ctl+C
+  - Ctl+V
+  game: ['', W, '', '', '', '', LSHFT, A, S, D, Z, C, V, '', C, V, SPACE, '']
+  number: ['7', '8', '9', '0', '-', '=', '1', '4', '5', '6', (, ), \, LSHFT, '2', '3', ;, '''']
   fn:
   - F1
   - F2
@@ -159,16 +140,13 @@ combos:
   l: [default]
 - p: [11, 12]
   k: /
-  l: [default, num]
-- p: [7, 8]
-  k: Z
-  l: [num]
+  l: [default, edit_bracket]
 - p: [8, 9]
   k: B
-  l: [num]
+  l: [edit_bracket]
 - p: [10, 11]
   k: N
-  l: [num]
+  l: [edit_bracket]
 - p: [9, 15]
   k: LEFT ALT
   l: [default, nav]
@@ -194,11 +172,5 @@ combos:
   k: '0'
   l: [number]
 - p: [14, 15]
-  k: .
-  l: [number]
-- p: [16, 17]
-  k: )
-  l: [number]
-- p: [13, 17]
   k: .
   l: [number]

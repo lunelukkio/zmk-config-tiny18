@@ -492,9 +492,8 @@ path.combo {
 <g transform="translate(240, 150)" class="key keypos-15">
 <rect rx="6" ry="6" x="-28" y="-28" width="56" height="56" class="key"/>
 <text x="0" y="0" class="key tap">SPACE</text>
-<a href="#edit_bracket">
-<text x="0" y="26" class="key hold layer-activator"><tspan style="font-size: 64%">edit_brack…</tspan></text>
-</a></g>
+<text x="0" y="26" class="key hold">LSHFT</text>
+</g>
 <g transform="translate(420, 150)" class="key keypos-16">
 <rect rx="6" ry="6" x="-28" y="-28" width="56" height="56" class="key"/>
 <text x="0" y="0" class="key tap">N</text>

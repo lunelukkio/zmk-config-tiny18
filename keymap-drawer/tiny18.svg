@@ -276,8 +276,8 @@ path.combo {
 </a><text x="150" y="41" class="combo hold">toggle</text>
 </g>
 <g class="combo combopos-13">
-<path d="M150,60 l-42,-21" class="combo"/>
-<path d="M150,60 l42,21" class="combo"/>
+<path d="M150,60 l42,-21" class="combo"/>
+<path d="M150,60 l-42,21" class="combo"/>
 <rect rx="6" ry="6" x="136" y="47" width="28" height="26" class="combo"/>
 <a href="#game">
 <text x="150" y="60" class="combo tap layer-activator">game</text>
@@ -292,8 +292,8 @@ path.combo {
 </a><text x="510" y="41" class="combo hold">toggle</text>
 </g>
 <g class="combo combopos-15">
-<path d="M510,60 l42,-21" class="combo"/>
-<path d="M510,60 l-42,21" class="combo"/>
+<path d="M510,60 l-42,-21" class="combo"/>
+<path d="M510,60 l42,21" class="combo"/>
 <rect rx="6" ry="6" x="496" y="47" width="28" height="26" class="combo"/>
 <a href="#bluetooth">
 <text x="510" y="60" class="combo tap layer-activator"><tspan style="font-size: 78%">bluetooth</tspan></text>
@@ -393,8 +393,8 @@ path.combo {
 </a><text x="150" y="41" class="combo hold">toggle</text>
 </g>
 <g class="combo combopos-3">
-<path d="M150,60 l-42,-21" class="combo"/>
-<path d="M150,60 l42,21" class="combo"/>
+<path d="M150,60 l42,-21" class="combo"/>
+<path d="M150,60 l-42,21" class="combo"/>
 <rect rx="6" ry="6" x="136" y="47" width="28" height="26" class="combo"/>
 <a href="#game">
 <text x="150" y="60" class="combo tap layer-activator">game</text>
@@ -409,8 +409,8 @@ path.combo {
 </a><text x="510" y="41" class="combo hold">toggle</text>
 </g>
 <g class="combo combopos-5">
-<path d="M510,60 l42,-21" class="combo"/>
-<path d="M510,60 l-42,21" class="combo"/>
+<path d="M510,60 l-42,-21" class="combo"/>
+<path d="M510,60 l42,21" class="combo"/>
 <rect rx="6" ry="6" x="496" y="47" width="28" height="26" class="combo"/>
 <a href="#bluetooth">
 <text x="510" y="60" class="combo tap layer-activator"><tspan style="font-size: 78%">bluetooth</tspan></text>
@@ -542,8 +542,8 @@ path.combo {
 </a><text x="150" y="41" class="combo hold">toggle</text>
 </g>
 <g class="combo combopos-5">
-<path d="M150,60 l-42,-21" class="combo"/>
-<path d="M150,60 l42,21" class="combo"/>
+<path d="M150,60 l42,-21" class="combo"/>
+<path d="M150,60 l-42,21" class="combo"/>
 <rect rx="6" ry="6" x="136" y="47" width="28" height="26" class="combo"/>
 <a href="#game">
 <text x="150" y="60" class="combo tap layer-activator">game</text>
@@ -558,8 +558,8 @@ path.combo {
 </a><text x="510" y="41" class="combo hold">toggle</text>
 </g>
 <g class="combo combopos-7">
-<path d="M510,60 l42,-21" class="combo"/>
-<path d="M510,60 l-42,21" class="combo"/>
+<path d="M510,60 l-42,-21" class="combo"/>
+<path d="M510,60 l42,21" class="combo"/>
 <rect rx="6" ry="6" x="496" y="47" width="28" height="26" class="combo"/>
 <a href="#bluetooth">
 <text x="510" y="60" class="combo tap layer-activator"><tspan style="font-size: 78%">bluetooth</tspan></text>
@@ -816,8 +816,8 @@ path.combo {
 </a><text x="150" y="41" class="combo hold">toggle</text>
 </g>
 <g class="combo combopos-2">
-<path d="M150,60 l-42,-21" class="combo"/>
-<path d="M150,60 l42,21" class="combo"/>
+<path d="M150,60 l42,-21" class="combo"/>
+<path d="M150,60 l-42,21" class="combo"/>
 <rect rx="6" ry="6" x="136" y="47" width="28" height="26" class="combo"/>
 <a href="#game">
 <text x="150" y="60" class="combo tap layer-activator">game</text>
@@ -832,8 +832,8 @@ path.combo {
 </a><text x="510" y="41" class="combo hold">toggle</text>
 </g>
 <g class="combo combopos-4">
-<path d="M510,60 l42,-21" class="combo"/>
-<path d="M510,60 l-42,21" class="combo"/>
+<path d="M510,60 l-42,-21" class="combo"/>
+<path d="M510,60 l42,21" class="combo"/>
 <rect rx="6" ry="6" x="496" y="47" width="28" height="26" class="combo"/>
 <a href="#bluetooth">
 <text x="510" y="60" class="combo tap layer-activator"><tspan style="font-size: 78%">bluetooth</tspan></text>
@@ -967,8 +967,8 @@ path.combo {
 </a><text x="150" y="41" class="combo hold">toggle</text>
 </g>
 <g class="combo combopos-3">
-<path d="M150,60 l-42,-21" class="combo"/>
-<path d="M150,60 l42,21" class="combo"/>
+<path d="M150,60 l42,-21" class="combo"/>
+<path d="M150,60 l-42,21" class="combo"/>
 <rect rx="6" ry="6" x="136" y="47" width="28" height="26" class="combo"/>
 <a href="#game">
 <text x="150" y="60" class="combo tap layer-activator">game</text>
@@ -983,8 +983,8 @@ path.combo {
 </a><text x="510" y="41" class="combo hold">toggle</text>
 </g>
 <g class="combo combopos-5">
-<path d="M510,60 l42,-21" class="combo"/>
-<path d="M510,60 l-42,21" class="combo"/>
+<path d="M510,60 l-42,-21" class="combo"/>
+<path d="M510,60 l42,21" class="combo"/>
 <rect rx="6" ry="6" x="496" y="47" width="28" height="26" class="combo"/>
 <a href="#bluetooth">
 <text x="510" y="60" class="combo tap layer-activator"><tspan style="font-size: 78%">bluetooth</tspan></text>
@@ -1110,8 +1110,8 @@ path.combo {
 </a><text x="150" y="41" class="combo hold">toggle</text>
 </g>
 <g class="combo combopos-3">
-<path d="M150,60 l-42,-21" class="combo"/>
-<path d="M150,60 l42,21" class="combo"/>
+<path d="M150,60 l42,-21" class="combo"/>
+<path d="M150,60 l-42,21" class="combo"/>
 <rect rx="6" ry="6" x="136" y="47" width="28" height="26" class="combo"/>
 <a href="#game">
 <text x="150" y="60" class="combo tap layer-activator">game</text>
@@ -1126,8 +1126,8 @@ path.combo {
 </a><text x="510" y="41" class="combo hold">toggle</text>
 </g>
 <g class="combo combopos-5">
-<path d="M510,60 l42,-21" class="combo"/>
-<path d="M510,60 l-42,21" class="combo"/>
+<path d="M510,60 l-42,-21" class="combo"/>
+<path d="M510,60 l42,21" class="combo"/>
 <rect rx="6" ry="6" x="496" y="47" width="28" height="26" class="combo"/>
 <a href="#bluetooth">
 <text x="510" y="60" class="combo tap layer-activator"><tspan style="font-size: 78%">bluetooth</tspan></text>

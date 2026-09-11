@@ -162,13 +162,13 @@ combos:
 - p: [0, 2]
   k: {t: number, h: toggle}
   l: [default, bluetooth, nav, game, number, fn]
-- p: [0, 9]
+- p: [2, 7]
   k: {t: game, h: toggle}
   l: [default, bluetooth, nav, game, number, fn]
 - p: [3, 5]
   k: {t: fn, h: toggle}
   l: [default, bluetooth, nav, game, number, fn]
-- p: [5, 10]
+- p: [3, 12]
   k: {t: bluetooth, h: toggle}
   l: [default, bluetooth, nav, game, number, fn]
 - p: [6, 14]

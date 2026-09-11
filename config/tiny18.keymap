@@ -283,13 +283,13 @@
          * from whichever hand is free.
          *
          * Only key 14 opens this page, so key 14 itself can never be pressed
-         * here. The semicolon and the apostrophe therefore sit on the right
-         * thumbs, which are always free; the comma and the full stop are not
-         * repeated here because the editing page already carries them, and
-         * duplicating them would have cost these two their only home. */
+         * here. Japanese needs a comma and a full stop on every line, so they
+         * take the right thumbs, trading places with the semicolon and the
+         * apostrophe that go to the editing page. Shift over them still
+         * gives < and >, and over their new home gives : and ". */
         digit_symbol_layer {
             bindings = <
-&kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &kp LSHFT  &kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &kp LSHFT  &none  &none  &kp SEMICOLON  &kp SINGLE_QUOTE
+&kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &kp LSHFT  &kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &kp LSHFT  &none  &none  &kp COMMA  &kp PERIOD
             >;
         };
 
@@ -305,7 +305,7 @@
          * this page plus the Shift on key 13 and reaching for the slash. */
         edit_bracket_layer {
             bindings = <
-&kp ESCAPE  &kp GRAVE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &none  &kp QUESTION  &kp LC(C)  &kp LC(V)
+&kp ESCAPE  &kp GRAVE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &kp LSHFT  &none  &kp QUESTION  &kp LC(C)  &kp LC(V)
             >;
         };
 

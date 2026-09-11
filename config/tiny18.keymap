@@ -211,15 +211,31 @@
         /* Number mode. The left hand keeps a 0 and a decimal point on the
          * pairs holding 1 and 2, and 2 and 3. */
         num_zero_l {
-            bindings = <&kp N0>;
+            bindings = <&kp KP_N0>;
             key-positions = <6 14>;
             layers = <6>;
         };
 
         num_dot_l {
-            bindings = <&kp PERIOD>;
+            bindings = <&kp KP_DOT>;
             key-positions = <14 15>;
             layers = <6>;
+        };
+
+        /*
+         * Keypad codes are what the host sees, so a digit only arrives as a
+         * digit while Num Lock is on; with it off the same usages are Home,
+         * the arrows and Insert. ZMK can read that state through
+         * CONFIG_ZMK_HID_INDICATORS but has no stock behavior that branches
+         * on it, and sending Num Lock on entry would turn it off half the
+         * time. This chord is the manual fix instead. prior-idle keeps it
+         * from firing while typing the apostrophe and the decimal point.
+         */
+        num_lock {
+            bindings = <&kp KP_NUMLOCK>;
+            key-positions = <9 10>;
+            layers = <6>;
+            require-prior-idle-ms = <150>;
         };
 
     };
@@ -293,14 +309,16 @@
          * Number mode. The left hand is a keypad and key 13 is Shift, so the
          * shifted digits come straight off the left. The right hand therefore
          * carries what Shift cannot reach from a number: zero, minus, equals,
-         * the brackets, the backslash, an apostrophe and the decimal point.
+         * the brackets, the backslash, a second zero and the decimal point.
+         * Digits and the point are keypad usages, so an IME passes them through
+         * as half width - the reason for this mode - but they need Num Lock.
          * The point has a key of its own here as well as the 14+15 chord,
          * because typing a decimal is the whole reason for this mode. There
          * is no Enter or Backspace, and no semicolon.
          */
         number_layer {
             bindings = <
-&kp N7  &kp N8  &kp N9  &kp N0  &kp MINUS  &kp EQUAL  &kp N1  &kp N4  &kp N5  &kp N6  &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp BACKSLASH  &kp LSHFT  &kp N2  &kp N3  &kp SINGLE_QUOTE  &kp PERIOD
+&kp KP_N7  &kp KP_N8  &kp KP_N9  &kp KP_N0  &kp KP_MINUS  &kp EQUAL  &kp KP_N1  &kp KP_N4  &kp KP_N5  &kp KP_N6  &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp BACKSLASH  &kp LSHFT  &kp KP_N2  &kp KP_N3  &kp KP_N0  &kp KP_DOT
             >;
         };
 

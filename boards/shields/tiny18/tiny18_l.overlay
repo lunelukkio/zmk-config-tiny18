@@ -1,1 +1,7 @@
 #include "tiny18.dtsi"
+
+/*
+ * UART0 takes P1.11 and P1.12, which are D6 and D7 and carry key positions 7
+ * and 8. The kscan needs them, so turn the port off as the right half does.
+ */
+&xiao_serial { status = "disabled"; };

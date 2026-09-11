@@ -92,7 +92,7 @@ layers:
   - /
   - LSHFT
   - {type: held}
-  - ''
+  - '?'
   - Ctl+C
   - Ctl+V
   game: [ESCAPE, W, '', '', '', '', LSHFT, A, S, D, Z, C, V, '', C, V, SPACE, '']

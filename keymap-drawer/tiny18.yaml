@@ -192,19 +192,19 @@ combos:
 - p: [10, 11]
   k: N
   l: [num]
-- p: [3, 5]
+- p: [10, 12]
   k: {t: default, h: toggle}
   l: [default, bluetooth, nav, game, number, fn]
-- p: [0, 2]
-  k: {t: nav, h: toggle}
-  l: [default, bluetooth, nav, game, number, fn]
 - p: [7, 9]
-  k: {t: number, h: toggle}
+  k: {t: nav, h: toggle}
   l: [default, bluetooth, nav, number, fn]
+- p: [0, 2]
+  k: {t: number, h: toggle}
+  l: [default, bluetooth, nav, game, number, fn]
 - p: [0, 9]
   k: {t: game, h: toggle}
   l: [default, bluetooth, nav, game, number, fn]
-- p: [10, 12]
+- p: [3, 5]
   k: {t: fn, h: toggle}
   l: [default, bluetooth, nav, game, number, fn]
 - p: [5, 10]

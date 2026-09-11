@@ -16,8 +16,11 @@
  * 7+9 is left out of game mode, where those two keys are A and D.
  *
  * Layers held rather than switched into:
- *   3  digits and symbols    hold key 14
- *   4  editing and brackets  hold key 15 or 16
+ *   3  digits and symbols    hold key 14 (BackSpace)
+ *   4  editing and brackets  hold key 15 (Space) or 16 (N)
+ *
+ * Modifiers without a key of their own are chords, live in text entry and
+ * AI mode: Alt on 9+15 (F and Space), GUI on 3+10 (U and J).
  *
  * Key positions (see tiny18.dtsi default_transform):
  *         0   1   2         3   4   5
@@ -28,11 +31,11 @@
  * reachable with the left nine keys: 0 1 2 6 7 8 9 14 15.
  *
  * An unassigned key is &none, not &trans, so it does nothing rather than
- * falling through to the layer below: holding 15 and pressing J stays silent
- * instead of typing a letter. The exceptions are positions 6 and 13 on the
- * base layer's held layers, kept transparent so Shift and Enter work whichever
- * key went down first - without that, pressing 15 before Shift would leave
- * Shift dead and 15 plus Shift plus 0 could not produce an exclamation mark.
+ * falling through to the layer below: holding Space and pressing J stays
+ * silent instead of typing a letter. The held layers put Shift on key 6
+ * explicitly, so Shift works whichever key went down first. Function mode is
+ * the one place keys 6 and 13 are &trans, so Shift and Enter from the base
+ * layer can be chorded with an F key.
  *
  * Every layer is still escapable: the held layers end on key release, and the
  * mode layers are left by combo, which ZMK matches independently of what the
@@ -138,13 +141,23 @@
         };
 
         /*
+         * GUI gets the same treatment on the right hand: index finger on the
+         * top and home rows, U and J. Live in text entry and AI mode.
+         */
+        lgui {
+            bindings = <&kp LEFT_GUI>;
+            key-positions = <3 10>;
+            layers = <0 2>;
+        };
+
+        /*
          * Mode switching. One gesture per mode, live in every mode, so any
          * mode reaches any other directly.
          *
          * require-prior-idle-ms is what makes this safe. In number mode the
-         * switch positions carry digits - 3 and 5 are 7 and 9, and 7+9 and 0+2
-         * land on digits too - so typing quickly would otherwise throw you
-         * into another mode. Holding off for 150 ms after the last keypress
+         * switch positions carry digits - 0 and 2 are 7 and 9, 7 and 9 are 4
+         * and 6 - so typing quickly would otherwise throw you into another
+         * mode. Holding off for 150 ms after the last keypress
          * means a switch only fires from a standstill. It also stops 0+2 and
          * 3+5 misfiring between Q, T, Y and P while typing.
          */
@@ -227,41 +240,34 @@
         };
 
         /*
-         * AI mode. Key 6 is Enter and 15 taps Space - both of which the base
-         * layer gave up when its thumbs took letters. Shift is on 15 held for
-         * the left hand and on 17 outright. Editing lives behind key 14.
-         *
-         * Key 17 is spare room for now: the F-key page it used to open has
-         * moved out to function mode, and the Shift parked there is a
-         * placeholder rather than a settled choice.
+         * AI mode: arrows under the left hand, Enter on key 6, Shift on key
+         * 13 where the base layer has Enter. The thumbs are the base layer's
+         * thumbs - BackSpace, Space, N and M with the same held pages and
+         * the same Ctrl - so editing and Ctrl chords work alike in both
+         * modes. Only F10 survives on the right top row; F11 and F12 are
+         * dead keys, not transparent ones.
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp F10  &kp F11  &kp F12  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp ENTER  &lt 3 BACKSPACE  &lt 4 SPACE  &kp LEFT_GUI  &kp LSHFT
+&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp F10  &none  &none  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &lt 3 BACKSPACE  &lt 4 SPACE  &lt 4 N  &bmt LCTRL M
             >;
         };
 
-        /* Hold key 14 on the base layer: a plain number row, 1 to 6
-         * under the left hand and 7 8 9 0 - = under the right. Shift on 6 and
-         * Enter on 13 stay transparent, so Shift plus these digits gives the
-         * symbol row without a separate layer. */
+        /* Hold key 14 (BackSpace) on the base layer: a plain number row, 1 to
+         * 6 under the left hand and 7 8 9 0 - = under the right. Keys 6 and
+         * 13 are both Shift, so Shift plus these digits gives the symbol row
+         * from whichever hand is free. */
         digit_symbol_layer {
             bindings = <
 &kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &kp LSHFT  &kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &kp LSHFT  &none  &none  &kp SEMICOLON  &kp SINGLE_QUOTE
             >;
         };
 
-        /* Hold key 15 or 16 on the base layer. Shift stays a real modifier, so
-         * Shift plus these digits gives ! @ # without a separate symbol layer.
-         * Digits 4-7 have no home in this mode. Z and B are combos here and
-         * share positions with x and c.
-         *
-         * The IME toggle sits where M used to, now that M has a key of its
-         * own on 17: two keys instead of a different thumb plus a reach.
-         *
-         * Key 6 is Z here rather than transparent, so Shift cannot be added
-         * from this page any more. The shifted digits live in number mode's
-         * right hand instead. */
+        /* Hold key 15 (Space) or 16 (N) on the base layer: Escape, Tab and
+         * the brackets on the top row, Z X C V on the left home row,
+         * punctuation on the right, Shift on 13, copy and paste on the right
+         * thumbs. B is a combo on the C and V keys. Key 6 is Z here rather
+         * than Shift, so shifted symbols come from number mode instead. */
         edit_bracket_layer {
             bindings = <
 &kp ESCAPE  &kp TILDE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &none  &none  &kp LC(C)  &kp LC(V)
@@ -272,11 +278,12 @@
          * VRChat. W sits directly above S, so 1/7/8/9 form the usual WASD
          * diamond. Space on 16 is jump. Z, C and V sit on the right hand as
          * well as the left thumbs, so prone, crouch and the microphone can be
-         * reached from either side. Menu and chat are not assigned yet.
+         * reached from either side. Escape, which opens the menu, sits on
+         * key 0 just left of W. Chat is not assigned yet.
          */
         game_layer {
             bindings = <
-&none  &kp W  &none  &none  &none  &none  &kp LSHFT  &kp A  &kp S  &kp D  &kp Z  &kp C  &kp V  &none  &kp C  &kp V  &kp SPACE  &none
+&kp ESCAPE  &kp W  &none  &none  &none  &none  &kp LSHFT  &kp A  &kp S  &kp D  &kp Z  &kp C  &kp V  &none  &kp C  &kp V  &kp SPACE  &none
             >;
         };
 

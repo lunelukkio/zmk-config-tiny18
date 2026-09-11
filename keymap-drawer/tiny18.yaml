@@ -55,8 +55,8 @@ layers:
   - LSHFT
   - {t: BACKSPACE, h: digit_symbol}
   - {t: SPACE, h: LSHFT}
-  - {t: N, h: edit_bracket}
-  - {t: M, h: LCTRL}
+  - edit_bracket
+  - LCTRL
   digit_symbol:
   - '1'
   - '2'

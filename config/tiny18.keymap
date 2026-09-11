@@ -241,15 +241,16 @@
 
         /*
          * AI mode: arrows under the left hand, Enter on key 6, Shift on key
-         * 13 where the base layer has Enter. The thumbs are the base layer's
-         * thumbs - BackSpace, Space, N and M with the same held pages and
-         * the same Ctrl - so editing and Ctrl chords work alike in both
-         * modes. Only F10 survives on the right top row; F11 and F12 are
-         * dead keys, not transparent ones.
+         * 13 where the base layer has Enter. The thumbs match the base layer
+         * except key 15, which holds Shift instead of the editing page: the
+         * arrows are all on the left hand, so a left thumb Shift is what
+         * makes selecting text a one-hand job. The editing page is still
+         * reachable from key 16. Only F10 survives on the right top row;
+         * F11 and F12 are dead keys, not transparent ones.
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp F10  &none  &none  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &lt 3 BACKSPACE  &lt 4 SPACE  &lt 4 N  &bmt LCTRL M
+&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp F10  &none  &none  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &lt 3 BACKSPACE  &bmt LSHFT SPACE  &lt 4 N  &bmt LCTRL M
             >;
         };
 

@@ -15,9 +15,9 @@ layers:
   - K
   - L
   - ENTER
-  - {t: BACKSPACE, h: edit_bracket}
-  - {t: SPACE, h: digit_symbol}
-  - {t: N, h: digit_symbol}
+  - {t: BACKSPACE, h: digit_symbol}
+  - {t: SPACE, h: edit_bracket}
+  - {t: N, h: edit_bracket}
   - {t: M, h: LCTRL}
   bluetooth:
   - ''
@@ -53,9 +53,9 @@ layers:
   - .
   - /
   - LSHFT
-  - {t: BACKSPACE, h: edit_bracket}
+  - {t: BACKSPACE, h: digit_symbol}
   - {t: SPACE, h: LSHFT}
-  - {t: N, h: digit_symbol}
+  - {t: N, h: edit_bracket}
   - {t: M, h: LCTRL}
   digit_symbol:
   - '1'
@@ -72,8 +72,8 @@ layers:
   - '-'
   - '='
   - LSHFT
-  - ;
-  - {t: '''', type: held}
+  - {t: ;, type: held}
+  - ''''
   - ','
   - .
   edit_bracket:
@@ -91,8 +91,8 @@ layers:
   - .
   - /
   - LSHFT
-  - {type: held}
-  - '?'
+  - ''
+  - {t: '?', type: held}
   - Ctl+C
   - Ctl+V
   game: [ESCAPE, W, '', '', '', '', LSHFT, A, S, D, Z, C, V, '', C, V, SPACE, '']

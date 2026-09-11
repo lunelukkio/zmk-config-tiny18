@@ -291,10 +291,15 @@
          * the brackets on the top row, Z X C V on the left home row,
          * punctuation on the right, Shift on 13, copy and paste on the right
          * thumbs. B is a combo on the C and V keys. Key 6 is Z here rather
-         * than Shift, so shifted symbols come from number mode instead. */
+         * than Shift, so shifted symbols come from number mode instead.
+         *
+         * Key 15 is the one free slot on this page: it used to be the thumb
+         * that opened the page, and swapping that job onto key 14 released
+         * it. A question mark goes there, because the alternative is holding
+         * this page plus the Shift on key 13 and reaching for the slash. */
         edit_bracket_layer {
             bindings = <
-&kp ESCAPE  &kp TILDE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &none  &none  &kp LC(C)  &kp LC(V)
+&kp ESCAPE  &kp TILDE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &none  &kp QUESTION  &kp LC(C)  &kp LC(V)
             >;
         };
 

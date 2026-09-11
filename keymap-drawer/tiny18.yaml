@@ -74,8 +74,8 @@ layers:
   - LSHFT
   - {type: held}
   - ''
-  - ;
-  - ''''
+  - ','
+  - .
   edit_bracket:
   - ESCAPE
   - '`'
@@ -87,8 +87,8 @@ layers:
   - X
   - C
   - V
-  - ','
-  - .
+  - ;
+  - ''''
   - /
   - LSHFT
   - ''

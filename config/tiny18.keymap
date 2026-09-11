@@ -7,25 +7,27 @@
 
 /*
  * Three modes, switched by combo:
- *   text entry  layer 0    green    3+5
- *   AI          layer 2    blue     7+9
- *   game        layer 10   white    10+12
- *   number      layer 11   yellow   0+2
- * Every switch works from every mode.
+ *   text entry  layer 0    green     3+5
+ *   AI          layer 2    blue      0+2
+ *   number      layer 9    yellow    7+9
+ *   game        layer 8    cyan      0+9
+ *   function    layer 10   magenta   10+12
+ *   bluetooth   layer 1    red       5+10
+ * Every switch works from every mode, except that 7+9 is left out of game
+ * mode, where those two keys are A and D.
  *
  * Layer map
  *   0  base letters          green
- *   1  bluetooth profiles    red      combo 10+12+17 from layer 0, same combo to leave
+ *   1  bluetooth profiles    red
  *   2  navigation            blue
  *   3  digits 1-9            magenta  hold key 15 on layer 2
  *   4  digit 0 / symbols     yellow   hold key 14 on layer 2
- *   5  function keys         cyan     hold key 17 on layer 2
- *   6  clipboard / IME       green    hold key 14 on layer 0
- *   7  digits 1-3, x c v     green    hold key 15 on layer 0
- *   8  right punctuation     green    hold key 16 on layer 0
- *   9  right modifiers       green    hold key 17 on layer 0
- *  10  game                  white
- *  11  number                yellow
+ *   5  AI mode F-keys        blue     hold key 17 on layer 2
+ *   6  clipboard / IME       green    hold key 14 or 17 on layer 0
+ *   7  digits, x c v         green    hold key 15 or 16 on layer 0
+ *   8  game                  cyan
+ *   9  number                yellow
+ *  10  function mode         magenta
  *
  * Layers 2-5 still describe the previous base layout and are due for a redesign.
  *
@@ -143,41 +145,48 @@
         mode_text {
             bindings = <&to 0>;
             key-positions = <3 5>;
-            layers = <0 2 10 11>;
-            require-prior-idle-ms = <150>;
-        };
-
-        mode_num {
-            bindings = <&to 11>;
-            key-positions = <0 2>;
-            layers = <0 2 10 11>;
+            layers = <0 1 2 8 9 10>;
             require-prior-idle-ms = <150>;
         };
 
         mode_ai {
             bindings = <&to 2>;
+            key-positions = <0 2>;
+            layers = <0 1 2 8 9 10>;
+            require-prior-idle-ms = <150>;
+        };
+
+        /*
+         * Game mode is the one place this gesture is left out: positions 7 and
+         * 9 are A and D there, and pressing both is ordinary movement. Reach
+         * number mode from game mode via text mode.
+         */
+        mode_num {
+            bindings = <&to 9>;
             key-positions = <7 9>;
-            layers = <0 2 10 11>;
+            layers = <0 1 2 9 10>;
             require-prior-idle-ms = <150>;
         };
 
         mode_game {
-            bindings = <&to 10>;
-            key-positions = <10 12>;
-            layers = <0 2 10 11>;
+            bindings = <&to 8>;
+            key-positions = <0 9>;
+            layers = <0 1 2 8 9 10>;
             require-prior-idle-ms = <150>;
         };
 
-        to_bt {
-            bindings = <&to 1>;
-            key-positions = <10 12 17>;
-            layers = <0>;
+        mode_fn {
+            bindings = <&to 10>;
+            key-positions = <10 12>;
+            layers = <0 1 2 8 9 10>;
+            require-prior-idle-ms = <150>;
         };
 
-        from_bt {
-            bindings = <&to 0>;
-            key-positions = <10 12 17>;
-            layers = <1>;
+        mode_bt {
+            bindings = <&to 1>;
+            key-positions = <5 10>;
+            layers = <0 1 2 8 9 10>;
+            require-prior-idle-ms = <150>;
         };
 
         /* Number mode. Both hands get a 0 and a decimal point, mirrored:
@@ -186,25 +195,25 @@
         num_zero_l {
             bindings = <&kp N0>;
             key-positions = <6 14>;
-            layers = <11>;
+            layers = <9>;
         };
 
         num_dot_l {
             bindings = <&kp PERIOD>;
             key-positions = <14 15>;
-            layers = <11>;
+            layers = <9>;
         };
 
         num_zero_r {
             bindings = <&kp N0>;
             key-positions = <16 17>;
-            layers = <11>;
+            layers = <9>;
         };
 
         num_dot_r {
             bindings = <&kp PERIOD>;
             key-positions = <13 17>;
-            layers = <11>;
+            layers = <9>;
         };
 
         nav_tab {
@@ -260,7 +269,7 @@
 
         default_layer {
             bindings = <
-&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &kp LSHFT  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &kp ENTER  &mo 6  &mo 7  &mo 8  &mo 9
+&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &kp LSHFT  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &kp ENTER  &mo 6  &mo 7  &mo 7  &mo 6
             >;
         };
 
@@ -288,7 +297,7 @@
             >;
         };
 
-        function_layer {
+        ai_fn_layer {
             bindings = <
 &kp F1  &kp F2  &kp F3  &kp F10  &kp F11  &kp F12  &kp F4  &kp F5  &kp F6  &kp F7  &none  &none  &none  &none  &kp F8  &kp F9  &none  &none
             >;
@@ -309,22 +318,6 @@
         num_layer {
             bindings = <
 &kp N1  &kp N2  &kp N3  &kp N8  &kp N9  &kp N0  &trans  &kp X  &kp C  &kp V  &kp M  &kp COMMA  &kp PERIOD  &trans  &none  &none  &none  &none
-            >;
-        };
-
-        /* Hold keys 16 and 17. F1-F12 live entirely in text entry mode now,
-         * so the function layer under AI mode is no longer the only way in.
-         * Both the thumb and the keys are on the right half, so these need the
-         * hand off the trackball. */
-        rpunct_layer {
-            bindings = <
-&none  &none  &none  &kp F1  &kp F2  &kp F3  &trans  &none  &none  &none  &kp F4  &kp F5  &kp F6  &trans  &none  &none  &none  &none
-            >;
-        };
-
-        rmod_layer {
-            bindings = <
-&none  &none  &none  &kp F7  &kp F8  &kp F9  &trans  &none  &none  &none  &kp F10  &kp F11  &kp F12  &trans  &none  &none  &none  &none
             >;
         };
 
@@ -350,6 +343,16 @@
         number_layer {
             bindings = <
 &kp N7  &kp N8  &kp N9  &kp N7  &kp N8  &kp N9  &kp N1  &kp N4  &kp N5  &kp N6  &kp N4  &kp N5  &kp N6  &kp N3  &kp N2  &kp N3  &kp N1  &kp N2
+            >;
+        };
+
+        /*
+         * Function mode. Shift and Enter stay transparent because Alt+F4 and
+         * Shift+F10 need a modifier alongside the key.
+         */
+        fn_layer {
+            bindings = <
+&kp F1  &kp F2  &kp F3  &kp F7  &kp F8  &kp F9  &trans  &kp F4  &kp F5  &kp F6  &kp F10  &kp F11  &kp F12  &trans  &none  &none  &none  &none
             >;
         };
     };

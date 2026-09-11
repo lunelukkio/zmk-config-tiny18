@@ -9,16 +9,15 @@
  * Six modes, each entered by one pair of keys from any other mode:
  *   text entry  layer 0   green     10+12
  *   AI          layer 2   blue      7+9
- *   game        layer 6   cyan      0+9
- *   number      layer 7   yellow    0+2
- *   function    layer 8   magenta   3+5
+ *   game        layer 5   cyan      0+9
+ *   number      layer 6   yellow    0+2
+ *   function    layer 7   magenta   3+5
  *   bluetooth   layer 1   red       5+10
  * 7+9 is left out of game mode, where those two keys are A and D.
  *
  * Layers held rather than switched into:
- *   3  AI mode editing      hold key 14 on layer 2
- *   4  clipboard / symbols  hold key 14 or 17 on layer 0
- *   5  digits, x c v        hold key 15 or 16 on layer 0
+ *   3  digits and symbols    hold key 14
+ *   4  editing and brackets  hold key 15 or 16
  *
  * Key positions (see tiny18.dtsi default_transform):
  *         0   1   2         3   4   5
@@ -110,27 +109,21 @@
         slash {
             bindings = <&kp SLASH>;
             key-positions = <11 12>;
-            layers = <0 5>;
+            layers = <0 4>;
         };
 
-        /* Z and B share their positions with x and c on the layer 15 opens, so
-         * typing xc or cv faster than the combo window gives the combo instead. */
-        z {
-            bindings = <&kp Z>;
-            key-positions = <7 8>;
-            layers = <5>;
-        };
-
+        /* B shares its positions with c and v on the layer 15 opens, so typing
+         * cv faster than the combo window gives the combo instead. */
         b {
             bindings = <&kp B>;
             key-positions = <8 9>;
-            layers = <5>;
+            layers = <4>;
         };
 
         n {
             bindings = <&kp N>;
             key-positions = <10 11>;
-            layers = <5>;
+            layers = <4>;
         };
 
         /*
@@ -158,7 +151,7 @@
         mode_text {
             bindings = <&to 0>;
             key-positions = <10 12>;
-            layers = <0 1 2 6 7 8>;
+            layers = <0 1 2 5 6 7>;
             require-prior-idle-ms = <150>;
         };
 
@@ -170,64 +163,52 @@
         mode_ai {
             bindings = <&to 2>;
             key-positions = <7 9>;
-            layers = <0 1 2 7 8>;
+            layers = <0 1 2 6 7>;
             require-prior-idle-ms = <150>;
         };
 
         mode_num {
-            bindings = <&to 7>;
+            bindings = <&to 6>;
             key-positions = <0 2>;
-            layers = <0 1 2 6 7 8>;
+            layers = <0 1 2 5 6 7>;
             require-prior-idle-ms = <150>;
         };
 
         mode_game {
-            bindings = <&to 6>;
+            bindings = <&to 5>;
             key-positions = <0 9>;
-            layers = <0 1 2 6 7 8>;
+            layers = <0 1 2 5 6 7>;
             require-prior-idle-ms = <150>;
         };
 
         mode_fn {
-            bindings = <&to 8>;
+            bindings = <&to 7>;
             key-positions = <3 5>;
-            layers = <0 1 2 6 7 8>;
+            layers = <0 1 2 5 6 7>;
             require-prior-idle-ms = <150>;
         };
 
         mode_bt {
             bindings = <&to 1>;
             key-positions = <5 10>;
-            layers = <0 1 2 6 7 8>;
+            layers = <0 1 2 5 6 7>;
             require-prior-idle-ms = <150>;
         };
 
-        /* Number mode. Both hands get a 0 and a decimal point, mirrored: the
-         * pair holding 1 and 2 gives 0, the pair holding 2 and 3 gives the
-         * point. */
+        /* Number mode. The left hand keeps a 0 and a decimal point on the
+         * pairs holding 1 and 2, and 2 and 3. */
         num_zero_l {
             bindings = <&kp N0>;
             key-positions = <6 14>;
-            layers = <7>;
+            layers = <6>;
         };
 
         num_dot_l {
             bindings = <&kp PERIOD>;
             key-positions = <14 15>;
-            layers = <7>;
+            layers = <6>;
         };
 
-        num_zero_r {
-            bindings = <&kp RIGHT_PARENTHESIS>;
-            key-positions = <16 17>;
-            layers = <7>;
-        };
-
-        num_dot_r {
-            bindings = <&kp PERIOD>;
-            key-positions = <13 17>;
-            layers = <7>;
-        };
     };
 
     keymap {
@@ -235,7 +216,7 @@
 
         default_layer {
             bindings = <
-&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &bmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &kp ENTER  &lt 4 C  &lt 5 V  &lt 5 N  &bmt LSHFT M
+&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &bmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &kp ENTER  &lt 3 BACKSPACE  &lt 4 SPACE  &lt 4 N  &bmt LCTRL M
             >;
         };
 
@@ -246,11 +227,9 @@
         };
 
         /*
-         * AI mode. Key 6 is Enter and 14 taps Space - both of which the base
-         * layer gave up when its thumbs took letters. Shift is on 14 held for
-         * the left hand and on 17 outright. Editing lives behind key 15, the
-         * inner thumb, because copy and paste get reached for far more often
-         * than shift-arrow selection.
+         * AI mode. Key 6 is Enter and 15 taps Space - both of which the base
+         * layer gave up when its thumbs took letters. Shift is on 15 held for
+         * the left hand and on 17 outright. Editing lives behind key 14.
          *
          * Key 17 is spare room for now: the F-key page it used to open has
          * moved out to function mode, and the Shift parked there is a
@@ -258,27 +237,17 @@
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp F10  &kp F11  &kp F12  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LC(SPACE)  &bmt LSHFT SPACE  &mo 3  &kp LEFT_GUI  &kp LSHFT
+&kp ESCAPE  &kp UP_ARROW  &none  &kp F10  &kp F11  &kp F12  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp ENTER  &lt 3 BACKSPACE  &lt 4 SPACE  &kp LEFT_GUI  &kp LSHFT
             >;
         };
 
-        /*
-         * Hold key 14 in AI mode. Positions 6 7 8 9 run undo, cut, copy and
-         * paste in the order Z X C V sit on a normal keyboard. The punctuation
-         * on 0 1 2 repeats what the right hand already has, so it can be
-         * reached without leaving the trackball.
-         */
-        ai_edit_layer {
+        /* Hold key 14 on the base layer: a plain number row, 1 to 6
+         * under the left hand and 7 8 9 0 - = under the right. Shift on 6 and
+         * Enter on 13 stay transparent, so Shift plus these digits gives the
+         * symbol row without a separate layer. */
+        digit_symbol_layer {
             bindings = <
-&kp COMMA  &kp PERIOD  &kp SLASH  &none  &none  &none  &kp LC(Z)  &kp LC(X)  &kp LC(C)  &kp LC(V)  &none  &none  &none  &none  &none  &none  &none  &none
-            >;
-        };
-
-        /* Hold key 14 or 17 on the base layer. Clipboard, IME, punctuation and
-         * the modifier pairs. The IME toggle is Ctrl+Space on both OSes. */
-        edit_layer {
-            bindings = <
-&kp LC(SPACE)  &kp LC(C)  &kp LC(V)  &kp COLON  &kp DOUBLE_QUOTES  &kp SLASH  &trans  &kp LCTRL  &kp LALT  &kp SPACE  &kp SPACE  &kp RALT  &kp RCTRL  &trans  &none  &none  &none  &none
+&kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &kp LSHFT  &kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &kp LSHFT  &none  &none  &kp SEMICOLON  &kp SINGLE_QUOTE
             >;
         };
 
@@ -288,33 +257,39 @@
          * share positions with x and c.
          *
          * The IME toggle sits where M used to, now that M has a key of its
-         * own on 17: two keys instead of a different thumb plus a reach. */
-        num_layer {
+         * own on 17: two keys instead of a different thumb plus a reach.
+         *
+         * Key 6 is Z here rather than transparent, so Shift cannot be added
+         * from this page any more. The shifted digits live in number mode's
+         * right hand instead. */
+        edit_bracket_layer {
             bindings = <
-&kp N1  &kp N2  &kp N3  &kp F10  &kp SEMICOLON  &kp SINGLE_QUOTE  &trans  &kp X  &kp C  &kp V  &kp LC(SPACE)  &kp COMMA  &kp PERIOD  &trans  &none  &none  &kp SPACE  &kp SLASH
+&kp ESCAPE  &kp TILDE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &none  &none  &kp LC(C)  &kp LC(V)
             >;
         };
 
         /*
          * VRChat. W sits directly above S, so 1/7/8/9 form the usual WASD
-         * diamond. Jump, menu and chat are not assigned yet.
+         * diamond. Space on 16 is jump. Z, C and V sit on the right hand as
+         * well as the left thumbs, so prone, crouch and the microphone can be
+         * reached from either side. Menu and chat are not assigned yet.
          */
         game_layer {
             bindings = <
-&none  &kp W  &none  &none  &none  &none  &kp LSHFT  &kp A  &kp S  &kp D  &none  &none  &none  &none  &kp C  &kp V  &none  &none
+&none  &kp W  &none  &none  &none  &none  &kp LSHFT  &kp A  &kp S  &kp D  &kp Z  &kp C  &kp V  &none  &kp C  &kp V  &kp SPACE  &none
             >;
         };
 
         /*
-         * Number mode. The left hand is a keypad; the right hand is the same
-         * keypad shifted, carrying ! @ # $ % ^ & * ( in the positions their
-         * digits occupy on the left. This mode has no Shift of its own, so
-         * that is the only way to reach those symbols from here. There is no
-         * Enter or Backspace either.
+         * Number mode. The left hand is a keypad and key 13 is Shift, so the
+         * shifted digits come straight off the left. The right hand therefore
+         * carries what Shift cannot reach from a number: zero, minus, equals,
+         * the brackets, the backslash, semicolon and apostrophe. There is no
+         * Enter or Backspace here.
          */
         number_layer {
             bindings = <
-&kp N7  &kp N8  &kp N9  &kp AMPERSAND  &kp ASTERISK  &kp LEFT_PARENTHESIS  &kp N1  &kp N4  &kp N5  &kp N6  &kp DOLLAR  &kp PERCENT  &kp CARET  &kp HASH  &kp N2  &kp N3  &kp EXCLAMATION  &kp AT_SIGN
+&kp N7  &kp N8  &kp N9  &kp N0  &kp MINUS  &kp EQUAL  &kp N1  &kp N4  &kp N5  &kp N6  &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp BACKSLASH  &kp LSHFT  &kp N2  &kp N3  &kp SEMICOLON  &kp SINGLE_QUOTE
             >;
         };
 

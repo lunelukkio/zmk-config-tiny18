@@ -274,10 +274,16 @@
         /* Hold key 15 (Space) or 16 (N) on the base layer: a plain number row,
          * 1 to 6 under the left hand and 7 8 9 0 - = under the right. Keys 6 and
          * 13 are both Shift, so Shift plus these digits gives the symbol row
-         * from whichever hand is free. */
+         * from whichever hand is free.
+         *
+         * The four thumbs carry the punctuation the base layer has no room
+         * for. Which ones are reachable depends on the thumb that opened the
+         * page: holding Space leaves 14, 16 and 17 free, holding N leaves 14,
+         * 15 and 17. The comma and the full stop are on the right thumbs so
+         * they stay reachable with a hand resting on the trackball. */
         digit_symbol_layer {
             bindings = <
-&kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &kp LSHFT  &kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &kp LSHFT  &none  &none  &kp SINGLE_QUOTE  &kp PERIOD
+&kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &kp LSHFT  &kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &kp LSHFT  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp COMMA  &kp PERIOD
             >;
         };
 

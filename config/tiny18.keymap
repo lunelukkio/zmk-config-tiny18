@@ -266,13 +266,14 @@
          * around, not for typing - and take copy and paste instead. Tapping
          * 16 copies and tapping 17 pastes; holding them still opens the
          * editing page and presses Ctrl, the same jobs they do on the base
-         * layer. The right top row is dead: the F keys that
-         * used to sit there live in function mode now, and &none rather
-         * than &trans keeps the base layer's letters from leaking through.
+         * layer. The right top row is undo, copy and paste in a row, which
+         * is what this mode is for; the F keys that used to sit there live
+         * in function mode now. Ctrl+Z has no other single key: reaching it
+         * otherwise means Ctrl on key 17 plus the editing page plus Z.
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &none  &none  &none  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &lt 3 BACKSPACE  &bmt LSHFT SPACE  &lt 4 LC(C)  &bmt LCTRL LC(V)
+&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp LC(Z)  &kp LC(C)  &kp LC(V)  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &lt 3 BACKSPACE  &bmt LSHFT SPACE  &lt 4 LC(C)  &bmt LCTRL LC(V)
             >;
         };
 
@@ -304,7 +305,7 @@
          * this page plus the Shift on key 13 and reaching for the slash. */
         edit_bracket_layer {
             bindings = <
-&kp ESCAPE  &kp TILDE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &none  &kp QUESTION  &kp LC(C)  &kp LC(V)
+&kp ESCAPE  &kp GRAVE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &none  &kp QUESTION  &kp LC(C)  &kp LC(V)
             >;
         };
 

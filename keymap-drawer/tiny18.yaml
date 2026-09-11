@@ -43,8 +43,8 @@ layers:
   - UP ARROW
   - BACKSPACE
   - F10
-  - F11
-  - F12
+  - ''
+  - ''
   - ENTER
   - LEFT ARROW
   - DOWN ARROW
@@ -52,11 +52,11 @@ layers:
   - ','
   - .
   - /
-  - ENTER
+  - LSHFT
   - {t: BACKSPACE, h: digit_symbol}
   - {t: SPACE, h: edit_bracket}
-  - LEFT GUI
-  - LSHFT
+  - {t: N, h: edit_bracket}
+  - {t: M, h: LCTRL}
   digit_symbol:
   - '1'
   - '2'
@@ -95,7 +95,7 @@ layers:
   - {type: held}
   - Ctl+C
   - Ctl+V
-  game: ['', W, '', '', '', '', LSHFT, A, S, D, Z, C, V, '', C, V, SPACE, '']
+  game: [ESCAPE, W, '', '', '', '', LSHFT, A, S, D, Z, C, V, '', C, V, SPACE, '']
   number: ['7', '8', '9', '0', '-', '=', '1', '4', '5', '6', (, ), \, LSHFT, '2', '3', ;, '''']
   fn:
   - F1
@@ -149,6 +149,9 @@ combos:
   l: [edit_bracket]
 - p: [9, 15]
   k: LEFT ALT
+  l: [default, nav]
+- p: [3, 10]
+  k: LEFT GUI
   l: [default, nav]
 - p: [10, 12]
   k: {t: default, h: toggle}

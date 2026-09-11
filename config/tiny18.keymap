@@ -237,7 +237,7 @@
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &none  &kp F10  &kp F11  &kp F12  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp ENTER  &lt 3 BACKSPACE  &lt 4 SPACE  &kp LEFT_GUI  &kp LSHFT
+&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp F10  &kp F11  &kp F12  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp ENTER  &lt 3 BACKSPACE  &lt 4 SPACE  &kp LEFT_GUI  &kp LSHFT
             >;
         };
 

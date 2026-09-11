@@ -218,7 +218,7 @@
         };
 
         num_zero_r {
-            bindings = <&kp N0>;
+            bindings = <&kp RIGHT_PARENTHESIS>;
             key-positions = <16 17>;
             layers = <7>;
         };
@@ -235,7 +235,7 @@
 
         default_layer {
             bindings = <
-&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &bmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &kp ENTER  &lt 4 C  &lt 5 V  &lt 5 N  &lt 4 M
+&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &bmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &kp ENTER  &lt 4 C  &lt 5 V  &lt 5 N  &bmt LSHFT M
             >;
         };
 
@@ -246,9 +246,11 @@
         };
 
         /*
-         * AI mode. Key 6 is Enter and 15 taps Space - both of which the base
-         * layer gave up when its thumbs took letters. Shift is on 15 held for
-         * the left hand and on 17 outright. Editing lives behind key 14.
+         * AI mode. Key 6 is Enter and 14 taps Space - both of which the base
+         * layer gave up when its thumbs took letters. Shift is on 14 held for
+         * the left hand and on 17 outright. Editing lives behind key 15, the
+         * inner thumb, because copy and paste get reached for far more often
+         * than shift-arrow selection.
          *
          * Key 17 is spare room for now: the F-key page it used to open has
          * moved out to function mode, and the Shift parked there is a
@@ -256,7 +258,7 @@
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp F10  &kp F11  &kp F12  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LC(SPACE)  &mo 3  &bmt LSHFT SPACE  &kp LEFT_GUI  &kp LSHFT
+&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp F10  &kp F11  &kp F12  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LC(SPACE)  &bmt LSHFT SPACE  &mo 3  &kp LEFT_GUI  &kp LSHFT
             >;
         };
 
@@ -282,11 +284,14 @@
 
         /* Hold key 15 or 16 on the base layer. Shift stays a real modifier, so
          * Shift plus these digits gives ! @ # without a separate symbol layer.
-         * Digits 4-7 have no home in this mode. Z, B and N are combos here and
-         * share positions with x, c, v, M and the comma. */
+         * Digits 4-7 have no home in this mode. Z and B are combos here and
+         * share positions with x and c.
+         *
+         * The IME toggle sits where M used to, now that M has a key of its
+         * own on 17: two keys instead of a different thumb plus a reach. */
         num_layer {
             bindings = <
-&kp N1  &kp N2  &kp N3  &kp N8  &kp N9  &kp N0  &trans  &kp X  &kp C  &kp V  &kp M  &kp COMMA  &kp PERIOD  &trans  &none  &none  &none  &none
+&kp N1  &kp N2  &kp N3  &kp F10  &kp SEMICOLON  &kp SINGLE_QUOTE  &trans  &kp X  &kp C  &kp V  &kp LC(SPACE)  &kp COMMA  &kp PERIOD  &trans  &none  &none  &kp SPACE  &kp SLASH
             >;
         };
 
@@ -301,14 +306,15 @@
         };
 
         /*
-         * Number mode: the same keypad under each hand, so digits can be
-         * entered without leaving the trackball or without leaving the left
-         * half. There is no Enter, Shift or Backspace here - all 18 keys are
-         * digits.
+         * Number mode. The left hand is a keypad; the right hand is the same
+         * keypad shifted, carrying ! @ # $ % ^ & * ( in the positions their
+         * digits occupy on the left. This mode has no Shift of its own, so
+         * that is the only way to reach those symbols from here. There is no
+         * Enter or Backspace either.
          */
         number_layer {
             bindings = <
-&kp N7  &kp N8  &kp N9  &kp N7  &kp N8  &kp N9  &kp N1  &kp N4  &kp N5  &kp N6  &kp N4  &kp N5  &kp N6  &kp N3  &kp N2  &kp N3  &kp N1  &kp N2
+&kp N7  &kp N8  &kp N9  &kp AMPERSAND  &kp ASTERISK  &kp LEFT_PARENTHESIS  &kp N1  &kp N4  &kp N5  &kp N6  &kp DOLLAR  &kp PERCENT  &kp CARET  &kp HASH  &kp N2  &kp N3  &kp EXCLAMATION  &kp AT_SIGN
             >;
         };
 

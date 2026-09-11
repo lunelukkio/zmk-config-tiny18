@@ -93,8 +93,8 @@ layers:
   - LSHFT
   - ''
   - {t: '?', type: held}
-  - Ctl+C
-  - Ctl+V
+  - ','
+  - .
   game: [ESCAPE, W, '', '', '', '', LSHFT, A, S, D, Z, C, V, '', C, V, SPACE, '']
   number: [KP 7, KP 8, KP 9, KP 0, KP MINUS, '=', KP 1, KP 4, KP 5, KP 6, (, ), \, LSHFT, KP 2, KP 3, KP 0, KP DOT]
   fn:
@@ -168,7 +168,7 @@ combos:
 - p: [3, 5]
   k: {t: fn, h: toggle}
   l: [default, bluetooth, nav, game, number, fn]
-- p: [3, 12]
+- p: [5, 10]
   k: {t: bluetooth, h: toggle}
   l: [default, bluetooth, nav, game, number, fn]
 - p: [6, 14]

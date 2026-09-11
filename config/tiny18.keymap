@@ -262,18 +262,18 @@
          * arrows are all on the left hand, so a left thumb Shift is what
          * makes selecting text a one-hand job.
          *
-         * The right thumbs drop their letters here - this mode is for moving
-         * around, not for typing - and take copy and paste instead. Tapping
-         * 16 copies and tapping 17 pastes; holding them still opens the
-         * editing page and presses Ctrl, the same jobs they do on the base
-         * layer. The right top row is undo, copy and paste in a row, which
+         * The right thumbs carry no tap here - this mode is for moving
+         * around, not for typing - so key 16 only opens the editing page and
+         * key 17 is Ctrl itself. Neither waits out a tapping term, so both
+         * answer at once and neither can leak a letter. Copy and paste sit
+         * on the top row instead: undo, copy and paste in a row, which
          * is what this mode is for; the F keys that used to sit there live
          * in function mode now. Ctrl+Z has no other single key: reaching it
          * otherwise means Ctrl on key 17 plus the editing page plus Z.
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp LC(Z)  &kp LC(C)  &kp LC(V)  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &lt 3 BACKSPACE  &bmt LSHFT SPACE  &lt 4 LC(C)  &bmt LCTRL LC(V)
+&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp LC(Z)  &kp LC(C)  &kp LC(V)  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &lt 3 BACKSPACE  &bmt LSHFT SPACE  &mo 4  &kp LCTRL
             >;
         };
 

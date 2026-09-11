@@ -18,7 +18,7 @@ layers:
   - {t: C, h: edit}
   - {t: V, h: num}
   - {t: N, h: num}
-  - {t: M, h: edit}
+  - {t: M, h: LSHFT}
   bluetooth:
   - ''
   - ''
@@ -53,8 +53,8 @@ layers:
   - .
   - /
   - Ctl+SPACE
-  - ai_edit
   - {t: SPACE, h: LSHFT}
+  - ai_edit
   - LEFT GUI
   - LSHFT
   ai_edit:
@@ -72,8 +72,8 @@ layers:
   - ''
   - ''
   - ''
-  - {type: held}
   - ''
+  - {type: held}
   - ''
   - ''
   edit:
@@ -99,23 +99,23 @@ layers:
   - '1'
   - '2'
   - '3'
-  - '8'
-  - '9'
-  - '0'
+  - F10
+  - ;
+  - ''''
   - {t: ▽, type: trans}
   - X
   - C
   - V
-  - M
+  - Ctl+SPACE
   - ','
   - .
   - {t: ▽, type: trans}
   - ''
   - {type: held}
-  - ''
-  - ''
+  - SPACE
+  - /
   game: ['', W, '', '', '', '', LSHFT, A, S, D, '', '', '', '', C, V, '', '']
-  number: ['7', '8', '9', '7', '8', '9', '1', '4', '5', '6', '4', '5', '6', '3', '2', '3', '1', '2']
+  number: ['7', '8', '9', '&', '*', (, '1', '4', '5', '6', $, '%', ^, '#', '2', '3', '!', '@']
   fn:
   - F1
   - F2
@@ -197,7 +197,7 @@ combos:
   k: .
   l: [number]
 - p: [16, 17]
-  k: '0'
+  k: )
   l: [number]
 - p: [13, 17]
   k: .

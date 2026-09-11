@@ -9,10 +9,10 @@
  * Six modes, each entered by one pair of keys from any other mode:
  *   text entry  layer 0   green     10+12
  *   AI          layer 2   blue      7+9
- *   game        layer 5   cyan      0+9
+ *   game        layer 5   cyan      2+7
  *   number      layer 6   yellow    0+2
  *   function    layer 7   magenta   3+5
- *   bluetooth   layer 1   red       5+10
+ *   bluetooth   layer 1   red       3+12
  * 7+9 is left out of game mode, where those two keys are A and D.
  *
  * Layers held rather than switched into:
@@ -189,7 +189,7 @@
 
         mode_game {
             bindings = <&to 5>;
-            key-positions = <0 9>;
+            key-positions = <2 7>;
             layers = <0 1 2 5 6 7>;
             require-prior-idle-ms = <150>;
         };
@@ -203,7 +203,7 @@
 
         mode_bt {
             bindings = <&to 1>;
-            key-positions = <5 10>;
+            key-positions = <3 12>;
             layers = <0 1 2 5 6 7>;
             require-prior-idle-ms = <150>;
         };

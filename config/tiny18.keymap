@@ -12,7 +12,7 @@
  *   game        layer 5   cyan      2+7
  *   number      layer 6   yellow    0+2
  *   function    layer 7   magenta   3+5
- *   bluetooth   layer 1   red       3+12
+ *   bluetooth   layer 1   red       5+10
  * 7+9 is left out of game mode, where those two keys are A and D.
  *
  * Layers held rather than switched into:
@@ -203,7 +203,7 @@
 
         mode_bt {
             bindings = <&to 1>;
-            key-positions = <3 12>;
+            key-positions = <5 10>;
             layers = <0 1 2 5 6 7>;
             require-prior-idle-ms = <150>;
         };
@@ -299,13 +299,19 @@
          * thumbs. B is a combo on the C and V keys. Key 6 is Z here rather
          * than Shift, so shifted symbols come from number mode instead.
          *
+         * The right thumbs are the comma and the full stop here as well as on
+         * the digit page, so the same two fingers punctuate whichever page is
+         * open. Copy and paste lose their own keys in the trade: hold both
+         * this page and the Ctrl on key 17, then tap C or V on the left home
+         * row - the same shape that already gives Ctrl+Z and Ctrl+X.
+         *
          * Key 15 is the one free slot on this page: it used to be the thumb
          * that opened the page, and swapping that job onto key 14 released
          * it. A question mark goes there, because the alternative is holding
          * this page plus the Shift on key 13 and reaching for the slash. */
         edit_bracket_layer {
             bindings = <
-&kp ESCAPE  &kp GRAVE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &kp LSHFT  &none  &kp QUESTION  &kp LC(C)  &kp LC(V)
+&kp ESCAPE  &kp GRAVE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &kp LSHFT  &none  &kp QUESTION  &kp COMMA  &kp PERIOD
             >;
         };
 

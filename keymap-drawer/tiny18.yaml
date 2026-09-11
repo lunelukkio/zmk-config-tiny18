@@ -41,7 +41,7 @@ layers:
   nav:
   - ESCAPE
   - UP ARROW
-  - ''
+  - BACKSPACE
   - F10
   - F11
   - F12

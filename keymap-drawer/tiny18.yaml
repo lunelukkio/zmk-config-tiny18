@@ -42,7 +42,7 @@ layers:
   - ESCAPE
   - UP ARROW
   - BACKSPACE
-  - F10
+  - ''
   - ''
   - ''
   - ENTER
@@ -74,8 +74,8 @@ layers:
   - LSHFT
   - {type: held}
   - ''
-  - ;
   - ''''
+  - .
   edit_bracket:
   - ESCAPE
   - '~'
@@ -96,7 +96,7 @@ layers:
   - Ctl+C
   - Ctl+V
   game: [ESCAPE, W, '', '', '', '', LSHFT, A, S, D, Z, C, V, '', C, V, SPACE, '']
-  number: ['7', '8', '9', '0', '-', '=', '1', '4', '5', '6', (, ), \, LSHFT, '2', '3', ;, '''']
+  number: ['7', '8', '9', '0', '-', '=', '1', '4', '5', '6', (, ), \, LSHFT, '2', '3', '''', .]
   fn:
   - F1
   - F2

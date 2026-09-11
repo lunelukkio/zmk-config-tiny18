@@ -42,9 +42,9 @@ layers:
   - ESCAPE
   - UP ARROW
   - BACKSPACE
-  - ''
-  - ''
-  - ''
+  - Ctl+Z
+  - Ctl+C
+  - Ctl+V
   - ENTER
   - LEFT ARROW
   - DOWN ARROW
@@ -78,7 +78,7 @@ layers:
   - ''''
   edit_bracket:
   - ESCAPE
-  - '~'
+  - '`'
   - TAB
   - '['
   - ']'

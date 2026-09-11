@@ -16,8 +16,8 @@
  * 7+9 is left out of game mode, where those two keys are A and D.
  *
  * Layers held rather than switched into:
- *   3  digits and symbols    hold key 15 (Space) or 16 (N)
- *   4  editing and brackets  hold key 14 (BackSpace)
+ *   3  digits and symbols    hold key 14 (BackSpace)
+ *   4  editing and brackets  hold key 15 (Space) or 16 (N)
  *
  * Modifiers without a key of their own are chords, live in text entry and
  * AI mode: Alt on 9+15 (F and Space), GUI on 3+10 (U and J).
@@ -245,7 +245,7 @@
 
         default_layer {
             bindings = <
-&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &bmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &kp ENTER  &lt 4 BACKSPACE  &lt 3 SPACE  &lt 3 N  &bmt LCTRL M
+&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &bmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &kp ENTER  &lt 3 BACKSPACE  &lt 4 SPACE  &lt 4 N  &bmt LCTRL M
             >;
         };
 
@@ -261,17 +261,17 @@
          * except key 15, which holds Shift instead of the editing page: the
          * arrows are all on the left hand, so a left thumb Shift is what
          * makes selecting text a one-hand job. The editing page is still
-         * reachable from key 14. The right top row is dead: the F keys that
+         * reachable from key 16. The right top row is dead: the F keys that
          * used to sit there live in function mode now, and &none rather
          * than &trans keeps the base layer's letters from leaking through.
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &none  &none  &none  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &lt 4 BACKSPACE  &bmt LSHFT SPACE  &lt 3 N  &bmt LCTRL M
+&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &none  &none  &none  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &lt 3 BACKSPACE  &bmt LSHFT SPACE  &lt 4 N  &bmt LCTRL M
             >;
         };
 
-        /* Hold key 15 (Space) or 16 (N) on the base layer: a plain number row,
+        /* Hold key 14 (BackSpace) on the base layer: a plain number row,
          * 1 to 6 under the left hand and 7 8 9 0 - = under the right. Keys 6 and
          * 13 are both Shift, so Shift plus these digits gives the symbol row
          * from whichever hand is free.
@@ -287,7 +287,7 @@
             >;
         };
 
-        /* Hold key 14 (BackSpace) on the base layer: Escape, Tab and
+        /* Hold key 15 (Space) or 16 (N) on the base layer: Escape, Tab and
          * the brackets on the top row, Z X C V on the left home row,
          * punctuation on the right, Shift on 13, copy and paste on the right
          * thumbs. B is a combo on the C and V keys. Key 6 is Z here rather

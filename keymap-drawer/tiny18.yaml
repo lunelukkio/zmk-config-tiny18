@@ -43,8 +43,8 @@ layers:
   - UP ARROW
   - BACKSPACE
   - Ctl+Z
-  - Ctl+C
-  - Ctl+V
+  - '&m_resume'
+  - '&m_status'
   - ENTER
   - LEFT ARROW
   - DOWN ARROW

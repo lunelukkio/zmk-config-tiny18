@@ -58,13 +58,6 @@ layers:
   - edit_bracket
   - LCTRL
   digit_symbol:
-  - '1'
-  - '2'
-  - '3'
-  - '7'
-  - '8'
-  - '9'
-  - LSHFT
   - '4'
   - '5'
   - '6'
@@ -72,10 +65,17 @@ layers:
   - '-'
   - '='
   - LSHFT
+  - '1'
+  - '2'
+  - '3'
+  - '7'
+  - '8'
+  - '9'
+  - LSHFT
   - {type: held}
   - ''
-  - ','
-  - .
+  - '-'
+  - /
   edit_bracket:
   - ESCAPE
   - '`'
@@ -91,7 +91,7 @@ layers:
   - ''''
   - /
   - LSHFT
-  - ''
+  - Ctl+SPACE
   - {t: '?', type: held}
   - ','
   - .

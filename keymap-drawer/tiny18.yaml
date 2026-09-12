@@ -147,6 +147,12 @@ combos:
 - p: [10, 11]
   k: N
   l: [edit_bracket]
+- p: [0, 1]
+  k: Ctl+C
+  l: [nav]
+- p: [1, 2]
+  k: Ctl+V
+  l: [nav]
 - p: [9, 15]
   k: LEFT ALT
   l: [default, nav]

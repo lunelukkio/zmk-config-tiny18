@@ -81,6 +81,34 @@
         };
     };
 
+    /*
+     * AI mode's two most typed commands. They take the right hand's top row
+     * where Ctrl+C and Ctrl+V used to sit; those moved to combos on the left
+     * hand, which is the hand that is free while the right one is on the
+     * trackball.
+     *
+     * wait-ms and tap-ms are left at ZMK's defaults on purpose. Shortening
+     * them makes the macro finish sooner but risks a dropped character, and a
+     * command that arrives as "/resme" is worse than one that takes an extra
+     * moment.
+     *
+     * These send plain letters, so an IME that is on will turn them into kana.
+     * Switch to English first; the editing page's left thumb does it.
+     */
+    macros {
+        m_resume: m_resume {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp SLASH &kp R &kp E &kp S &kp U &kp M &kp E &kp ENTER>;
+        };
+
+        m_status: m_status {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp SLASH &kp S &kp T &kp A &kp T &kp U &kp S &kp ENTER>;
+        };
+    };
+
     combos {
         compatible = "zmk,combos";
 
@@ -316,7 +344,7 @@
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp LC(Z)  &kp LC(C)  &kp LC(V)  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &blt 3 BACKSPACE  &bmt LSHFT SPACE  &mo 4  &kp LCTRL
+&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp LC(Z)  &m_resume  &m_status  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &blt 3 BACKSPACE  &bmt LSHFT SPACE  &mo 4  &kp LCTRL
             >;
         };
 

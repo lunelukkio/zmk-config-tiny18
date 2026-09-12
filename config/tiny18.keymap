@@ -59,6 +59,26 @@
             quick-tap-ms = <175>;
             bindings = <&kp>, <&kp>;
         };
+
+        /*
+         * BackSpace only. ZMK's stock &lt carries neither retro-tap nor a
+         * quick-tap window, which costs this key twice: a press held a moment
+         * too long opens the digit page and sends nothing at all, and holding
+         * it down never repeats, because the hold is spoken for. retro-tap
+         * types the key when the hold went unused, and quick-tap-ms keeps a
+         * second press straight after a tap a tap, so the host repeats it.
+         * The two read different moments - release versus press - so neither
+         * can shadow the other. Everything else stays stock &lt.
+         */
+        blt: backspace_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <175>;
+            retro-tap;
+            bindings = <&mo>, <&kp>;
+        };
     };
 
     combos {
@@ -245,7 +265,7 @@
 
         default_layer {
             bindings = <
-&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &bmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &kp ENTER  &lt 3 BACKSPACE  &lt 4 SPACE  &lt 4 N  &bmt LCTRL M
+&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &bmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &kp ENTER  &blt 3 BACKSPACE  &lt 4 SPACE  &lt 4 N  &bmt LCTRL M
             >;
         };
 
@@ -273,23 +293,24 @@
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp LC(Z)  &kp LC(C)  &kp LC(V)  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &lt 3 BACKSPACE  &bmt LSHFT SPACE  &mo 4  &kp LCTRL
+&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp LC(Z)  &kp LC(C)  &kp LC(V)  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &blt 3 BACKSPACE  &bmt LSHFT SPACE  &mo 4  &kp LCTRL
             >;
         };
 
-        /* Hold key 14 (BackSpace) on the base layer: a plain number row,
-         * 1 to 6 under the left hand and 7 8 9 0 - = under the right. Keys 6 and
-         * 13 are both Shift, so Shift plus these digits gives the symbol row
-         * from whichever hand is free.
+        /* Hold key 14 (BackSpace) on the base layer: a number pad split across
+         * both hands. The home rows carry 1 2 3 and 7 8 9, the top rows 4 5 6
+         * and 0 - =, so the digits typed most often sit under resting fingers.
+         * Keys 6 and 13 are both Shift, so Shift plus these digits gives the
+         * symbol row from whichever hand is free.
          *
          * Only key 14 opens this page, so key 14 itself can never be pressed
-         * here. Japanese needs a comma and a full stop on every line, so they
-         * take the right thumbs, trading places with the semicolon and the
-         * apostrophe that go to the editing page. Shift over them still
-         * gives < and >, and over their new home gives : and ". */
+         * here. The right thumbs carry the dash and the slash: what follows a
+         * digit is a date or a katakana vowel far more often than a sentence,
+         * and the dash is otherwise only on the right hand, which rests on the
+         * trackball. The comma and the full stop stay on the editing page. */
         digit_symbol_layer {
             bindings = <
-&kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &kp LSHFT  &kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &kp LSHFT  &none  &none  &kp COMMA  &kp PERIOD
+&kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &kp LSHFT  &kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &kp LSHFT  &none  &none  &kp MINUS  &kp SLASH
             >;
         };
 
@@ -299,19 +320,26 @@
          * thumbs. B is a combo on the C and V keys. Key 6 is Z here rather
          * than Shift, so shifted symbols come from number mode instead.
          *
-         * The right thumbs are the comma and the full stop here as well as on
-         * the digit page, so the same two fingers punctuate whichever page is
-         * open. Copy and paste lose their own keys in the trade: hold both
+         * The right thumbs are the comma and the full stop, and this is now
+         * the only page that carries them: the digit page traded them for the
+         * dash and the slash. Copy and paste lose their own keys here: hold both
          * this page and the Ctrl on key 17, then tap C or V on the left home
          * row - the same shape that already gives Ctrl+Z and Ctrl+X.
          *
          * Key 15 is the one free slot on this page: it used to be the thumb
          * that opened the page, and swapping that job onto key 14 released
          * it. A question mark goes there, because the alternative is holding
-         * this page plus the Shift on key 13 and reaching for the slash. */
+         * this page plus the Shift on key 13 and reaching for the slash.
+         *
+         * Key 14 is the IME toggle, sent whole as Ctrl+Space rather than
+         * composed from the Ctrl on key 17 and the Space on key 15. Composing
+         * it failed two ways: a Space held past its tapping term opened this
+         * page and sent nothing, and a Space that went down first turned into
+         * this page, so key 17 answered with the full stop. One binding on one
+         * key has no ordering and no timing, and it is both left thumbs. */
         edit_bracket_layer {
             bindings = <
-&kp ESCAPE  &kp GRAVE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &kp LSHFT  &none  &kp QUESTION  &kp COMMA  &kp PERIOD
+&kp ESCAPE  &kp GRAVE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &kp LSHFT  &kp LC(SPACE)  &kp QUESTION  &kp COMMA  &kp PERIOD
             >;
         };
 

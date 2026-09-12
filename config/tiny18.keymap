@@ -107,6 +107,12 @@
             #binding-cells = <0>;
             bindings = <&kp SLASH &kp S &kp T &kp A &kp T &kp U &kp S &kp ENTER>;
         };
+
+        m_model: m_model {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp SLASH &kp M &kp O &kp D &kp E &kp L &kp ENTER>;
+        };
     };
 
     combos {
@@ -198,6 +204,28 @@
             key-positions = <1 2>;
             layers = <2>;
             require-prior-idle-ms = <150>;
+        };
+
+        /*
+         * The right hand's top row now types three commands, so undo and cut
+         * become chords across the same three keys: the two on the left give
+         * undo, the two on the right give cut.
+         *
+         * No require-prior-idle-ms here, unlike the pair above. Undo is what
+         * follows a mistake, so it is pressed the instant after a keystroke.
+         * An idle condition would let those presses through as two separate
+         * keys instead, which here means sending a command to the AI.
+         */
+        nav_undo {
+            bindings = <&kp LC(Z)>;
+            key-positions = <3 4>;
+            layers = <2>;
+        };
+
+        nav_cut {
+            bindings = <&kp LC(X)>;
+            key-positions = <4 5>;
+            layers = <2>;
         };
 
         /*
@@ -336,15 +364,15 @@
          * The right thumbs carry no tap here - this mode is for moving
          * around, not for typing - so key 16 only opens the editing page and
          * key 17 is Ctrl itself. Neither waits out a tapping term, so both
-         * answer at once and neither can leak a letter. Copy and paste sit
-         * on the top row instead: undo, copy and paste in a row, which
-         * is what this mode is for; the F keys that used to sit there live
-         * in function mode now. Ctrl+Z has no other single key: reaching it
-         * otherwise means Ctrl on key 17 plus the editing page plus Z.
+         * answer at once and neither can leak a letter. The F keys that used
+         * to sit on the right top row live in function mode now; that row
+         * types the three commands this mode is for, and undo and cut ride
+         * on it as chords. Copy and paste moved to the left hand's top row,
+         * which the trackball leaves free.
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &kp LC(Z)  &m_resume  &m_status  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &blt 3 BACKSPACE  &bmt LSHFT SPACE  &mo 4  &kp LCTRL
+&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &m_model  &m_resume  &m_status  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &blt 3 BACKSPACE  &bmt LSHFT SPACE  &mo 4  &kp LCTRL
             >;
         };
 

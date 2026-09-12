@@ -14,7 +14,7 @@ layers:
   - J
   - K
   - L
-  - ENTER
+  - {t: ENTER, h: LSHFT}
   - {t: BACKSPACE, h: digit_symbol}
   - {t: SPACE, h: edit_bracket}
   - {t: N, h: edit_bracket}

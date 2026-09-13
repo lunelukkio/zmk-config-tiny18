@@ -1,0 +1,10 @@
+menu "Tiny18 features"
+
+config TINY18_LAYER_UART
+    bool "Send the active layer through UART"
+    default n
+    select SERIAL
+    help
+      Send the highest active Tiny18 keymap layer as one byte through UART1.
+
+endmenu

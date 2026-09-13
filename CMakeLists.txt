@@ -1,0 +1,2 @@
+zephyr_library()
+zephyr_library_sources_ifdef(CONFIG_TINY18_LAYER_UART src/layer_uart.c)

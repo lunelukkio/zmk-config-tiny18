@@ -97,25 +97,7 @@ layers:
   - .
   game: [ESCAPE, W, '', '', '', '', LSHFT, A, S, D, Z, C, V, '', C, V, SPACE, '']
   number: [KP 7, KP 8, KP 9, KP 0, KP MINUS, '=', KP 1, KP 4, KP 5, KP 6, (, ), \, LSHFT, KP 2, KP 3, KP 0, KP DOT]
-  fn:
-  - F1
-  - F2
-  - F3
-  - F7
-  - F8
-  - F9
-  - {t: ▽, type: trans}
-  - F4
-  - F5
-  - F6
-  - F10
-  - F11
-  - F12
-  - {t: ▽, type: trans}
-  - ''
-  - ''
-  - ''
-  - ''
+  fn: [F4, F5, F6, F10, F11, F12, LCTRL, F1, F2, F3, F7, F8, F9, LSHFT, '', '', '', '']
 combos:
 - p: [0, 1]
   k: Q

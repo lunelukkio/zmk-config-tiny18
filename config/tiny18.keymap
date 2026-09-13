@@ -453,12 +453,14 @@
         };
 
         /*
-         * Function mode. Shift and Enter stay transparent because Alt+F4 and
-         * Shift+F10 need a modifier alongside the key.
+         * Function mode. Each F key sits where its digit sits on the digit
+         * page, so F10 to F12 take the places of 0, - and =. The A key holds
+         * Ctrl and the Enter key holds Shift, for chords such as Ctrl+F5 and
+         * Shift+F10.
          */
         fn_layer {
             bindings = <
-&kp F1  &kp F2  &kp F3  &kp F7  &kp F8  &kp F9  &trans  &kp F4  &kp F5  &kp F6  &kp F10  &kp F11  &kp F12  &trans  &none  &none  &none  &none
+&kp F4  &kp F5  &kp F6  &kp F10  &kp F11  &kp F12  &kp LCTRL  &kp F1  &kp F2  &kp F3  &kp F7  &kp F8  &kp F9  &kp LSHFT  &none  &none  &none  &none
             >;
         };
     };

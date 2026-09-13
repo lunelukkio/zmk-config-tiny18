@@ -31,11 +31,11 @@
  * reachable with the left nine keys: 0 1 2 6 7 8 9 14 15.
  *
  * An unassigned key is &none, not &trans, so it does nothing rather than
- * falling through to the layer below: holding Space and pressing J stays
- * silent instead of typing a letter. The held layers put Shift on key 6
- * explicitly, so Shift works whichever key went down first. Function mode is
- * the one place keys 6 and 13 are &trans, so Shift and Enter from the base
- * layer can be chorded with an F key.
+ * falling through to the layer below: holding BackSpace and pressing Space
+ * stays silent instead of typing a space. The held layers put Shift on keys
+ * of their own, so Shift works whichever key went down first. Function mode
+ * holds Ctrl on key 6 and Shift on key 13, so an F key can be chorded with
+ * either.
  *
  * Every layer is still escapable: the held layers end on key release, and the
  * mode layers are left by combo, which ZMK matches independently of what the

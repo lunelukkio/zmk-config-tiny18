@@ -165,13 +165,13 @@ combos:
 - p: [3, 10]
   k: LEFT GUI
   l: [default, nav]
-- p: [10, 12]
+- p: [0, 2]
   k: {t: default, h: toggle}
   l: [default, bluetooth, nav, game, number, fn]
 - p: [7, 9]
   k: {t: nav, h: toggle}
   l: [default, bluetooth, nav, number, fn]
-- p: [0, 2]
+- p: [10, 12]
   k: {t: number, h: toggle}
   l: [default, bluetooth, nav, game, number, fn]
 - p: [2, 7]

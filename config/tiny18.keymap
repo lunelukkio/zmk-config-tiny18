@@ -7,10 +7,10 @@
 
 /*
  * Six modes, each entered by one pair of keys from any other mode:
- *   text entry  layer 0   green     10+12
+ *   text entry  layer 0   green     0+2
  *   AI          layer 2   blue      7+9
  *   game        layer 5   cyan      2+7
- *   number      layer 6   yellow    0+2
+ *   number      layer 6   yellow    10+12
  *   function    layer 7   magenta   3+5
  *   bluetooth   layer 1   red       5+10
  * 7+9 is left out of game mode, where those two keys are A and D.
@@ -184,13 +184,13 @@
         };
 
         /*
-         * AI mode keeps copy and paste on the right hand's top row, and that
-         * hand is on the trackball, so reaching them costs the pointer. These
-         * two put the same two shortcuts on the left hand's top row, using the
-         * pairs its three keys leave free - 0+2 already switches to number
-         * mode. require-prior-idle-ms is what makes it safe: the arrows and
-         * BackSpace here are worked in bursts, and a combo that only fires
-         * from a standstill cannot land in the middle of one.
+         * AI mode's copy and paste sit on the left hand's top row, because the
+         * right hand is on the trackball and reaching over costs the pointer.
+         * They use the two pairs the three keys leave free - 0+2 already
+         * switches to text entry. require-prior-idle-ms is what makes it
+         * safe: the arrows and BackSpace here are worked in bursts, and a
+         * combo that only fires from a standstill cannot land in the middle
+         * of one.
          */
         nav_copy {
             bindings = <&kp LC(C)>;

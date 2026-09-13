@@ -30,3 +30,12 @@ include:
   - board: seeeduino_xiao_ble
     shield: settings_reset
     artifact-name: settings-reset
+
+  # Bench test for the transparent OLED on a spare XIAO, not for the keyboard.
+  # Split is off so this board never pairs with the real left half, and Studio
+  # is off because tiny18_r.conf turns it on without its USB transport here.
+  - board: seeeduino_xiao_ble
+    shield: tiny18_r rgbled_adapter tiny18_oled_spi
+    snippet: zmk-usb-logging
+    cmake-args: -DCONFIG_ZMK_DISPLAY=y -DCONFIG_ZMK_SPLIT=n -DCONFIG_ZMK_STUDIO=n
+    artifact-name: tiny18-bench-oled

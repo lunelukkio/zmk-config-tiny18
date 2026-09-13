@@ -3,3 +3,6 @@ config SHIELD_TINY18_R
 
 config SHIELD_TINY18_L
     def_bool $(shields_list_contains,tiny18_l)
+
+config SHIELD_TINY18_OLED_SPI
+    def_bool $(shields_list_contains,tiny18_oled_spi)

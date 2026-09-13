@@ -1,0 +1,56 @@
+/*
+ * Bench-test add-on: a Waveshare 1.51inch Transparent OLED (SSD1309, 128x64)
+ * on a spare XIAO whose pins carry no switches. Stack it on tiny18_r.
+ *
+ * The module ships in 4-wire SPI mode, so it keeps spi2's stock pins with no
+ * pinctrl override: SCK D8, MOSI D10, and MISO D9 reserved but left unwired.
+ * D/C, CS and RST take D1, D2 and D0.
+ *
+ * This does not fit the real right half, which has only D1 and D2 spare.
+ *
+ * Register values match Waveshare's demo init: 0xA8 0x3F sets the multiplex
+ * ratio, 0xD9 0x22 the precharge, and 0xDA 0x12 the alternative COM pads,
+ * which is what leaving com-sequential out selects.
+ */
+
+&xiao_spi {
+    status = "okay";
+    cs-gpios = <&xiao_d 2 GPIO_ACTIVE_LOW>;
+
+    oled: ssd1306@0 {
+        compatible = "solomon,ssd1306fb";
+        reg = <0>;
+        spi-max-frequency = <1000000>;
+        /* The driver writes 0 for a command and 1 for data. */
+        data_cmd-gpios = <&xiao_d 1 GPIO_ACTIVE_HIGH>;
+        reset-gpios = <&xiao_d 0 GPIO_ACTIVE_LOW>;
+        width = <128>;
+        height = <64>;
+        segment-offset = <0>;
+        page-offset = <0>;
+        display-offset = <0>;
+        multiplex-ratio = <63>;
+        prechargep = <0x22>;
+    };
+};
+
+/ {
+    chosen {
+        zephyr,display = &oled;
+    };
+};
+
+/*
+ * D0, D8, D9 and D10 now belong to the display. The five pins left land on
+ * columns 9 to 13, which the right half maps to positions 3, 4, 5, 10 and 11.
+ * Touching D5 and D6 to GND together is then the Bluetooth mode combo on
+ * positions 5 and 10. No switches sit on these pins, so the shift is harmless.
+ */
+&kscan0 {
+    input-gpios =
+        <&xiao_d 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+        <&xiao_d 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+        <&xiao_d 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+        <&xiao_d 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+        <&xiao_d 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+};

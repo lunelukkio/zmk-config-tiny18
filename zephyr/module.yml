@@ -2,5 +2,5 @@ name: zmk-keyboard-tiny18
 build:
   cmake: .
   kconfig: Kconfig
-settings:
-  board_root: .
+  settings:
+    board_root: .

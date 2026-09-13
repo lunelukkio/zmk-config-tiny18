@@ -1,7 +1,40 @@
 #include "tiny18.dtsi"
 #include <input/processors.dtsi>
+#include <zephyr/dt-bindings/pinctrl/nrf-pinctrl.h>
 
 &default_transform {
     col-offset = <9>;};
 
 &xiao_serial { status = "disabled"; };
+
+/*
+ * Learning display link: D1 (P0.03) becomes UART1 TX only. The receiver is a
+ * separately USB-powered UIAPduino, so only TX and GND are wired. This lives
+ * in the right half's own overlay on purpose: a file under boards/ would
+ * apply to the left half as well.
+ */
+&pinctrl {
+    tiny18_uart1_default: tiny18_uart1_default {
+        group1 {
+            psels = <NRF_PSEL(UART_TX, 0, 3)>,
+                    <NRF_PSEL_DISCONNECTED(UART_RX)>;
+        };
+    };
+
+    tiny18_uart1_sleep: tiny18_uart1_sleep {
+        group1 {
+            psels = <NRF_PSEL(UART_TX, 0, 3)>,
+                    <NRF_PSEL_DISCONNECTED(UART_RX)>;
+            low-power-enable;
+        };
+    };
+};
+
+&uart1 {
+    status = "okay";
+    current-speed = <9600>;
+    disable-rx;
+    pinctrl-0 = <&tiny18_uart1_default>;
+    pinctrl-1 = <&tiny18_uart1_sleep>;
+    pinctrl-names = "default", "sleep";
+};

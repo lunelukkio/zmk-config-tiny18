@@ -32,10 +32,11 @@
  *
  * An unassigned key is &none, not &trans, so it does nothing rather than
  * falling through to the layer below: holding BackSpace and pressing Space
- * stays silent instead of typing a space. The held layers put Shift on keys
- * of their own, so Shift works whichever key went down first. Function mode
- * holds Ctrl on key 6 and Shift on key 13, so an F key can be chorded with
- * either.
+ * stays silent instead of typing a space. Key 13 is the text-entry Enter in
+ * every mode and page but game mode: tap for Enter, hold for Shift. The
+ * digit page and AI mode give key 6 the same job, so Shift is under either
+ * little finger there. Function mode holds Ctrl on key 6 instead, so an F
+ * key can be chorded with either modifier.
  *
  * Every layer is still escapable: the held layers end on key release, and the
  * mode layers are left by combo, which ZMK matches independently of what the
@@ -45,7 +46,7 @@
 / {
     behaviors {
         /*
-         * Tap for the letter, hold for the modifier. "balanced" rather than
+         * Tap for the letter or Enter, hold for the modifier. "balanced" rather than
          * ZMK's default hold-preferred: rolling from A straight into the next
          * letter must still type A, and balanced only resolves to the hold
          * when the second key is released before this one. quick-tap lets a
@@ -191,7 +192,7 @@
          * right hand is on the trackball and reaching over costs the pointer.
          * They use the two pairs the three keys leave free - 0+2 already
          * switches to text entry. require-prior-idle-ms is what makes it
-         * safe: the arrows and BackSpace here are worked in bursts, and a
+         * safe: the arrows and Delete here are worked in bursts, and a
          * combo that only fires from a standstill cannot land in the middle
          * of one.
          */
@@ -358,13 +359,17 @@
         };
 
         /*
-         * AI mode: arrows under the left hand, Enter on key 6, Shift on key
-         * 13 where the base layer has Enter. The thumbs match the base layer
-         * except key 15, which holds Shift instead of the editing page: the
-         * arrows are all on the left hand, so a left thumb Shift is what
-         * makes selecting text a one-hand job.
+         * AI mode: arrows under the left hand, Delete on key 2 where text
+         * entry has R. Keys 6 and 13 are both the text-entry Enter, tap for
+         * Enter and hold for Shift, so Shift+arrow selection is a left-hand
+         * job with the little finger and the right hand keeps an Enter of
+         * its own. They used to be a plain Enter and a plain Shift; the
+         * hold-tap replaced both so the key means the same in every mode.
          *
-         * The right thumbs carry no tap here - this mode is for moving
+         * The left thumbs match the base layer exactly: BackSpace with the
+         * digit page on hold, Space with the editing page on hold. Key 15
+         * held Shift for a while, but with Shift on key 6 the page is worth
+         * more. The right thumbs carry no tap here - this mode is for moving
          * around, not for typing - so key 16 only opens the editing page and
          * key 17 is Ctrl itself. Neither waits out a tapping term, so both
          * answer at once and neither can leak a letter. The F keys that used
@@ -375,15 +380,17 @@
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &kp BACKSPACE  &m_model  &m_resume  &m_status  &kp ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &kp LSHFT  &blt 3 BACKSPACE  &bmt LSHFT SPACE  &mo 4  &kp LCTRL
+&kp ESCAPE  &kp UP_ARROW  &kp DELETE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &bmt LSHFT ENTER  &blt 3 BACKSPACE  &lt 4 SPACE  &mo 4  &kp LCTRL
             >;
         };
 
         /* Hold key 14 (BackSpace) on the base layer: a number pad split across
          * both hands. The home rows carry 1 2 3 and 7 8 9, the top rows 4 5 6
          * and 0 - =, so the digits typed most often sit under resting fingers.
-         * Keys 6 and 13 are both Shift, so Shift plus these digits gives the
-         * symbol row from whichever hand is free.
+         * Keys 6 and 13 are both the text-entry Enter, tap for Enter and hold
+         * for Shift, so Shift plus these digits gives the symbol row from
+         * whichever hand is free and a figure can be confirmed without
+         * letting go of the page.
          *
          * Only key 14 opens this page, so key 14 itself can never be pressed
          * here. The right thumbs carry the dash and the slash: what follows a
@@ -392,15 +399,16 @@
          * trackball. The comma and the full stop stay on the editing page. */
         digit_symbol_layer {
             bindings = <
-&kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &kp LSHFT  &kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &kp LSHFT  &none  &none  &kp MINUS  &kp SLASH
+&kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &bmt LSHFT ENTER  &kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &bmt LSHFT ENTER  &none  &none  &kp MINUS  &kp SLASH
             >;
         };
 
         /* Hold key 15 (Space) or 16 (N) on the base layer: Escape, Tab and
          * the brackets on the top row, Z X C V on the left home row,
-         * punctuation on the right, Shift on 13, copy and paste on the right
-         * thumbs. B is a combo on the C and V keys. Key 6 is Z here rather
-         * than Shift, so shifted symbols come from number mode instead.
+         * punctuation on the right, the text-entry Enter on 13 with Shift on
+         * its hold, the comma and the full stop on the right thumbs. B is a
+         * combo on the C and V keys. Key 6 is Z here rather than Shift, so
+         * this page's Shift is the right little finger.
          *
          * The right thumbs are the comma and the full stop, and this is now
          * the only page that carries them: the digit page traded them for the
@@ -411,7 +419,7 @@
          * Key 15 is the one free slot on this page: it used to be the thumb
          * that opened the page, and swapping that job onto key 14 released
          * it. A question mark goes there, because the alternative is holding
-         * this page plus the Shift on key 13 and reaching for the slash.
+         * this page plus the Shift held on key 13 and reaching for the slash.
          *
          * Key 14 is the IME toggle, sent whole as Ctrl+Space rather than
          * composed from the Ctrl on key 17 and the Space on key 15. Composing
@@ -421,7 +429,7 @@
          * key has no ordering and no timing, and it is both left thumbs. */
         edit_bracket_layer {
             bindings = <
-&kp ESCAPE  &kp GRAVE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &kp LSHFT  &kp LC(SPACE)  &kp QUESTION  &kp COMMA  &kp PERIOD
+&kp ESCAPE  &kp GRAVE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &kp LC(SPACE)  &kp QUESTION  &kp COMMA  &kp PERIOD
             >;
         };
 
@@ -439,31 +447,32 @@
         };
 
         /*
-         * Number mode. The left hand is a keypad and key 13 is Shift, so the
-         * shifted digits come straight off the left. The right hand therefore
-         * carries what Shift cannot reach from a number: zero, minus, equals,
-         * the brackets, the backslash, a second zero and the decimal point.
+         * Number mode. The left hand is a keypad and key 13 is the text-entry
+         * Enter, tap for Enter and hold for Shift, so a figure can be
+         * confirmed without leaving the mode. The right hand carries what the
+         * keypad does not have: zero, minus, equals, the brackets, the
+         * backslash, a second zero and the decimal point.
          * Digits and the point are keypad usages, so an IME passes them through
          * as half width - the reason for this mode - but they need Num Lock.
          * The point has a key of its own here as well as the 14+15 chord,
          * because typing a decimal is the whole reason for this mode. There
-         * is no Enter or Backspace, and no semicolon.
+         * is no BackSpace and no semicolon.
          */
         number_layer {
             bindings = <
-&kp KP_N7  &kp KP_N8  &kp KP_N9  &kp KP_N0  &kp KP_MINUS  &kp EQUAL  &kp KP_N1  &kp KP_N4  &kp KP_N5  &kp KP_N6  &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp BACKSLASH  &kp LSHFT  &kp KP_N2  &kp KP_N3  &kp KP_N0  &kp KP_DOT
+&kp KP_N7  &kp KP_N8  &kp KP_N9  &kp KP_N0  &kp KP_MINUS  &kp EQUAL  &kp KP_N1  &kp KP_N4  &kp KP_N5  &kp KP_N6  &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp BACKSLASH  &bmt LSHFT ENTER  &kp KP_N2  &kp KP_N3  &kp KP_N0  &kp KP_DOT
             >;
         };
 
         /*
          * Function mode. Each F key sits where its digit sits on the digit
          * page, so F10 to F12 take the places of 0, - and =. The A key holds
-         * Ctrl and the Enter key holds Shift, for chords such as Ctrl+F5 and
-         * Shift+F10.
+         * Ctrl and the Enter key is the text-entry Enter, tap for Enter and
+         * hold for Shift, for chords such as Ctrl+F5 and Shift+F10.
          */
         fn_layer {
             bindings = <
-&kp F4  &kp F5  &kp F6  &kp F10  &kp F11  &kp F12  &kp LCTRL  &kp F1  &kp F2  &kp F3  &kp F7  &kp F8  &kp F9  &kp LSHFT  &none  &none  &none  &none
+&kp F4  &kp F5  &kp F6  &kp F10  &kp F11  &kp F12  &kp LCTRL  &kp F1  &kp F2  &kp F3  &kp F7  &kp F8  &kp F9  &bmt LSHFT ENTER  &none  &none  &none  &none
             >;
         };
     };

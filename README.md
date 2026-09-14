@@ -1,24 +1,55 @@
-# Tiny18 ZMK firmware
+# Tiny18 ZMK firmware (lunelukkio's fork)
 
-[![Build](https://github.com/k3peta/zmk-config-tiny18/actions/workflows/build.yml/badge.svg)](https://github.com/k3peta/zmk-config-tiny18/actions/workflows/build.yml)
-[![Latest release](https://img.shields.io/github/v/release/k3peta/zmk-config-tiny18?display_name=tag)](https://github.com/k3peta/zmk-config-tiny18/releases/latest)
+[![Build](https://github.com/lunelukkio/zmk-config-tiny18/actions/workflows/build.yml/badge.svg)](https://github.com/lunelukkio/zmk-config-tiny18/actions/workflows/build.yml)
+[![Latest release](https://img.shields.io/github/v/release/lunelukkio/zmk-config-tiny18?display_name=tag)](https://github.com/lunelukkio/zmk-config-tiny18/releases/latest)
 
-ZMK firmware for [Tiny18](https://github.com/k3peta/tiny18), an 18-key wireless split keyboard using two Seeed Studio XIAO nRF52840 controllers.
+ZMK firmware for [Tiny18](https://github.com/k3peta/tiny18), an 18-key wireless split keyboard using two Seeed Studio XIAO nRF52840 controllers. Tiny18, its PCB and its stock firmware are by k3peta. This fork of [k3peta/zmk-config-tiny18](https://github.com/k3peta/zmk-config-tiny18) carries one person's keymap, plus a small module that reports the active layer to an external learning display.
 
 日本語の説明は [`README.ja.md`](README.ja.md) を参照してください。
 
+## What differs from upstream
+
+- **Keymap.** Six modes and two held pages across eight layers, with 25 combos. The right hand rests on a trackball, so everything used daily fits on the left nine keys. The full layout, with diagrams and the reasoning, is at [lunelukkio.com/public/tiny18/keymap.html](https://lunelukkio.com/public/tiny18/keymap.html).
+- **Layer colours.** The right half's RGB LED shows the mode: green for text entry, blue for AI, yellow for the number keypad, cyan for game, magenta for function, red for Bluetooth, and white while a held page is open.
+- **Deep sleep.** Both halves sleep after 30 minutes idle (`CONFIG_ZMK_SLEEP=y`, `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=1800000`). Waking takes a key press on the right half, and that press is lost.
+- **Learning display.** [`src/layer_uart.c`](src/layer_uart.c) sends one byte over UART1 (D1, TX only, 9600 baud, 8N1) at boot, whenever the layer or a held modifier changes, and on every key press: the highest active layer in bits 0 to 2, then Shift, Ctrl, Alt and GUI in bits 3 to 6. A USB-powered CH32V003 board draws the current key labels on a transparent OLED; its firmware lives in [lunelukkio/t-display](https://github.com/lunelukkio/t-display). The right half enables it with `CONFIG_TINY18_LAYER_UART=y`.
+
+## Keymap
+
+The canonical keymap is [`config/tiny18.keymap`](config/tiny18.keymap); the comments in it explain each decision. GitHub Actions redraws [`keymap-drawer/tiny18.svg`](keymap-drawer/tiny18.svg) whenever a push touches the firmware files.
+
+![Tiny18 keymap](keymap-drawer/tiny18.svg)
+
+| Mode | Layer | Switch | What it is for |
+| --- | --- | --- | --- |
+| Text entry | 0 | `W + R` | Letters; the mode at power-on |
+| AI | 2 | `S + F` | Arrows, Delete, `/model` `/resume` `/status`, copy and paste chords |
+| Number keypad | 6 | `J + L` | Keypad digits, which pass through an IME as half width |
+| Game | 5 | `R + S` | WASD for VRChat |
+| Function | 7 | `U + O` | F1 to F12 |
+| Bluetooth | 1 | `O + J` | Profile selection |
+
+Each mode is entered by one two-key combo, live in every mode, so any mode reaches any other directly; the combos fire only after 150 ms without typing. Two more layers open only while a thumb is held: the digit and symbol page on BackSpace, the ZXCV page on Space or N.
+
+Keys are named by what they type in text entry:
+
+- `A` and `Enter` are hold-taps: tap for the letter or Enter, hold for Shift. The Enter key keeps that double role in every mode and page except game mode, and AI mode gives the A key the same one.
+- `BackSpace` opens the digit page while held, `Space` and `N` open the ZXCV page, and `M` holds Ctrl.
+- Letters without a key of their own come from adjacent pairs: `Q T Y P G H` in text entry and `B` on the ZXCV page. `A` has both a key and a pair.
+- Alt is `F + Space` and GUI is `U + J`, in text entry and AI mode.
+
 ## Download
 
-Most users should download the UF2 files from the [latest GitHub Release](https://github.com/k3peta/zmk-config-tiny18/releases/latest). Release assets do not expire, unlike temporary GitHub Actions artifacts.
+UF2 files for tagged versions are on the [Releases](https://github.com/lunelukkio/zmk-config-tiny18/releases) page and do not expire. `main` may be ahead of the latest release; the `firmware` artifact of the latest [build run](https://github.com/lunelukkio/zmk-config-tiny18/actions/workflows/build.yml) has the current images, and expires.
 
 | File | Target |
 | --- | --- |
-| `tiny18-right.uf2` | Right half; Bluetooth central and ZMK Studio host |
+| `tiny18-right.uf2` | Right half; Bluetooth central, ZMK Studio host, learning display sender |
 | `tiny18-left.uf2` | Left half; Bluetooth peripheral |
 | `settings-reset.uf2` | Clears stored Bluetooth and split settings |
 | `SHA256SUMS` | SHA-256 checksums for the three UF2 files |
 
-The right and left files are not interchangeable. If the wrong image is flashed, enter the bootloader again and flash the correct image.
+The right and left files are not interchangeable. If the wrong image is flashed, enter the bootloader again and flash the correct image. The right half interprets the keymap, so a keymap-only change leaves `tiny18-left.uf2` byte for byte the same; compare the checksums before reflashing the left half.
 
 ## Flashing
 
@@ -34,13 +65,7 @@ For a first installation, or if the halves or host no longer pair correctly:
 3. Flash the matching right and left firmware.
 4. Remove any old `tiny18` entry from the host's Bluetooth settings, then pair again.
 
-## Default keymap
-
-The canonical keymap is [`config/tiny18.keymap`](config/tiny18.keymap). The repository's release automation builds that file without modifying it.
-
-![Tiny18 default keymap](keymap-drawer/tiny18.svg)
-
-The keymap includes six layers, Japanese/English input switching combos, modifiers, Bluetooth profile selection, and ZMK Studio support. See the source file for the exact bindings and combo definitions.
+ZMK Studio is enabled on the right half. A keymap edited in Studio is stored in the settings partition and takes precedence over the compiled one, so if a freshly flashed keymap does not show up, flash `settings-reset.uf2` first.
 
 ## Build from source
 
@@ -53,13 +78,13 @@ To build a fork:
 3. Edit `config/tiny18.keymap` if you want a custom layout.
 4. Push the change and download the `firmware` artifact from the completed workflow run.
 
-Actions artifacts are intended for testing and expire. Maintainers publish permanent downloads by pushing a version tag such as `v1.0.0`; [`release.yml`](.github/workflows/release.yml) builds that exact tag, creates checksums, and attaches the UF2 files to a GitHub Release.
+Actions artifacts are intended for testing and expire. Permanent downloads come from pushing a version tag such as `v3.1.0`; [`release.yml`](.github/workflows/release.yml) builds that exact tag, creates checksums, and attaches the UF2 files to a GitHub Release.
 
 ### Build matrix
 
 [`build.yaml`](build.yaml) produces:
 
-- right half with RGB LED layer/battery widget and ZMK Studio over USB
+- right half with RGB LED layer/battery widget, ZMK Studio over USB and the layer UART
 - left half with RGB LED layer/battery widget
 - settings-reset image for recovery
 
@@ -67,9 +92,10 @@ Actions artifacts are intended for testing and expire. Maintainers publish perma
 
 | Path | Purpose |
 | --- | --- |
-| `config/tiny18.keymap` | Canonical default keymap |
-| `config/tiny18_*.conf` | Per-half ZMK configuration |
-| `boards/shields/tiny18/` | Tiny18 shield and direct-pin hardware definition |
+| `config/tiny18.keymap` | Canonical keymap |
+| `config/tiny18_*.conf` | Per-half ZMK configuration: LED colours, deep sleep, and on the right half ZMK Studio and the layer UART |
+| `boards/shields/tiny18/` | Tiny18 shield and direct-pin hardware definition; the right overlay adds UART1 on D1 |
+| `src/layer_uart.c`, `Kconfig`, `CMakeLists.txt`, `zephyr/module.yml` | The learning display sender, built as a Zephyr module of this repository |
 | `build.yaml` | Firmware build matrix and stable artifact names |
 | `keymap-drawer/` | Generated keymap diagram |
 | `.github/workflows/build.yml` | Continuous build and diagram generation |
@@ -77,8 +103,8 @@ Actions artifacts are intended for testing and expire. Maintainers publish perma
 
 ## Hardware
 
-PCB production files, BOM, and fabrication notes are in the [Tiny18 hardware repository](https://github.com/k3peta/tiny18).
+PCB production files, BOM, and fabrication notes are in the [Tiny18 hardware repository](https://github.com/k3peta/tiny18). This repository carries no hardware files.
 
 ## License
 
-Tiny18-specific firmware configuration and shield files are licensed under the [MIT License](LICENSE). ZMK and external modules are separate projects and retain their respective licenses.
+Tiny18-specific firmware configuration and shield files are licensed under the [MIT License](LICENSE); the copyright notice in that file is the upstream author's and stays with the fork. ZMK and external modules are separate projects and retain their respective licenses.

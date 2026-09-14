@@ -61,14 +61,18 @@
         };
 
         /*
-         * BackSpace only. ZMK's stock &lt carries neither retro-tap nor a
-         * quick-tap window, which costs this key twice: a press held a moment
-         * too long opens the digit page and sends nothing at all, and holding
-         * it down never repeats, because the hold is spoken for. retro-tap
-         * types the key when the hold went unused, and quick-tap-ms keeps a
-         * second press straight after a tap a tap, so the host repeats it.
-         * The two read different moments - release versus press - so neither
-         * can shadow the other. Everything else stays stock &lt.
+         * BackSpace only. ZMK's stock &lt has no quick-tap window, so holding
+         * BackSpace down never repeats: the hold is spoken for by the digit
+         * page. quick-tap-ms keeps a second press straight after a tap a tap,
+         * so the host repeats it. Everything else stays stock &lt.
+         *
+         * retro-tap used to be here too, typing BackSpace when a hold went
+         * unused. It came out on 2026-09-14: with retro-tap, ZMK does not
+         * open the held layer when the tapping term ends but only once another
+         * key goes down, so the learning display kept showing the base layer
+         * while this thumb was held. If a press held a moment too long
+         * deleting nothing turns out to matter more, put retro-tap back and
+         * accept the late display.
          */
         blt: backspace_layer_tap {
             compatible = "zmk,behavior-hold-tap";
@@ -76,7 +80,6 @@
             flavor = "tap-preferred";
             tapping-term-ms = <200>;
             quick-tap-ms = <175>;
-            retro-tap;
             bindings = <&mo>, <&kp>;
         };
     };

@@ -34,8 +34,8 @@ layers:
   - ''
   - ''
   - ''
-  - ''
-  - ''
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
   - ''
   - ''
   nav:
@@ -49,53 +49,14 @@ layers:
   - LEFT ARROW
   - DOWN ARROW
   - RIGHT ARROW
-  - ','
-  - .
+  - '&m_clear'
+  - '&m_context'
   - /
   - {t: ENTER, h: LSHFT}
-  - {t: BACKSPACE, h: digit_symbol}
-  - {t: SPACE, h: edit_bracket}
-  - edit_bracket
-  - LCTRL
-  digit_symbol:
-  - '4'
-  - '5'
-  - '6'
-  - '0'
-  - '-'
-  - '='
-  - {t: ENTER, h: LSHFT}
-  - '1'
-  - '2'
-  - '3'
-  - '7'
-  - '8'
-  - '9'
-  - {t: ENTER, h: LSHFT}
-  - {type: held}
-  - ''
-  - '-'
-  - /
-  edit_bracket:
-  - ESCAPE
-  - '`'
-  - TAB
-  - '['
-  - ']'
-  - \
-  - Z
-  - X
-  - C
-  - V
-  - ;
-  - ''''
-  - /
-  - {t: ENTER, h: LSHFT}
-  - Ctl+SPACE
-  - {t: '?', type: held}
-  - ','
-  - .
-  game: [ESCAPE, W, '', '', '', '', LSHFT, A, S, D, Z, C, V, '', C, V, SPACE, '']
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ',', h: edit_bracket}
+  - {t: ., h: LCTRL}
   number:
   - KP 7
   - KP 8
@@ -130,10 +91,67 @@ layers:
   - F8
   - F9
   - {t: ENTER, h: LSHFT}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
   - ''
   - ''
+  game:
+  - ESCAPE
+  - W
+  - R
+  - I
+  - O
+  - P
+  - LSHFT
+  - A
+  - S
+  - D
+  - Z
+  - C
+  - V
+  - {t: ENTER, h: LSHFT}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - SPACE
   - ''
-  - ''
+  digit_symbol:
+  - '4'
+  - '5'
+  - '6'
+  - '0'
+  - '-'
+  - '='
+  - {t: ENTER, h: LSHFT}
+  - '1'
+  - '2'
+  - '3'
+  - '7'
+  - '8'
+  - '9'
+  - {t: ENTER, h: LSHFT}
+  - {type: held}
+  - {t: ▽, type: trans}
+  - '-'
+  - /
+  edit_bracket:
+  - ESCAPE
+  - '`'
+  - TAB
+  - '['
+  - ']'
+  - \
+  - Z
+  - X
+  - C
+  - V
+  - ;
+  - ''''
+  - /
+  - {t: ENTER, h: LSHFT}
+  - {t: ▽, type: trans}
+  - {type: held}
+  - ','
+  - .
 combos:
 - p: [0, 1]
   k: Q
@@ -183,24 +201,27 @@ combos:
 - p: [3, 10]
   k: LEFT GUI
   l: [default, nav]
+- p: [14, 15]
+  k: Ctl+SPACE
+  l: [default, nav]
 - p: [0, 2]
   k: {t: default, h: toggle}
-  l: [default, bluetooth, nav, game, number, fn]
+  l: [default, bluetooth, nav, number, fn, game]
 - p: [7, 9]
   k: {t: nav, h: toggle}
   l: [default, bluetooth, nav, number, fn]
 - p: [10, 12]
   k: {t: number, h: toggle}
-  l: [default, bluetooth, nav, game, number, fn]
+  l: [default, bluetooth, nav, number, fn, game]
 - p: [2, 7]
   k: {t: game, h: toggle}
-  l: [default, bluetooth, nav, game, number, fn]
+  l: [default, bluetooth, nav, number, fn]
 - p: [3, 5]
   k: {t: fn, h: toggle}
-  l: [default, bluetooth, nav, game, number, fn]
+  l: [default, bluetooth, nav, number, fn, game]
 - p: [5, 10]
   k: {t: bluetooth, h: toggle}
-  l: [default, bluetooth, nav, game, number, fn]
+  l: [default, bluetooth, nav, number, fn, game]
 - p: [6, 14]
   k: KP 0
   l: [number]

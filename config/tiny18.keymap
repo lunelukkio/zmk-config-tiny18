@@ -9,18 +9,23 @@
  * Six modes, each entered by one pair of keys from any other mode:
  *   text entry  layer 0   green     0+2
  *   AI          layer 2   blue      7+9
+ *   number      layer 3   yellow    10+12
+ *   function    layer 4   magenta   3+5
  *   game        layer 5   cyan      2+7
- *   number      layer 6   yellow    10+12
- *   function    layer 7   magenta   3+5
  *   bluetooth   layer 1   red       5+10
- * 7+9 is left out of game mode, where those two keys are A and D.
+ * 7+9 is left out of game mode, where those two keys are A and D, and so is
+ * 2+7: from game mode it would only re-enter game mode and eat an R+S.
  *
  * Layers held rather than switched into:
- *   3  digits and symbols    hold key 14 (BackSpace)
- *   4  editing and brackets  hold key 15 (Space) or 16 (N)
+ *   6  digits and symbols    hold key 14 (BackSpace)
+ *   7  editing and brackets  hold key 15 (Space) or 16 (N)
+ * They carry the two highest numbers on purpose. ZMK resolves a key from the
+ * highest active layer down, so a held page only shows through a mode with
+ * a lower number; at 6 and 7 the pages open from every mode.
  *
  * Modifiers without a key of their own are chords, live in text entry and
- * AI mode: Alt on 9+15 (F and Space), GUI on 3+10 (U and J).
+ * AI mode: Alt on 9+15 (F and Space), GUI on 3+10 (U and J). The IME toggle
+ * is a chord of the two left thumbs, 14+15, in the same two modes.
  *
  * Key positions (see tiny18.dtsi default_transform):
  *         0   1   2         3   4   5
@@ -31,12 +36,14 @@
  * reachable with the left nine keys: 0 1 2 6 7 8 9 14 15.
  *
  * An unassigned key is &none, not &trans, so it does nothing rather than
- * falling through to the layer below: holding BackSpace and pressing Space
- * stays silent instead of typing a space. Key 13 is the text-entry Enter in
- * every mode and page but game mode: tap for Enter, hold for Shift. The
- * digit page and AI mode give key 6 the same job, so Shift is under either
- * little finger there. Function mode holds Ctrl on key 6 instead, so an F
- * key can be chorded with either modifier.
+ * falling through to the layer below. The one exception is the pair of left
+ * thumbs, keys 14 and 15: everywhere but number mode they are &trans, so
+ * they are the text-entry BackSpace and Space, digit page and editing page
+ * on hold, whatever mode or page is open. Key 13 is the text-entry Enter in
+ * every mode and page: tap for Enter, hold for Shift. The digit page and AI
+ * mode give key 6 the same job, so Shift is under either little finger
+ * there. Function mode holds Ctrl on key 6 instead, so an F key can be
+ * chorded with either modifier, and game mode keeps a plain Shift there.
  *
  * Every layer is still escapable: the held layers end on key release, and the
  * mode layers are left by combo, which ZMK matches independently of what the
@@ -86,36 +93,52 @@
     };
 
     /*
-     * AI mode's two most typed commands. They take the right hand's top row
-     * where Ctrl+C and Ctrl+V used to sit; those moved to combos on the left
+     * AI mode's typed commands. Three take the right hand's top row and two
+     * the J and K positions below it; copy and paste are combos on the left
      * hand, which is the hand that is free while the right one is on the
      * trackball.
+     *
+     * Each one starts with LANG2. The keyboard cannot tell whether the host's
+     * IME is in Japanese, and a command typed through a Japanese IME arrives
+     * as kana. LANG2 is the HID usage Windows maps to VK_IME_OFF and macOS to
+     * the JIS Eisu key, so it forces alphanumeric input whatever the state
+     * was, and the letters that follow arrive as typed. It leaves the host in
+     * alphanumeric mode; the 14+15 chord brings Japanese back.
      *
      * wait-ms and tap-ms are left at ZMK's defaults on purpose. Shortening
      * them makes the macro finish sooner but risks a dropped character, and a
      * command that arrives as "/resme" is worse than one that takes an extra
      * moment.
-     *
-     * These send plain letters, so an IME that is on will turn them into kana.
-     * Switch to English first; the editing page's left thumb does it.
      */
     macros {
         m_resume: m_resume {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp SLASH &kp R &kp E &kp S &kp U &kp M &kp E &kp ENTER>;
+            bindings = <&kp LANG2 &kp SLASH &kp R &kp E &kp S &kp U &kp M &kp E &kp ENTER>;
         };
 
         m_status: m_status {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp SLASH &kp S &kp T &kp A &kp T &kp U &kp S &kp ENTER>;
+            bindings = <&kp LANG2 &kp SLASH &kp S &kp T &kp A &kp T &kp U &kp S &kp ENTER>;
         };
 
         m_model: m_model {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp SLASH &kp M &kp O &kp D &kp E &kp L &kp ENTER>;
+            bindings = <&kp LANG2 &kp SLASH &kp M &kp O &kp D &kp E &kp L &kp ENTER>;
+        };
+
+        m_clear: m_clear {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LANG2 &kp SLASH &kp C &kp L &kp E &kp A &kp R &kp ENTER>;
+        };
+
+        m_context: m_context {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LANG2 &kp SLASH &kp C &kp O &kp N &kp T &kp E &kp X &kp T &kp ENTER>;
         };
     };
 
@@ -170,7 +193,7 @@
         slash {
             bindings = <&kp SLASH>;
             key-positions = <11 12>;
-            layers = <0 4>;
+            layers = <0 7>;
         };
 
         /* B shares its positions with c and v on the layer 15 opens, so typing
@@ -178,13 +201,13 @@
         b {
             bindings = <&kp B>;
             key-positions = <8 9>;
-            layers = <4>;
+            layers = <7>;
         };
 
         n {
             bindings = <&kp N>;
             key-positions = <10 11>;
-            layers = <4>;
+            layers = <7>;
         };
 
         /*
@@ -254,20 +277,41 @@
         };
 
         /*
+         * The IME toggle, Ctrl+Space on both hosts, is the two left thumbs
+         * together. It used to be a key of its own on the editing page, but
+         * holding one thumb to tap the other was awkward.
+         *
+         * require-prior-idle-ms keeps a fast BackSpace-Space roll from
+         * toggling the IME, and it costs nothing while typing: a combo that
+         * is holding off is not a candidate at all, so the two keys pass
+         * straight through with no combo delay. Only a press that follows a
+         * pause is held for the 50 ms combo window, and only until it is
+         * released. Number mode keeps 14+15 for its decimal point, so the
+         * chord is not there.
+         */
+        ime {
+            bindings = <&kp LC(SPACE)>;
+            key-positions = <14 15>;
+            layers = <0 2>;
+            require-prior-idle-ms = <150>;
+        };
+
+        /*
          * Mode switching. One gesture per mode, live in every mode, so any
          * mode reaches any other directly.
          *
          * require-prior-idle-ms is what makes this safe. In number mode the
          * switch positions carry digits - 0 and 2 are 7 and 9, 7 and 9 are 4
-         * and 6 - so typing quickly would otherwise throw you into another
-         * mode. Holding off for 150 ms after the last keypress
-         * means a switch only fires from a standstill. It also stops 10+12 and
-         * 3+5 misfiring between H, /, Y and P while typing.
+         * and 6 - and in game mode 3 and 5 are I and P, 5 and 10 are P and Z,
+         * so typing quickly would otherwise throw you into another mode.
+         * Holding off for 150 ms after the last keypress means a switch only
+         * fires from a standstill. It also stops 10+12 and 3+5 misfiring
+         * between H, /, Y and P while typing.
          */
         mode_text {
             bindings = <&to 0>;
             key-positions = <0 2>;
-            layers = <0 1 2 5 6 7>;
+            layers = <0 1 2 3 4 5>;
             require-prior-idle-ms = <150>;
         };
 
@@ -279,35 +323,37 @@
         mode_ai {
             bindings = <&to 2>;
             key-positions = <7 9>;
-            layers = <0 1 2 6 7>;
+            layers = <0 1 2 3 4>;
             require-prior-idle-ms = <150>;
         };
 
         mode_num {
-            bindings = <&to 6>;
+            bindings = <&to 3>;
             key-positions = <10 12>;
-            layers = <0 1 2 5 6 7>;
+            layers = <0 1 2 3 4 5>;
             require-prior-idle-ms = <150>;
         };
 
+        /* Not live in game mode itself: &to 5 from layer 5 does nothing, and
+         * with R on key 2 there the chord would only swallow an R+S. */
         mode_game {
             bindings = <&to 5>;
             key-positions = <2 7>;
-            layers = <0 1 2 5 6 7>;
+            layers = <0 1 2 3 4>;
             require-prior-idle-ms = <150>;
         };
 
         mode_fn {
-            bindings = <&to 7>;
+            bindings = <&to 4>;
             key-positions = <3 5>;
-            layers = <0 1 2 5 6 7>;
+            layers = <0 1 2 3 4 5>;
             require-prior-idle-ms = <150>;
         };
 
         mode_bt {
             bindings = <&to 1>;
             key-positions = <5 10>;
-            layers = <0 1 2 5 6 7>;
+            layers = <0 1 2 3 4 5>;
             require-prior-idle-ms = <150>;
         };
 
@@ -316,13 +362,13 @@
         num_zero_l {
             bindings = <&kp KP_N0>;
             key-positions = <6 14>;
-            layers = <6>;
+            layers = <3>;
         };
 
         num_dot_l {
             bindings = <&kp KP_DOT>;
             key-positions = <14 15>;
-            layers = <6>;
+            layers = <3>;
         };
 
         /*
@@ -337,7 +383,7 @@
         num_lock {
             bindings = <&kp KP_NUMLOCK>;
             key-positions = <9 10>;
-            layers = <6>;
+            layers = <3>;
             require-prior-idle-ms = <150>;
         };
 
@@ -348,13 +394,16 @@
 
         default_layer {
             bindings = <
-&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &bmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &bmt LSHFT ENTER  &blt 3 BACKSPACE  &lt 4 SPACE  &lt 4 N  &bmt LCTRL M
+&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &bmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &bmt LSHFT ENTER  &blt 6 BACKSPACE  &lt 7 SPACE  &lt 7 N  &bmt LCTRL M
             >;
         };
 
+        /* Profile selection on the home row. Everything else is dead so a
+         * stray press cannot type, except the left thumbs, which are the
+         * text-entry BackSpace and Space here as everywhere. */
         bluetooth_layer {
             bindings = <
-&none  &none  &none  &none  &none  &none  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &none  &none  &none  &none  &none  &none  &none
+&none  &none  &none  &none  &none  &none  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &none  &none  &none  &trans  &trans  &none  &none
             >;
         };
 
@@ -363,86 +412,21 @@
          * entry has R. Keys 6 and 13 are both the text-entry Enter, tap for
          * Enter and hold for Shift, so Shift+arrow selection is a left-hand
          * job with the little finger and the right hand keeps an Enter of
-         * its own. They used to be a plain Enter and a plain Shift; the
-         * hold-tap replaced both so the key means the same in every mode.
+         * its own.
          *
-         * The left thumbs match the base layer exactly: BackSpace with the
-         * digit page on hold, Space with the editing page on hold. Key 15
-         * held Shift for a while, but with Shift on key 6 the page is worth
-         * more. The right thumbs carry no tap here - this mode is for moving
-         * around, not for typing - so key 16 only opens the editing page and
-         * key 17 is Ctrl itself. Neither waits out a tapping term, so both
-         * answer at once and neither can leak a letter. The F keys that used
-         * to sit on the right top row live in function mode now; that row
-         * types the three commands this mode is for, and undo and cut ride
-         * on it as chords. Copy and paste moved to the left hand's top row,
-         * which the trackball leaves free.
+         * The thumbs hold what text entry holds. The left pair is &trans, so
+         * BackSpace and Space with the pages on hold come straight from
+         * layer 0. The right pair taps the comma and the full stop, the
+         * punctuation a prompt needs most, and holds the editing page on key
+         * 16 and Ctrl on key 17. The comma and the full stop used to sit on
+         * keys 10 and 11; those now type two more commands, /clear and
+         * /context, beside the three on the top row. Undo and cut ride on
+         * the top row as chords, and copy and paste sit on the left hand's
+         * top row, which the trackball leaves free.
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &kp DELETE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp COMMA  &kp PERIOD  &kp SLASH  &bmt LSHFT ENTER  &blt 3 BACKSPACE  &lt 4 SPACE  &mo 4  &kp LCTRL
-            >;
-        };
-
-        /* Hold key 14 (BackSpace) on the base layer: a number pad split across
-         * both hands. The home rows carry 1 2 3 and 7 8 9, the top rows 4 5 6
-         * and 0 - =, so the digits typed most often sit under resting fingers.
-         * Keys 6 and 13 are both the text-entry Enter, tap for Enter and hold
-         * for Shift, so Shift plus these digits gives the symbol row from
-         * whichever hand is free and a figure can be confirmed without
-         * letting go of the page.
-         *
-         * Only key 14 opens this page, so key 14 itself can never be pressed
-         * here. The right thumbs carry the dash and the slash: what follows a
-         * digit is a date or a katakana vowel far more often than a sentence,
-         * and the dash is otherwise only on the right hand, which rests on the
-         * trackball. The comma and the full stop stay on the editing page. */
-        digit_symbol_layer {
-            bindings = <
-&kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &bmt LSHFT ENTER  &kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &bmt LSHFT ENTER  &none  &none  &kp MINUS  &kp SLASH
-            >;
-        };
-
-        /* Hold key 15 (Space) or 16 (N) on the base layer: Escape, Tab and
-         * the brackets on the top row, Z X C V on the left home row,
-         * punctuation on the right, the text-entry Enter on 13 with Shift on
-         * its hold, the comma and the full stop on the right thumbs. B is a
-         * combo on the C and V keys. Key 6 is Z here rather than Shift, so
-         * this page's Shift is the right little finger.
-         *
-         * The right thumbs are the comma and the full stop, and this is now
-         * the only page that carries them: the digit page traded them for the
-         * dash and the slash. Copy and paste lose their own keys here: hold both
-         * this page and the Ctrl on key 17, then tap C or V on the left home
-         * row - the same shape that already gives Ctrl+Z and Ctrl+X.
-         *
-         * Key 15 is the one free slot on this page: it used to be the thumb
-         * that opened the page, and swapping that job onto key 14 released
-         * it. A question mark goes there, because the alternative is holding
-         * this page plus the Shift held on key 13 and reaching for the slash.
-         *
-         * Key 14 is the IME toggle, sent whole as Ctrl+Space rather than
-         * composed from the Ctrl on key 17 and the Space on key 15. Composing
-         * it failed two ways: a Space held past its tapping term opened this
-         * page and sent nothing, and a Space that went down first turned into
-         * this page, so key 17 answered with the full stop. One binding on one
-         * key has no ordering and no timing, and it is both left thumbs. */
-        edit_bracket_layer {
-            bindings = <
-&kp ESCAPE  &kp GRAVE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &kp LC(SPACE)  &kp QUESTION  &kp COMMA  &kp PERIOD
-            >;
-        };
-
-        /*
-         * VRChat. W sits directly above S, so 1/7/8/9 form the usual WASD
-         * diamond. Space on 16 is jump. Z, C and V sit on the right hand as
-         * well as the left thumbs, so prone, crouch and the microphone can be
-         * reached from either side. Escape, which opens the menu, sits on
-         * key 0 just left of W. Chat is not assigned yet.
-         */
-        game_layer {
-            bindings = <
-&kp ESCAPE  &kp W  &none  &none  &none  &none  &kp LSHFT  &kp A  &kp S  &kp D  &kp Z  &kp C  &kp V  &none  &kp C  &kp V  &kp SPACE  &none
+&kp ESCAPE  &kp UP_ARROW  &kp DELETE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &m_clear  &m_context  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
             >;
         };
 
@@ -457,6 +441,10 @@
          * The point has a key of its own here as well as the 14+15 chord,
          * because typing a decimal is the whole reason for this mode. There
          * is no BackSpace and no semicolon.
+         *
+         * This is the one layer whose left thumbs are not the text-entry
+         * thumbs: keys 14 and 15 are 2 and 3 of the keypad, and 14+15 is the
+         * decimal point, which is also why the IME chord is not live here.
          */
         number_layer {
             bindings = <
@@ -468,11 +456,77 @@
          * Function mode. Each F key sits where its digit sits on the digit
          * page, so F10 to F12 take the places of 0, - and =. The A key holds
          * Ctrl and the Enter key is the text-entry Enter, tap for Enter and
-         * hold for Shift, for chords such as Ctrl+F5 and Shift+F10.
+         * hold for Shift, for chords such as Ctrl+F5 and Shift+F10. The left
+         * thumbs are &trans, so BackSpace, Space and the pages they hold work
+         * here as well.
          */
         fn_layer {
             bindings = <
-&kp F4  &kp F5  &kp F6  &kp F10  &kp F11  &kp F12  &kp LCTRL  &kp F1  &kp F2  &kp F3  &kp F7  &kp F8  &kp F9  &bmt LSHFT ENTER  &none  &none  &none  &none
+&kp F4  &kp F5  &kp F6  &kp F10  &kp F11  &kp F12  &kp LCTRL  &kp F1  &kp F2  &kp F3  &kp F7  &kp F8  &kp F9  &bmt LSHFT ENTER  &trans  &trans  &none  &none
+            >;
+        };
+
+        /*
+         * VRChat. W sits directly above S, so 1/7/8/9 form the usual WASD
+         * diamond. R keeps its text-entry key, and I, O and P are text
+         * entry's right top row moved one key left, so P gets a key of its
+         * own here. Space on 16 is jump. Z, C and V sit on the right hand's
+         * home row, so prone, crouch and the microphone are reached without
+         * leaving the movement keys. Key 6 stays a plain Shift, the run key,
+         * and key 13 is the text-entry Enter with Shift on hold. The left
+         * thumbs are &trans, the text-entry BackSpace and Space with the
+         * pages on hold, which is what chat needs. Escape, which opens the
+         * menu, sits on key 0 just left of W. Only key 17 is unassigned.
+         */
+        game_layer {
+            bindings = <
+&kp ESCAPE  &kp W  &kp R  &kp I  &kp O  &kp P  &kp LSHFT  &kp A  &kp S  &kp D  &kp Z  &kp C  &kp V  &bmt LSHFT ENTER  &trans  &trans  &kp SPACE  &none
+            >;
+        };
+
+        /* Hold key 14 (BackSpace): a number pad split across both hands. The
+         * home rows carry 1 2 3 and 7 8 9, the top rows 4 5 6 and 0 - =, so
+         * the digits typed most often sit under resting fingers. Keys 6 and
+         * 13 are both the text-entry Enter, tap for Enter and hold for
+         * Shift, so Shift plus these digits gives the symbol row from
+         * whichever hand is free and a figure can be confirmed without
+         * letting go of the page.
+         *
+         * Keys 14 and 15 are &trans: 14 is the thumb holding this page open,
+         * so it can never be pressed here, and 15 is the text-entry Space, so
+         * a space can follow a number without letting go; holding it opens
+         * the editing page on top of this one. The right thumbs carry the
+         * dash and the slash: what follows a digit is a date or a katakana
+         * vowel far more often than a sentence, and the dash is otherwise
+         * only on the right hand, which rests on the trackball. The comma and
+         * the full stop stay on the editing page. */
+        digit_symbol_layer {
+            bindings = <
+&kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &bmt LSHFT ENTER  &kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &bmt LSHFT ENTER  &trans  &trans  &kp MINUS  &kp SLASH
+            >;
+        };
+
+        /* Hold key 15 (Space) or 16 (N): Escape, Tab and the brackets on the
+         * top row, Z X C V on the left home row, punctuation on the right,
+         * the text-entry Enter on 13 with Shift on its hold, the comma and
+         * the full stop on the right thumbs. B is a combo on the C and V
+         * keys. Key 6 is Z here rather than Shift, so this page's Shift is
+         * the right little finger.
+         *
+         * The right thumbs are the comma and the full stop, and this is the
+         * only page that carries them: the digit page traded them for the
+         * dash and the slash. Copy and paste have no keys of their own here:
+         * hold both this page and the Ctrl on key 17, then tap C or V on the
+         * left home row - the same shape that already gives Ctrl+Z and
+         * Ctrl+X.
+         *
+         * Keys 14 and 15 are &trans, the text-entry thumbs. They used to
+         * carry the IME toggle and a question mark: the toggle is now the
+         * 14+15 chord, and the question mark is Shift over the slash, on
+         * this page or on the digit page, three fingers either way. */
+        edit_bracket_layer {
+            bindings = <
+&kp ESCAPE  &kp GRAVE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &kp COMMA  &kp PERIOD
             >;
         };
     };

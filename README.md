@@ -9,7 +9,7 @@ ZMK firmware for [Tiny18](https://github.com/k3peta/tiny18), an 18-key wireless 
 
 ## What differs from upstream
 
-- **Keymap.** Six modes and two held pages across eight layers, with 25 combos. The right hand rests on a trackball, so everything used daily fits on the left nine keys. The full layout, with diagrams and the reasoning, is at [lunelukkio.com/public/tiny18/keymap.html](https://lunelukkio.com/public/tiny18/keymap.html).
+- **Keymap.** Six modes and two held pages across eight layers, with 26 combos. The right hand rests on a trackball, so everything used daily fits on the left nine keys. The full layout, with diagrams and the reasoning, is at [lunelukkio.com/public/tiny18/keymap.html](https://lunelukkio.com/public/tiny18/keymap.html).
 - **Layer colours.** The right half's RGB LED shows the mode: green for text entry, blue for AI, yellow for the number keypad, cyan for game, magenta for function, red for Bluetooth, and white while a held page is open.
 - **Deep sleep.** Both halves sleep after 30 minutes idle (`CONFIG_ZMK_SLEEP=y`, `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=1800000`). Waking takes a key press on the right half, and that press is lost.
 - **Learning display.** [`src/layer_uart.c`](src/layer_uart.c) sends one byte over UART1 (D1, TX only, 9600 baud, 8N1) at boot, whenever the layer or a held modifier changes, and on every key press: the highest active layer in bits 0 to 2, then Shift, Ctrl, Alt and GUI in bits 3 to 6. A USB-powered CH32V003 board draws the current key labels on a transparent OLED; its firmware lives in [lunelukkio/t-display](https://github.com/lunelukkio/t-display). The right half enables it with `CONFIG_TINY18_LAYER_UART=y`.
@@ -23,18 +23,19 @@ The canonical keymap is [`config/tiny18.keymap`](config/tiny18.keymap); the comm
 | Mode | Layer | Switch | What it is for |
 | --- | --- | --- | --- |
 | Text entry | 0 | `W + R` | Letters; the mode at power-on |
-| AI | 2 | `S + F` | Arrows, Delete, `/model` `/resume` `/status`, copy and paste chords |
-| Number keypad | 6 | `J + L` | Keypad digits, which pass through an IME as half width |
-| Game | 5 | `R + S` | WASD for VRChat |
-| Function | 7 | `U + O` | F1 to F12 |
+| AI | 2 | `S + F` | Arrows, Delete, `/model` `/resume` `/status` `/clear` `/context`, comma and full stop on the right thumbs, copy and paste chords |
+| Number keypad | 3 | `J + L` | Keypad digits, which pass through an IME as half width |
+| Game | 5 | `R + S` | WASD for VRChat, with R I O P and chat keys |
+| Function | 4 | `U + O` | F1 to F12 |
 | Bluetooth | 1 | `O + J` | Profile selection |
 
-Each mode is entered by one two-key combo, live in every mode, so any mode reaches any other directly; the combos fire only after 150 ms without typing. Two more layers open only while a thumb is held: the digit and symbol page on BackSpace, the ZXCV page on Space or N.
+Each mode is entered by one two-key combo, live in every mode, so any mode reaches any other directly; the combos fire only after 150 ms without typing. Two more layers open only while a thumb is held: the digit and symbol page on BackSpace, the ZXCV page on Space or N. They are layers 6 and 7, the two highest, so they open from every mode.
 
 Keys are named by what they type in text entry:
 
-- `A` and `Enter` are hold-taps: tap for the letter or Enter, hold for Shift. The Enter key keeps that double role in every mode and page except game mode, and AI mode gives the A key the same one.
-- `BackSpace` opens the digit page while held, `Space` and `N` open the ZXCV page, and `M` holds Ctrl.
+- `A` and `Enter` are hold-taps: tap for the letter or Enter, hold for Shift. The Enter key keeps that double role in every mode and page; the digit page and AI mode give the A key the same one, while game mode keeps a plain Shift there.
+- `BackSpace` opens the digit page while held, `Space` and `N` open the ZXCV page, and `M` holds Ctrl. Everywhere but number mode the two left thumbs are these same keys.
+- `BackSpace + Space` pressed together toggles the IME (Ctrl+Space) in text entry and AI mode, once 150 ms have passed without typing. The five slash commands in AI mode start with the HID `LANG2` key, which Windows takes as IME off and macOS as Eisu, so they arrive as ASCII whatever the IME was doing.
 - Letters without a key of their own come from adjacent pairs: `Q T Y P G H` in text entry and `B` on the ZXCV page. `A` has both a key and a pair.
 - Alt is `F + Space` and GUI is `U + J`, in text entry and AI mode.
 

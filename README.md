@@ -9,21 +9,22 @@ ZMK firmware for [Tiny18](https://github.com/k3peta/tiny18), an 18-key wireless 
 
 ## What differs from upstream
 
-- **Keymap.** Six modes and two held pages across eight layers, with 27 combos. The right hand rests on a trackball, so everything used daily fits on the left nine keys. The full layout, with diagrams and the reasoning, is at [lunelukkio.com/public/tiny18/keymap.html](https://lunelukkio.com/public/tiny18/keymap.html).
+- **Keymap.** Six modes and two held pages across eight layers, with 26 combos, or 27 in the author's build. The right hand rests on a trackball, so everything used daily fits on the left nine keys. The full layout, with diagrams and the reasoning, is at [lunelukkio.com/public/tiny18/keymap.html](https://lunelukkio.com/public/tiny18/keymap.html).
+- **Two right-hand images.** They differ in one row: AI mode's arrows. `tiny18-right.uf2` keeps them in the usual inverted T and is the image to flash if you are not the author. `tiny18-right-personal.uf2`, built with `-DTINY18_PERSONAL_ARROWS`, moves up onto the home row, makes right a `D + F` chord, and frees the top row for Delete and BackSpace; that is the layout the page above describes. Everything else is identical, and either one pairs with the same `tiny18-left.uf2`.
 - **Layer colours.** The right half's RGB LED shows the mode: green for text entry, blue for AI, yellow for the number keypad, cyan for game, magenta for function, red for Bluetooth, and white while a held page is open.
 - **Deep sleep.** Both halves sleep after 30 minutes idle (`CONFIG_ZMK_SLEEP=y`, `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=1800000`). Waking takes a key press on the right half, and that press is lost.
 - **Learning display.** [`src/layer_uart.c`](src/layer_uart.c) sends one byte over UART1 (D1, TX only, 9600 baud, 8N1) at boot, whenever the layer or a held modifier changes, and on every key press: the highest active layer in bits 0 to 2, then Shift, Ctrl, Alt and GUI in bits 3 to 6. A USB-powered CH32V003 board draws the current key labels on a transparent OLED; its firmware lives in [lunelukkio/t-display](https://github.com/lunelukkio/t-display). The right half enables it with `CONFIG_TINY18_LAYER_UART=y`.
 
 ## Keymap
 
-The canonical keymap is [`config/tiny18.keymap`](config/tiny18.keymap); the comments in it explain each decision. GitHub Actions redraws [`keymap-drawer/tiny18.svg`](keymap-drawer/tiny18.svg) whenever a push touches the firmware files.
+The canonical keymap is [`config/tiny18.keymap`](config/tiny18.keymap); the comments in it explain each decision. One file builds both right-hand images: `TINY18_PERSONAL_ARROWS`, passed through `DTS_EXTRA_CPPFLAGS` in [`build.yaml`](build.yaml), picks the author's arrow row. GitHub Actions redraws [`keymap-drawer/tiny18.svg`](keymap-drawer/tiny18.svg) whenever a push touches the firmware files; the drawing is the plain build.
 
 ![Tiny18 keymap](keymap-drawer/tiny18.svg)
 
 | Mode | Layer | Switch | What it is for |
 | --- | --- | --- | --- |
 | Text entry | 0 | `W + R` | Letters; the mode at power-on |
-| AI | 2 | `S + F` | Arrows on the left home row (right is `D + F` together), Delete and BackSpace, `/model` `/resume` `/status` `/clear` `/context`, comma and full stop on the right thumbs, copy and paste chords |
+| AI | 2 | `S + F` | Arrows, Delete, `/model` `/resume` `/status` `/clear` `/context`, comma and full stop on the right thumbs, copy and paste chords. The arrow row is the one thing the two right-hand images differ in |
 | Number keypad | 3 | `J + L` | Keypad digits, which pass through an IME as half width |
 | Game | 5 | `R + S` | WASD for VRChat, with R I O P and chat keys |
 | Function | 4 | `U + O` | F1 to F12 |
@@ -45,18 +46,19 @@ UF2 files for tagged versions are on the [Releases](https://github.com/lunelukki
 
 | File | Target |
 | --- | --- |
-| `tiny18-right.uf2` | Right half; Bluetooth central, ZMK Studio host, learning display sender |
-| `tiny18-left.uf2` | Left half; Bluetooth peripheral |
+| `tiny18-right.uf2` | Right half, AI-mode arrows in the usual inverted T; Bluetooth central, ZMK Studio host, learning display sender |
+| `tiny18-right-personal.uf2` | Right half, the author's AI-mode arrows; identical otherwise |
+| `tiny18-left.uf2` | Left half; Bluetooth peripheral. Pairs with either right image |
 | `settings-reset.uf2` | Clears stored Bluetooth and split settings |
-| `SHA256SUMS` | SHA-256 checksums for the three UF2 files |
+| `SHA256SUMS` | SHA-256 checksums for the four UF2 files |
 
-The right and left files are not interchangeable. If the wrong image is flashed, enter the bootloader again and flash the correct image. The right half interprets the keymap, so a keymap-only change leaves `tiny18-left.uf2` byte for byte the same; compare the checksums before reflashing the left half.
+The right and left files are not interchangeable. If the wrong image is flashed, enter the bootloader again and flash the correct image. Only the right half interprets the keymap, so the left image is shared by both right images; it changes when combos, macros, `.conf` or overlays change, but not for a plain swap of key bindings. Compare the checksums before reflashing the left half.
 
 ## Flashing
 
 1. Turn the keyboard's battery power switch off and connect one half with a USB data cable.
 2. Double-press the XIAO reset button. A drive named `XIAO-SENSE` should appear.
-3. Copy `tiny18-right.uf2` to the right half and `tiny18-left.uf2` to the left half.
+3. Copy `tiny18-right.uf2` (or `tiny18-right-personal.uf2`) to the right half and `tiny18-left.uf2` to the left half.
 4. Disconnect USB, turn both halves on, and pair the Bluetooth device named `tiny18`.
 
 For a first installation, or if the halves or host no longer pair correctly:
@@ -86,6 +88,7 @@ Actions artifacts are intended for testing and expire. Permanent downloads come 
 [`build.yaml`](build.yaml) produces:
 
 - right half with RGB LED layer/battery widget, ZMK Studio over USB and the layer UART
+- the same right half again with `-DTINY18_PERSONAL_ARROWS`, as `tiny18-right-personal`
 - left half with RGB LED layer/battery widget
 - settings-reset image for recovery
 

@@ -6,6 +6,20 @@
 #include <dt-bindings/zmk/keys.h>
 
 /*
+ * Two builds come out of this file, and they differ in one row: AI mode's
+ * arrows.
+ *
+ *   plain build (tiny18-right.uf2)          up on E, Delete on R, right on F
+ *   -DTINY18_PERSONAL_ARROWS                Delete on E, BackSpace on R,
+ *   (tiny18-right-personal.uf2)             up on F, right on D+F together
+ *
+ * The plain build is the one to hand to anybody else: its arrows sit in the
+ * usual inverted T. The author's build moves up down onto the home row to free
+ * the top row for Delete and BackSpace, which is faster once learned but is
+ * nobody else's habit. build.yaml passes the define through
+ * -DDTS_EXTRA_CPPFLAGS; everything else in this file is shared, and a change
+ * to AI mode has to be made in both branches of nav_layer.
+ *
  * Six modes, each entered by one pair of keys from any other mode:
  *   text entry  layer 0   green     0+2
  *   AI          layer 2   blue      7+9
@@ -222,12 +236,18 @@
          * to that window before it is sent. If either gets in the way, move
          * the chord to a pair with only one arrow in it; R+F and W+F are free
          * in this mode.
+         *
+         * Only in the author's build: the shared one puts right on F instead,
+         * so the chord would be a second way to type an arrow that already has
+         * a key. Edit both branches of nav_layer when AI mode changes.
          */
+#ifdef TINY18_PERSONAL_ARROWS
         nav_right {
             bindings = <&kp RIGHT_ARROW>;
             key-positions = <8 9>;
             layers = <2>;
         };
+#endif
 
         /*
          * AI mode's copy and paste sit on the left hand's top row, because the
@@ -433,12 +453,22 @@
         };
 
         /*
-         * AI mode: left, down and up on the left home row, and right as D
-         * and F together (nav_right). Up used to sit on E, above down; it
+         * AI mode. This is the one layer the two builds disagree on, so it
+         * carries both rows; see the note at the top of this file.
+         *
+         * The author's row: left, down and up on the left home row, and right
+         * as D and F together (nav_right). Up used to sit on E, above down; it
          * moved to F so that the top row could carry Delete on E and
          * BackSpace on R. This BackSpace is a plain key, so holding it
          * repeats - holding the thumb's BackSpace opens the digit page
-         * instead. Keys 6 and 13 are both the text-entry Enter, tap for
+         * instead.
+         *
+         * The shared row is the older arrangement, an inverted T with up on E
+         * and right on F, and Delete back on R: four arrow keys, nothing to
+         * learn, and no chord. Anyone flashing this keymap who has not spent a
+         * week with the other one gets that.
+         *
+         * Keys 6 and 13 are both the text-entry Enter, tap for
          * Enter and hold for Shift, so Shift+arrow selection is a left-hand
          * job with the little finger and the right hand keeps an Enter of
          * its own.
@@ -455,7 +485,11 @@
          */
         nav_layer {
             bindings = <
+#ifdef TINY18_PERSONAL_ARROWS
 &kp ESCAPE  &kp DELETE  &kp BACKSPACE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp UP_ARROW  &m_clear  &m_context  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
+#else
+&kp ESCAPE  &kp UP_ARROW  &kp DELETE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &m_clear  &m_context  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
+#endif
             >;
         };
 

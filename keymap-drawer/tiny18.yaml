@@ -40,15 +40,15 @@ layers:
   - ''
   nav:
   - ESCAPE
-  - UP ARROW
   - DELETE
+  - BACKSPACE
   - '&m_model'
   - '&m_resume'
   - '&m_status'
   - {t: ENTER, h: LSHFT}
   - LEFT ARROW
   - DOWN ARROW
-  - RIGHT ARROW
+  - UP ARROW
   - '&m_clear'
   - '&m_context'
   - /
@@ -183,6 +183,9 @@ combos:
 - p: [10, 11]
   k: N
   l: [edit_bracket]
+- p: [8, 9]
+  k: RIGHT ARROW
+  l: [nav]
 - p: [0, 1]
   k: Ctl+C
   l: [nav]
@@ -201,7 +204,7 @@ combos:
 - p: [3, 10]
   k: LEFT GUI
   l: [default, nav]
-- p: [14, 15]
+- p: [7, 15]
   k: Ctl+SPACE
   l: [default, nav]
 - p: [0, 2]

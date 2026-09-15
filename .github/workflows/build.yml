@@ -36,7 +36,12 @@ jobs:
   build:
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3.0
 
+  # The diagram is committed back to the branch that triggered the run, so a
+  # tag push, which checks out a detached commit, can only fail here whenever
+  # the tag lands before the diagram for that commit does. Firmware for tags
+  # is still built above and by release.yml; only the drawing is skipped.
   draw:
+    if: github.ref_type == 'branch'
     uses: caksoylar/keymap-drawer/.github/workflows/draw-zmk.yml@v0.22.1
     permissions:
       contents: write

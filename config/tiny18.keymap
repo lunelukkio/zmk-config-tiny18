@@ -25,7 +25,7 @@
  *
  * Modifiers without a key of their own are chords, live in text entry and
  * AI mode: Alt on 9+15 (F and Space), GUI on 3+10 (U and J). The IME toggle
- * is a chord of the two left thumbs, 14+15, in the same two modes.
+ * is a chord of S and Space, 7+15, in the same two modes.
  *
  * Key positions (see tiny18.dtsi default_transform):
  *         0   1   2         3   4   5
@@ -103,7 +103,7 @@
      * as kana. LANG2 is the HID usage Windows maps to VK_IME_OFF and macOS to
      * the JIS Eisu key, so it forces alphanumeric input whatever the state
      * was, and the letters that follow arrive as typed. It leaves the host in
-     * alphanumeric mode; the 14+15 chord brings Japanese back.
+     * alphanumeric mode; the S+Space chord brings Japanese back.
      *
      * wait-ms and tap-ms are left at ZMK's defaults on purpose. Shortening
      * them makes the macro finish sooner but risks a dropped character, and a
@@ -211,11 +211,30 @@
         };
 
         /*
+         * AI mode's right arrow. Up took F so that E and R could carry Delete
+         * and BackSpace, which left no key for right, so it is the two keys
+         * beside it together: D and F, down and up.
+         *
+         * No require-prior-idle-ms: arrows come in runs, and a right arrow
+         * straight after a down arrow has to work. That costs two things.
+         * Down and up tapped in turn inside the 50 ms combo window give a
+         * right arrow instead of the two, and every down arrow now waits up
+         * to that window before it is sent. If either gets in the way, move
+         * the chord to a pair with only one arrow in it; R+F and W+F are free
+         * in this mode.
+         */
+        nav_right {
+            bindings = <&kp RIGHT_ARROW>;
+            key-positions = <8 9>;
+            layers = <2>;
+        };
+
+        /*
          * AI mode's copy and paste sit on the left hand's top row, because the
          * right hand is on the trackball and reaching over costs the pointer.
          * They use the two pairs the three keys leave free - 0+2 already
          * switches to text entry. require-prior-idle-ms is what makes it
-         * safe: the arrows and Delete here are worked in bursts, and a
+         * safe: Delete and BackSpace here are worked in bursts, and a
          * combo that only fires from a standstill cannot land in the middle
          * of one.
          */
@@ -277,21 +296,27 @@
         };
 
         /*
-         * The IME toggle, Ctrl+Space on both hosts, is the two left thumbs
-         * together. It used to be a key of its own on the editing page, but
-         * holding one thumb to tap the other was awkward.
+         * The IME toggle, Ctrl+Space on both hosts, is S and Space together:
+         * ring finger and thumb, the shape of Alt with the ring finger in
+         * place of the index. It was a key of its own on the editing page
+         * until holding one thumb to tap the other proved awkward, then the
+         * two left thumbs together until 2026-09-16, which was still hard to
+         * press.
          *
-         * require-prior-idle-ms keeps a fast BackSpace-Space roll from
-         * toggling the IME, and it costs nothing while typing: a combo that
-         * is holding off is not a candidate at all, so the two keys pass
-         * straight through with no combo delay. Only a press that follows a
-         * pause is held for the 50 ms combo window, and only until it is
-         * released. Number mode keeps 14+15 for its decimal point, so the
-         * chord is not there.
+         * require-prior-idle-ms keeps an S rolled into a space from toggling
+         * the IME, and it costs no typing speed: a combo that is holding off
+         * is not a candidate at all, and in text entry both keys already wait
+         * out a combo window on every press anyway, S for the A chord and
+         * Space for Alt. In AI mode S is the left arrow, and only its first
+         * press after a pause waits.
+         *
+         * Only text entry and AI mode have it. Elsewhere the S key is 4, strafe
+         * left, F1 or a Bluetooth profile, and an IME toggle landing on any of
+         * those would only ever be a mistake.
          */
         ime {
             bindings = <&kp LC(SPACE)>;
-            key-positions = <14 15>;
+            key-positions = <7 15>;
             layers = <0 2>;
             require-prior-idle-ms = <150>;
         };
@@ -408,8 +433,12 @@
         };
 
         /*
-         * AI mode: arrows under the left hand, Delete on key 2 where text
-         * entry has R. Keys 6 and 13 are both the text-entry Enter, tap for
+         * AI mode: left, down and up on the left home row, and right as D
+         * and F together (nav_right). Up used to sit on E, above down; it
+         * moved to F so that the top row could carry Delete on E and
+         * BackSpace on R. This BackSpace is a plain key, so holding it
+         * repeats - holding the thumb's BackSpace opens the digit page
+         * instead. Keys 6 and 13 are both the text-entry Enter, tap for
          * Enter and hold for Shift, so Shift+arrow selection is a left-hand
          * job with the little finger and the right hand keeps an Enter of
          * its own.
@@ -426,7 +455,7 @@
          */
         nav_layer {
             bindings = <
-&kp ESCAPE  &kp UP_ARROW  &kp DELETE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &m_clear  &m_context  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
+&kp ESCAPE  &kp DELETE  &kp BACKSPACE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp UP_ARROW  &m_clear  &m_context  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
             >;
         };
 
@@ -444,7 +473,7 @@
          *
          * This is the one layer whose left thumbs are not the text-entry
          * thumbs: keys 14 and 15 are 2 and 3 of the keypad, and 14+15 is the
-         * decimal point, which is also why the IME chord is not live here.
+         * decimal point.
          */
         number_layer {
             bindings = <
@@ -522,7 +551,7 @@
          *
          * Keys 14 and 15 are &trans, the text-entry thumbs. They used to
          * carry the IME toggle and a question mark: the toggle is now the
-         * 14+15 chord, and the question mark is Shift over the slash, on
+         * S+Space chord, and the question mark is Shift over the slash, on
          * this page or on the digit page, three fingers either way. */
         edit_bracket_layer {
             bindings = <

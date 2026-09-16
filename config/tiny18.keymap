@@ -123,36 +123,41 @@
      * them makes the macro finish sooner but risks a dropped character, and a
      * command that arrives as "/resme" is worse than one that takes an extra
      * moment.
+     *
+     * None of them sends Enter any more, as of 2026-09-16. The command lands
+     * in the prompt and waits: /model can take an argument, a command pressed
+     * by accident can be deleted rather than run, and the Enter key is right
+     * there under either little finger when it should go.
      */
     macros {
         m_resume: m_resume {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp LANG2 &kp SLASH &kp R &kp E &kp S &kp U &kp M &kp E &kp ENTER>;
+            bindings = <&kp LANG2 &kp SLASH &kp R &kp E &kp S &kp U &kp M &kp E>;
         };
 
         m_status: m_status {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp LANG2 &kp SLASH &kp S &kp T &kp A &kp T &kp U &kp S &kp ENTER>;
+            bindings = <&kp LANG2 &kp SLASH &kp S &kp T &kp A &kp T &kp U &kp S>;
         };
 
         m_model: m_model {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp LANG2 &kp SLASH &kp M &kp O &kp D &kp E &kp L &kp ENTER>;
+            bindings = <&kp LANG2 &kp SLASH &kp M &kp O &kp D &kp E &kp L>;
         };
 
         m_clear: m_clear {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp LANG2 &kp SLASH &kp C &kp L &kp E &kp A &kp R &kp ENTER>;
+            bindings = <&kp LANG2 &kp SLASH &kp C &kp L &kp E &kp A &kp R>;
         };
 
         m_context: m_context {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp LANG2 &kp SLASH &kp C &kp O &kp N &kp T &kp E &kp X &kp T &kp ENTER>;
+            bindings = <&kp LANG2 &kp SLASH &kp C &kp O &kp N &kp T &kp E &kp X &kp T>;
         };
     };
 

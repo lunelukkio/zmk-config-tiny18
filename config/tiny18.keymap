@@ -617,7 +617,8 @@
             >;
         };
 
-        /* Hold key 15 (Space) or 16 (N): Escape, Tab and the brackets on the
+        /* Hold key 15 (Space) or 16 (N): Tab with Escape on its hold, F10 and
+         * the brackets on the
          * top row, Z X C V on the left home row, punctuation on the right,
          * the text-entry Enter on 13 with Shift on its hold, the comma and
          * the full stop on the right thumbs. B is a combo on the C and V
@@ -637,7 +638,7 @@
          * this page or on the digit page, three fingers either way. */
         edit_bracket_layer {
             bindings = <
-&kp ESCAPE  &kp GRAVE  &kp TAB  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &kp COMMA  &kp PERIOD
+&esc_tab 0 TAB  &kp GRAVE  &kp F10  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &kp COMMA  &kp PERIOD
             >;
         };
     };

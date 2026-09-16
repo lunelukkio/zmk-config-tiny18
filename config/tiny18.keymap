@@ -544,9 +544,16 @@
         /*
          * Number mode. The left hand is a keypad and key 13 is the text-entry
          * Enter, tap for Enter and hold for Shift, so a figure can be
-         * confirmed without leaving the mode. The right hand carries what the
-         * keypad does not have: zero, minus, equals, the brackets, the
-         * backslash, a second zero and the decimal point.
+         * confirmed without leaving the mode.
+         *
+         * The right hand is where a full keyboard keeps the keys this one has
+         * nowhere else: Home above End, page up above page down, and Print
+         * Screen between them, with the keypad minus left in place because a
+         * number often needs it. They took the brackets, the backslash, the
+         * equals sign and the top-row zero on 2026-09-16; the brackets are
+         * Shift over 9 and 0 on the digit page, the backslash is on the ZXCV
+         * page, equals is on the digit page, and zero is still on the right
+         * thumb and the A+BackSpace chord.
          * Digits and the point are keypad usages, so an IME passes them through
          * as half width - the reason for this mode - but they need Num Lock.
          * The point has a key of its own here as well as the 14+15 chord,
@@ -559,7 +566,7 @@
          */
         number_layer {
             bindings = <
-&kp KP_N7  &kp KP_N8  &kp KP_N9  &kp KP_N0  &kp KP_MINUS  &kp EQUAL  &kp KP_N1  &kp KP_N4  &kp KP_N5  &kp KP_N6  &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp BACKSLASH  &bmt LSHFT ENTER  &kp KP_N2  &kp KP_N3  &kp KP_N0  &kp KP_DOT
+&kp KP_N7  &kp KP_N8  &kp KP_N9  &kp HOME  &kp KP_MINUS  &kp PAGE_UP  &kp KP_N1  &kp KP_N4  &kp KP_N5  &kp KP_N6  &kp END  &kp PRINTSCREEN  &kp PAGE_DOWN  &bmt LSHFT ENTER  &kp KP_N2  &kp KP_N3  &kp KP_N0  &kp KP_DOT
             >;
         };
 

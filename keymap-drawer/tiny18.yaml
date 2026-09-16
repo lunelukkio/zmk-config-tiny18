@@ -96,9 +96,9 @@ layers:
   - ''
   - ''
   game:
-  - ESCAPE
+  - {t: ESCAPE, s: Z}
   - W
-  - R
+  - {t: V, s: R}
   - I
   - O
   - P
@@ -106,14 +106,14 @@ layers:
   - A
   - S
   - D
-  - Z
-  - C
-  - V
+  - {t: Z, s: G}
+  - {t: X, s: M}
+  - {t: C, s: K}
   - {t: ENTER, h: LSHFT}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - {t: LCTRL, s: RCTRL}
   - SPACE
-  - ''
+  - SPACE
+  - {t: LALT, s: RALT}
   digit_symbol:
   - '4'
   - '5'
@@ -200,7 +200,7 @@ combos:
   l: [default, nav]
 - p: [3, 10]
   k: LEFT GUI
-  l: [default, nav]
+  l: [default, nav, game]
 - p: [1, 9]
   k: Ctl+SPACE
   l: [default]

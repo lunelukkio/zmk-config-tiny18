@@ -118,12 +118,17 @@
          *
          * The first parameter is unused, because a macro takes none; a
          * hold-tap always has two, so the keymap passes 0.
+         *
+         * 350 ms rather than the 200 the other hold-taps use: a Tab held a
+         * moment too long was turning into an Escape. Nothing waits on this
+         * number except Escape itself - tap-preferred sends the Tab when the
+         * key is released, so the longer term costs the tap nothing.
          */
         esc_tab: escape_hold_tab_tap {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "tap-preferred";
-            tapping-term-ms = <200>;
+            tapping-term-ms = <350>;
             quick-tap-ms = <175>;
             bindings = <&m_esc>, <&kp>;
         };

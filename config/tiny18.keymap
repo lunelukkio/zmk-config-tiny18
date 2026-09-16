@@ -768,10 +768,18 @@
          * hold for Shift, for chords such as Ctrl+F5 and Shift+F10. The left
          * thumbs are &trans, so BackSpace, Space and the pages they hold work
          * here as well.
+         *
+         * The right thumbs are Alt on key 16 and Ctrl on key 17, plain keys
+         * because nothing here needs their taps. Key 17 is the thumb that
+         * holds Ctrl in text entry and AI mode, and reaching for it here found
+         * a dead key (2026-09-17), so it is Ctrl here as well. Alt went to
+         * key 16 rather than 17 so that the same habit before F4 gives
+         * Ctrl+F4, which closes a tab, and never Alt+F4, which closes the
+         * window.
          */
         fn_layer {
             bindings = <
-&kp F4  &kp F5  &kp F6  &kp F10  &kp F11  &kp F12  &kp LCTRL  &kp F1  &kp F2  &kp F3  &kp F7  &kp F8  &kp F9  &bmt LSHFT ENTER  &trans  &trans  &none  &none
+&kp F4  &kp F5  &kp F6  &kp F10  &kp F11  &kp F12  &kp LCTRL  &kp F1  &kp F2  &kp F3  &kp F7  &kp F8  &kp F9  &bmt LSHFT ENTER  &trans  &trans  &kp LALT  &kp LCTRL
             >;
         };
 

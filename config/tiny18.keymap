@@ -469,8 +469,8 @@
         };
 
         /*
-         * The IME toggle, Ctrl+Space on both hosts, is W and F together: ring
-         * finger on the top row, index finger on the home row. It has moved
+         * The IME toggle, Ctrl+Space on both hosts, is E and F together:
+         * middle finger on the top row, index finger on the home row. It has moved
          * three times, and each move fixed the same kind of collision.
          *
          * A key of its own on the editing page meant holding one thumb to tap
@@ -480,9 +480,13 @@
          * the timing told them apart. Any chord using a thumb has that
          * problem, because a held thumb is what opens the pages.
          *
-         * W+F has no such twin. No English or romaji word begins "wf", so the
-         * combo cannot land on the front of a word, which is the only place
-         * require-prior-idle-ms lets it fire at all.
+         * E+F has no such twin, and the middle finger reaching one row up to
+         * the index finger's home key is the easiest of the pairs to hit while
+         * typing Japanese. "ef" only begins a word in "effort" and its
+         * relatives, and require-prior-idle-ms means the front of a word is
+         * the only place the combo can fire at all. W+F held the chord for a
+         * few hours on 2026-09-16; it is safer on paper and worse under the
+         * hand.
          *
          * Text entry only, as of 2026-09-16. AI mode used to have it too, but
          * there is no way to type a letter in AI mode, so the IME is never
@@ -491,7 +495,7 @@
          */
         ime {
             bindings = <&kp LC(SPACE)>;
-            key-positions = <0 9>;
+            key-positions = <1 9>;
             layers = <0>;
             require-prior-idle-ms = <150>;
         };

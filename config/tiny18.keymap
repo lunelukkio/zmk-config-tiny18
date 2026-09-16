@@ -106,19 +106,26 @@
         };
 
         /*
-         * Two ordinary keys on one: tap the second, hold for the first.
-         * "tap-preferred" rather than balanced, because neither half is a
-         * modifier here. Rolling Tab into the next key has to stay a Tab, and
-         * the hold is only wanted when the key is deliberately held, so the
-         * timer alone decides. quick-tap lets a run of Tabs through.
+         * Tap for Tab, hold for one Escape. "tap-preferred" rather than
+         * balanced, because neither half is a modifier here: rolling Tab into
+         * the next key has to stay a Tab, so only the timer decides. quick-tap
+         * lets a run of Tabs through.
+         *
+         * The hold side is the m_esc macro rather than &kp ESCAPE. A held
+         * &kp stays down, and the host's own auto-repeat then sends Escape
+         * over and over. The macro taps it once and lets go, so a second
+         * Escape needs the key released and held again.
+         *
+         * The first parameter is unused, because a macro takes none; a
+         * hold-tap always has two, so the keymap passes 0.
          */
-        ht: hold_tap_keys {
+        esc_tab: escape_hold_tab_tap {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <200>;
             quick-tap-ms = <175>;
-            bindings = <&kp>, <&kp>;
+            bindings = <&m_esc>, <&kp>;
         };
     };
 
@@ -146,6 +153,16 @@
      * there under either little finger when it should go.
      */
     macros {
+        /*
+         * One Escape, pressed and released. The hold side of esc_tab uses it
+         * so that holding the key cannot turn into a run of Escapes.
+         */
+        m_esc: m_esc {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp ESCAPE>;
+        };
+
         m_resume: m_resume {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -512,9 +529,9 @@
         nav_layer {
             bindings = <
 #ifdef TINY18_PERSONAL_ARROWS
-&ht ESCAPE TAB  &kp DELETE  &kp BACKSPACE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp UP_ARROW  &kp DOWN_ARROW  &m_clear  &m_context  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
+&esc_tab 0 TAB  &kp DELETE  &kp BACKSPACE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp UP_ARROW  &kp DOWN_ARROW  &m_clear  &m_context  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
 #else
-&ht ESCAPE TAB  &kp UP_ARROW  &kp DELETE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &m_clear  &m_context  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
+&esc_tab 0 TAB  &kp UP_ARROW  &kp DELETE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &m_clear  &m_context  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
 #endif
             >;
         };

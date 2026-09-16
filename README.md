@@ -36,7 +36,7 @@ Keys are named by what they type in text entry:
 
 - `A` and `Enter` are hold-taps: tap for the letter or Enter, hold for Shift. The Enter key keeps that double role in every mode and page; the digit page and AI mode give the A key the same one, while game mode keeps a plain Shift there.
 - `BackSpace` opens the digit page while held, `Space` and `N` open the ZXCV page, and `M` holds Ctrl. Everywhere but number mode the two left thumbs are these same keys.
-- `S + Space` pressed together toggles the IME (Ctrl+Space) in text entry and AI mode, once 150 ms have passed without typing. The five slash commands in AI mode start with the HID `LANG2` key, which Windows takes as IME off and macOS as Eisu, so they arrive as ASCII whatever the IME was doing.
+- `W + F` pressed together toggles the IME (Ctrl+Space) in text entry, once 150 ms have passed without typing. No word begins "wf", and no thumb is involved, so the chord cannot be mistaken for a held page. The five slash commands in AI mode start with the HID `LANG2` key, which Windows takes as IME off and macOS as Eisu, so they arrive as ASCII whatever the IME was doing.
 - Letters without a key of their own come from adjacent pairs: `Q T Y P G H` in text entry and `B` on the ZXCV page. `A` has both a key and a pair.
 - Alt is `F + Space` and GUI is `U + J`, in text entry and AI mode.
 

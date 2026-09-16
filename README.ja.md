@@ -34,7 +34,7 @@ Seeed Studio XIAO nRF52840 を2個使う18キー左右分割キーボード [Tin
 
 - `A` と `Enter` は hold-tap で、軽く叩けば文字か Enter、押さえれば Shift です。`Enter` のキーのこの二役はすべてのモードと面で同じです。数字の面と AI モードでは `A` のキーも同じ二役になり、ゲームモードの `A` のキーだけは素の Shift です。
 - `BackSpace` を押さえると数字の面、`Space` か `N` を押さえると ZXCV の面、`M` を押さえると Ctrl です。左の親指 2 つは、数字キーパッドモード以外のどこでもこの割り当てです。
-- `S + Space` の同時押しで日本語と英語を切り替えます（Ctrl+Space）。文字入力モードと AI モードで、打鍵後 150 ms おいてから効きます。AI モードの 5 つの slash command は先頭で USB の `LANG2` キーを送ります。Windows では IME オフ、macOS では英数として届くので、IME が日本語のままでも ASCII で届きます。
+- `W + F` の同時押しで日本語と英語を切り替えます（Ctrl+Space）。文字入力モードだけで、打鍵後 150 ms おいてから効きます。`wf` で始まる語は無く、親指を使わないので面のキーとも重なりません。AI モードの 5 つの slash command は先頭で USB の `LANG2` キーを送ります。Windows では IME オフ、macOS では英数として届くので、IME が日本語のままでも ASCII で届きます。
 - キーを持たない文字は隣り合う 2 キーで出します。文字入力モードでは `Q T Y P G H`、ZXCV の面では `B` です。`A` はキーと combo の両方で出ます。
 - Alt は `F + Space`、GUI は `U + J` で、文字入力モードと AI モードで同じです。
 

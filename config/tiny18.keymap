@@ -460,28 +460,30 @@
         };
 
         /*
-         * The IME toggle, Ctrl+Space on both hosts, is S and Space together:
-         * ring finger and thumb, the shape of Alt with the ring finger in
-         * place of the index. It was a key of its own on the editing page
-         * until holding one thumb to tap the other proved awkward, then the
-         * two left thumbs together until 2026-09-16, which was still hard to
-         * press.
+         * The IME toggle, Ctrl+Space on both hosts, is W and F together: ring
+         * finger on the top row, index finger on the home row. It has moved
+         * three times, and each move fixed the same kind of collision.
          *
-         * require-prior-idle-ms keeps an S rolled into a space from toggling
-         * the IME, and it costs no typing speed: a combo that is holding off
-         * is not a candidate at all, and in text entry both keys already wait
-         * out a combo window on every press anyway, S for the A chord and
-         * Space for Alt. In AI mode S is the left arrow, and only its first
-         * press after a pause waits.
+         * A key of its own on the editing page meant holding one thumb to tap
+         * the other. The two left thumbs together were hard to press at all.
+         * S and Space, from 2026-09-16, collided with the letter X: X is Space
+         * held and S tapped, so the same two keys meant two things and only
+         * the timing told them apart. Any chord using a thumb has that
+         * problem, because a held thumb is what opens the pages.
          *
-         * Only text entry and AI mode have it. Elsewhere the S key is 4, strafe
-         * left, F1 or a Bluetooth profile, and an IME toggle landing on any of
-         * those would only ever be a mistake.
+         * W+F has no such twin. No English or romaji word begins "wf", so the
+         * combo cannot land on the front of a word, which is the only place
+         * require-prior-idle-ms lets it fire at all.
+         *
+         * Text entry only, as of 2026-09-16. AI mode used to have it too, but
+         * there is no way to type a letter in AI mode, so the IME is never
+         * changed there; leaving it out also keeps the chord off Tab and the
+         * down arrow, which do get pressed together.
          */
         ime {
             bindings = <&kp LC(SPACE)>;
-            key-positions = <7 15>;
-            layers = <0 2>;
+            key-positions = <0 9>;
+            layers = <0>;
             require-prior-idle-ms = <150>;
         };
 

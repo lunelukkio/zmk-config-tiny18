@@ -134,9 +134,9 @@ layers:
   - '-'
   - /
   edit_bracket:
-  - ESCAPE
+  - {t: TAB, h: '&m_esc'}
   - '`'
-  - TAB
+  - F10
   - '['
   - ']'
   - \

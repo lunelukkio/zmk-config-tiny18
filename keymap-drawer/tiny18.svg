@@ -253,11 +253,9 @@ path.combo {
 </text>
 </g>
 <g class="combo combopos-10">
-<path d="M150,60 l-42,-21" class="combo"/>
-<path d="M150,60 l42,21" class="combo"/>
-<rect rx="6" ry="6" x="136" y="47" width="28" height="26" class="combo"/>
-<text x="150" y="60" class="combo tap">
-<tspan x="150" dy="-0.6em">Ctl+</tspan><tspan x="150" dy="1.2em">SPACE</tspan>
+<rect rx="6" ry="6" x="166" y="47" width="28" height="26" class="combo"/>
+<text x="180" y="60" class="combo tap">
+<tspan x="180" dy="-0.6em">Ctl+</tspan><tspan x="180" dy="1.2em">SPACE</tspan>
 </text>
 </g>
 <g class="combo combopos-11">

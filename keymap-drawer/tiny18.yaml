@@ -58,19 +58,19 @@ layers:
   - {t: ',', h: edit_bracket}
   - {t: ., h: LCTRL}
   number:
-  - KP 7
-  - KP 8
-  - KP 9
-  - HOME
-  - KP MINUS
-  - PAGE UP
+  - {t: KP 7, s: INSERT}
+  - {t: KP 8, s: HOME}
+  - {t: KP 9, s: PAGE UP}
+  - {t: KP PLUS, s: PRINTSCREEN}
+  - {t: KP MINUS, s: APP}
+  - {t: '=', s: CAPS}
   - KP 1
-  - KP 4
-  - KP 5
-  - KP 6
-  - END
-  - PRINTSCREEN
-  - PAGE DOWN
+  - {t: KP 4, s: DELETE}
+  - {t: KP 5, s: END}
+  - {t: KP 6, s: PAGE DOWN}
+  - {t: KP SLASH, s: KP NUMLOCK}
+  - {t: KP ASTERISK, s: SCROLLLOCK}
+  - {t: \, s: PAUSE BREAK}
   - {t: ENTER, h: LSHFT}
   - KP 2
   - KP 3

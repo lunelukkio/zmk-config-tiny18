@@ -39,7 +39,7 @@ layers:
   - ''
   - ''
   nav:
-  - ESCAPE
+  - {t: TAB, h: ESCAPE}
   - UP ARROW
   - DELETE
   - '&m_model'

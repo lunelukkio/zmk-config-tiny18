@@ -132,6 +132,107 @@
             quick-tap-ms = <175>;
             bindings = <&m_esc>, <&kp>;
         };
+
+        /*
+         * Number mode's second face. Shift is the right little finger there,
+         * and holding it turns the twelve keys the learning display shows into
+         * everything a full keyboard has that eighteen keys had no room for:
+         * the navigation block on the left, exactly where a full keyboard puts
+         * it, and the locks and system keys on the right.
+         *
+         * A mod-morph rather than another layer, for two reasons. ZMK sends
+         * the morph without the Shift that triggered it, so these arrive
+         * clean; and the display's state byte has three bits for the layer,
+         * so a ninth layer would mean rebuilding the protocol, while Shift is
+         * already part of the state it reports.
+         *
+         * Only the keys the display draws carry a morph. The thumbs, the left
+         * little finger and the Shift key itself are left alone: a key that
+         * changes without showing it on the display is a key you cannot learn.
+         */
+        nm_7: nm_7 {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp KP_N7>, <&kp INSERT>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        nm_8: nm_8 {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp KP_N8>, <&kp HOME>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        nm_9: nm_9 {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp KP_N9>, <&kp PAGE_UP>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        nm_4: nm_4 {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp KP_N4>, <&kp DELETE>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        nm_5: nm_5 {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp KP_N5>, <&kp END>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        nm_6: nm_6 {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp KP_N6>, <&kp PAGE_DOWN>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        nm_plus: nm_plus {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp KP_PLUS>, <&kp PRINTSCREEN>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        nm_minus: nm_minus {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp KP_MINUS>, <&kp K_APP>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        nm_equal: nm_equal {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp EQUAL>, <&kp CAPS>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        nm_div: nm_div {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp KP_SLASH>, <&kp KP_NUMLOCK>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        nm_mul: nm_mul {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp KP_ASTERISK>, <&kp SCROLLLOCK>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        nm_bslh: nm_bslh {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp BACKSLASH>, <&kp PAUSE_BREAK>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
     };
 
     /*
@@ -546,14 +647,15 @@
          * Enter, tap for Enter and hold for Shift, so a figure can be
          * confirmed without leaving the mode.
          *
-         * The right hand is where a full keyboard keeps the keys this one has
-         * nowhere else: Home above End, page up above page down, and Print
-         * Screen between them, with the keypad minus left in place because a
-         * number often needs it. They took the brackets, the backslash, the
-         * equals sign and the top-row zero on 2026-09-16; the brackets are
-         * Shift over 9 and 0 on the digit page, the backslash is on the ZXCV
-         * page, equals is on the digit page, and zero is still on the right
-         * thumb and the A+BackSpace chord.
+         * The right hand is the rest of a calculator: plus, minus and equals
+         * on the top row, divide and multiply below them, and the backslash.
+         * The brackets left on 2026-09-16 for the two operators; they are
+         * Shift over 9 and 0 on the digit page. The top-row zero went to the
+         * plus, and zero is still on the right thumb and the A+BackSpace
+         * chord.
+         *
+         * Holding Shift here turns the twelve keys the display draws into the
+         * navigation block and the system keys; see the mod-morphs above.
          * Digits and the point are keypad usages, so an IME passes them through
          * as half width - the reason for this mode - but they need Num Lock.
          * The point has a key of its own here as well as the 14+15 chord,
@@ -566,7 +668,7 @@
          */
         number_layer {
             bindings = <
-&kp KP_N7  &kp KP_N8  &kp KP_N9  &kp HOME  &kp KP_MINUS  &kp PAGE_UP  &kp KP_N1  &kp KP_N4  &kp KP_N5  &kp KP_N6  &kp END  &kp PRINTSCREEN  &kp PAGE_DOWN  &bmt LSHFT ENTER  &kp KP_N2  &kp KP_N3  &kp KP_N0  &kp KP_DOT
+&nm_7  &nm_8  &nm_9  &nm_plus  &nm_minus  &nm_equal  &kp KP_N1  &nm_4  &nm_5  &nm_6  &nm_div  &nm_mul  &nm_bslh  &bmt LSHFT ENTER  &kp KP_N2  &kp KP_N3  &kp KP_N0  &kp KP_DOT
             >;
         };
 

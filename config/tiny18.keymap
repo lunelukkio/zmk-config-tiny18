@@ -28,18 +28,20 @@
  *   game        layer 5   cyan      2+7
  *   bluetooth   layer 1   red       5+10
  * 7+9 is left out of game mode, where those two keys are A and D, and so is
- * 2+7: from game mode it would only re-enter game mode and eat an R+S.
+ * 2+7: from game mode it would only re-enter game mode and eat a V+A.
  *
  * Layers held rather than switched into:
  *   6  digits and symbols    hold key 14 (BackSpace)
  *   7  editing and brackets  hold key 15 (Space) or 16 (N)
  * They carry the two highest numbers on purpose. ZMK resolves a key from the
  * highest active layer down, so a held page only shows through a mode with
- * a lower number; at 6 and 7 the pages open from every mode.
+ * a lower number; at 6 and 7 the pages open from every mode whose thumbs
+ * still hold them, which is all of them but number and game mode.
  *
- * Modifiers without a key of their own are chords, live in text entry and
- * AI mode: Alt on 9+15 (F and Space), GUI on 3+10 (U and J). The IME toggle
- * is a chord of S and Space, 7+15, in the same two modes.
+ * Modifiers without a key of their own are chords: Alt on 2+9 (R and F) in
+ * text entry and AI mode, GUI on 3+10 (U and J) in those two and in game
+ * mode, where the two keys are I and Z. The IME toggle is E and F, 1+9, in
+ * text entry only.
  *
  * Key positions (see tiny18.dtsi default_transform):
  *         0   1   2         3   4   5
@@ -51,13 +53,14 @@
  *
  * An unassigned key is &none, not &trans, so it does nothing rather than
  * falling through to the layer below. The one exception is the pair of left
- * thumbs, keys 14 and 15: everywhere but number mode they are &trans, so
- * they are the text-entry BackSpace and Space, digit page and editing page
- * on hold, whatever mode or page is open. Key 13 is the text-entry Enter in
- * every mode and page: tap for Enter, hold for Shift. The digit page and AI
- * mode give key 6 the same job, so Shift is under either little finger
- * there. Function mode holds Ctrl on key 6 instead, so an F key can be
- * chorded with either modifier, and game mode keeps a plain Shift there.
+ * thumbs, keys 14 and 15: everywhere but number and game mode they are
+ * &trans, so they are the text-entry BackSpace and Space, digit page and
+ * editing page on hold, whatever mode or page is open. Key 13 is the
+ * text-entry Enter in every mode and page: tap for Enter, hold for Shift.
+ * The digit page and AI mode give key 6 the same job, so Shift is under
+ * either little finger there. Function mode holds Ctrl on key 6 instead, so
+ * an F key can be chorded with either modifier, and game mode keeps a plain
+ * Shift there.
  *
  * Every layer is still escapable: the held layers end on key release, and the
  * mode layers are left by combo, which ZMK matches independently of what the
@@ -231,6 +234,71 @@
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
             bindings = <&kp BACKSLASH>, <&kp PAUSE_BREAK>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        /*
+         * Game mode's second face, the same mechanism as number mode's. Key 6
+         * is a plain Shift there and is also the run key, so Shift is kept
+         * off everything used while running: W, A, S and D, I, O and P, and
+         * the two Spaces stay put. What changes is Escape to Z, V to R, the
+         * right home row's Z X C to G M K, and the thumbs' left Ctrl and left
+         * Alt to their right-hand twins.
+         *
+         * ZMK masks the triggering Shift for as long as a morphed key is
+         * held, so a run pauses for that moment. keep-mods would stop that,
+         * but it sends Shift+G and Shift with right Ctrl instead, and on
+         * 2026-09-17 the plain keys were the ones wanted.
+         *
+         * The two thumbs break the rule above: the learning display draws them
+         * only in its eighteen-key layout. They were asked for anyway.
+         */
+        gm_esc: gm_esc {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp ESCAPE>, <&kp Z>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        gm_v: gm_v {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp V>, <&kp R>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        gm_z: gm_z {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp Z>, <&kp G>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        gm_x: gm_x {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp X>, <&kp M>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        gm_c: gm_c {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp C>, <&kp K>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        gm_ctrl: gm_ctrl {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp LCTRL>, <&kp RCTRL>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        gm_alt: gm_alt {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp LALT>, <&kp RALT>;
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
     };
@@ -449,7 +517,7 @@
          * condition would fire mid-word: "perfect" and "surface" both roll r
          * into f. With it, the chord only answers from a standstill, which is
          * how voice input and Alt+Tab are reached anyway, and no word begins
-         * "rf". Left out of game mode, where these are R and D.
+         * "rf". Left out of game mode, where these are V and D.
          */
         lalt {
             bindings = <&kp LEFT_ALT>;
@@ -460,12 +528,15 @@
 
         /*
          * GUI gets the same treatment on the right hand: index finger on the
-         * top and home rows, U and J. Live in text entry and AI mode.
+         * top and home rows, U and J. Live in text entry and AI mode, and
+         * since 2026-09-17 in game mode, where the two keys are I and Z. There
+         * is no idle condition, so in game mode I and Z each wait out the
+         * combo window when pressed alone.
          */
         lgui {
             bindings = <&kp LEFT_GUI>;
             key-positions = <3 10>;
-            layers = <0 2>;
+            layers = <0 2 5>;
         };
 
         /*
@@ -506,8 +577,9 @@
          *
          * require-prior-idle-ms is what makes this safe. In number mode the
          * switch positions carry digits - 0 and 2 are 7 and 9, 7 and 9 are 4
-         * and 6 - and in game mode 3 and 5 are I and P, 5 and 10 are P and Z,
-         * so typing quickly would otherwise throw you into another mode.
+         * and 6 - and in game mode 0 and 2 are Escape and V, 10 and 12 are Z
+         * and C, 3 and 5 are I and P, 5 and 10 are P and Z, so typing quickly
+         * would otherwise throw you into another mode.
          * Holding off for 150 ms after the last keypress means a switch only
          * fires from a standstill. It also stops 10+12 and 3+5 misfiring
          * between H, /, Y and P while typing.
@@ -539,7 +611,8 @@
         };
 
         /* Not live in game mode itself: &to 5 from layer 5 does nothing, and
-         * with R on key 2 there the chord would only swallow an R+S. */
+         * with V on key 2 and A on key 7 there the chord would only swallow a
+         * V+A. */
         mode_game {
             bindings = <&to 5>;
             key-positions = <2 7>;
@@ -604,7 +677,8 @@
 
         /* Profile selection on the home row. Everything else is dead so a
          * stray press cannot type, except the left thumbs, which are the
-         * text-entry BackSpace and Space here as everywhere. */
+         * text-entry BackSpace and Space here as in every mode but number
+         * and game mode. */
         bluetooth_layer {
             bindings = <
 &none  &none  &none  &none  &none  &none  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &none  &none  &none  &trans  &trans  &none  &none
@@ -677,9 +751,9 @@
          * because typing a decimal is the whole reason for this mode. There
          * is no BackSpace and no semicolon.
          *
-         * This is the one layer whose left thumbs are not the text-entry
-         * thumbs: keys 14 and 15 are 2 and 3 of the keypad, and 14+15 is the
-         * decimal point.
+         * The left thumbs are not the text-entry thumbs here: keys 14 and 15
+         * are 2 and 3 of the keypad, and 14+15 is the decimal point. Game mode
+         * is the only other layer like that.
          */
         number_layer {
             bindings = <
@@ -703,19 +777,24 @@
 
         /*
          * VRChat. W sits directly above S, so 1/7/8/9 form the usual WASD
-         * diamond. R keeps its text-entry key, and I, O and P are text
-         * entry's right top row moved one key left, so P gets a key of its
-         * own here. Space on 16 is jump. Z, C and V sit on the right hand's
-         * home row, so prone, crouch and the microphone are reached without
-         * leaving the movement keys. Key 6 stays a plain Shift, the run key,
-         * and key 13 is the text-entry Enter with Shift on hold. The left
-         * thumbs are &trans, the text-entry BackSpace and Space with the
-         * pages on hold, which is what chat needs. Escape, which opens the
-         * menu, sits on key 0 just left of W. Only key 17 is unassigned.
+         * diamond, with Escape just left of W to open the menu and V, the
+         * microphone, on R's key. I, O and P are text entry's right top row
+         * moved one key left, so P gets a key of its own here, and the right
+         * home row is Z X C. Key 6 stays a plain Shift, the run key, and key
+         * 13 is the text-entry Enter with Shift on hold.
+         *
+         * The thumbs are left Ctrl, two Spaces and left Alt, so jump is under
+         * either thumb. They are not &trans here, which costs the text-entry
+         * BackSpace and both pages: chat in this mode has letters, Space and
+         * Enter, and anything more means going back to text entry.
+         *
+         * Holding Shift gives the second face through the gm_ mod-morphs
+         * above: Z on Escape's key, R on V's, G M K on the right home row,
+         * and right Ctrl and right Alt on the thumbs. Nothing else changes.
          */
         game_layer {
             bindings = <
-&kp ESCAPE  &kp W  &kp R  &kp I  &kp O  &kp P  &kp LSHFT  &kp A  &kp S  &kp D  &kp Z  &kp C  &kp V  &bmt LSHFT ENTER  &trans  &trans  &kp SPACE  &none
+&gm_esc  &kp W  &gm_v  &kp I  &kp O  &kp P  &kp LSHFT  &kp A  &kp S  &kp D  &gm_z  &gm_x  &gm_c  &bmt LSHFT ENTER  &gm_ctrl  &kp SPACE  &kp SPACE  &gm_alt
             >;
         };
 

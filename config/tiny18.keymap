@@ -104,6 +104,22 @@
             quick-tap-ms = <175>;
             bindings = <&mo>, <&kp>;
         };
+
+        /*
+         * Two ordinary keys on one: tap the second, hold for the first.
+         * "tap-preferred" rather than balanced, because neither half is a
+         * modifier here. Rolling Tab into the next key has to stay a Tab, and
+         * the hold is only wanted when the key is deliberately held, so the
+         * timer alone decides. quick-tap lets a run of Tabs through.
+         */
+        ht: hold_tap_keys {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <175>;
+            bindings = <&kp>, <&kp>;
+        };
     };
 
     /*
@@ -230,17 +246,17 @@
         };
 
         /*
-         * AI mode's right arrow. Up took F so that E and R could carry Delete
-         * and BackSpace, which left no key for right, so it is the two keys
-         * beside it together: D and F, down and up.
+         * AI mode's right arrow. Up and down took the home row so that E and R
+         * could carry Delete and BackSpace, which left no key for right, so it
+         * is the two keys beside it together: D and F, up and down.
          *
          * No require-prior-idle-ms: arrows come in runs, and a right arrow
          * straight after a down arrow has to work. That costs two things.
-         * Down and up tapped in turn inside the 50 ms combo window give a
-         * right arrow instead of the two, and every down arrow now waits up
-         * to that window before it is sent. If either gets in the way, move
-         * the chord to a pair with only one arrow in it; R+F and W+F are free
-         * in this mode.
+         * Up and down tapped in turn inside the 50 ms combo window give a
+         * right arrow instead of the two, and the up arrow now waits up to
+         * that window before it is sent. Down already did, through the Alt
+         * chord on F and Space. If either gets in the way, move the chord to a
+         * pair with only one arrow in it; R+F and W+F are free in this mode.
          *
          * Only in the author's build: the shared one puts right on F instead,
          * so the chord would be a second way to type an arrow that already has
@@ -461,12 +477,17 @@
          * AI mode. This is the one layer the two builds disagree on, so it
          * carries both rows; see the note at the top of this file.
          *
-         * The author's row: left, down and up on the left home row, and right
+         * The author's row: left, up and down on the left home row, and right
          * as D and F together (nav_right). Up used to sit on E, above down; it
-         * moved to F so that the top row could carry Delete on E and
-         * BackSpace on R. This BackSpace is a plain key, so holding it
+         * moved down to the home row so that the top row could carry Delete on
+         * E and BackSpace on R. This BackSpace is a plain key, so holding it
          * repeats - holding the thumb's BackSpace opens the digit page
          * instead.
+         *
+         * Both rows start with Tab on W, holding for Escape: Tab is what a
+         * prompt wants every few words, Escape only now and then, and holding
+         * a key that is not a modifier costs nothing else here. Shift+Tab
+         * survives, which a mod-morph on Shift would have eaten.
          *
          * The shared row is the older arrangement, an inverted T with up on E
          * and right on F, and Delete back on R: four arrow keys, nothing to
@@ -491,9 +512,9 @@
         nav_layer {
             bindings = <
 #ifdef TINY18_PERSONAL_ARROWS
-&kp ESCAPE  &kp DELETE  &kp BACKSPACE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp UP_ARROW  &m_clear  &m_context  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
+&ht ESCAPE TAB  &kp DELETE  &kp BACKSPACE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp UP_ARROW  &kp DOWN_ARROW  &m_clear  &m_context  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
 #else
-&kp ESCAPE  &kp UP_ARROW  &kp DELETE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &m_clear  &m_context  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
+&ht ESCAPE TAB  &kp UP_ARROW  &kp DELETE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &m_clear  &m_context  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
 #endif
             >;
         };

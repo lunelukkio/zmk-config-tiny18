@@ -440,13 +440,22 @@
 
         /*
          * Left Alt triggers voice input, so it gets one gesture that works the
-         * same in text entry and AI mode: index finger and thumb together.
-         * Left out of game mode, where 9 and 15 are D and V.
+         * same in text entry and AI mode: the index finger's two keys, R above
+         * F. It was F and Space until 2026-09-16, which had the same twin the
+         * IME chord did - V is Space held and F tapped - so it moved off the
+         * thumb.
+         *
+         * require-prior-idle-ms came with the move. Two letters with no idle
+         * condition would fire mid-word: "perfect" and "surface" both roll r
+         * into f. With it, the chord only answers from a standstill, which is
+         * how voice input and Alt+Tab are reached anyway, and no word begins
+         * "rf". Left out of game mode, where these are R and D.
          */
         lalt {
             bindings = <&kp LEFT_ALT>;
-            key-positions = <9 15>;
+            key-positions = <2 9>;
             layers = <0 2>;
+            require-prior-idle-ms = <150>;
         };
 
         /*

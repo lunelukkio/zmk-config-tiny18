@@ -138,7 +138,7 @@
 
         /*
          * Number mode's second face. Shift is the right little finger there,
-         * and holding it turns the twelve keys the learning display shows into
+         * and holding it turns the twelve keys of the two upper rows into
          * everything a full keyboard has that eighteen keys had no room for:
          * the navigation block on the left, exactly where a full keyboard puts
          * it, and the locks and system keys on the right.
@@ -149,9 +149,12 @@
          * so a ninth layer would mean rebuilding the protocol, while Shift is
          * already part of the state it reports.
          *
-         * Only the keys the display draws carry a morph. The thumbs, the left
-         * little finger and the Shift key itself are left alone: a key that
-         * changes without showing it on the display is a key you cannot learn.
+         * Only those twelve keys carry a morph, the ones the learning display
+         * drew when this was written (2026-09-16). The thumbs, the left little
+         * finger and the Shift key itself were left alone: a key that changes
+         * without showing it on the display is a key you cannot learn. The
+         * display has drawn all eighteen keys since 2026-09-17, so a morph on
+         * those would now show.
          */
         nm_7: nm_7 {
             compatible = "zmk,behavior-mod-morph";
@@ -250,8 +253,9 @@
          * but it sends Shift+G and Shift with right Ctrl instead, and on
          * 2026-09-17 the plain keys were the ones wanted.
          *
-         * The two thumbs break the rule above: the learning display draws them
-         * only in its eighteen-key layout. They were asked for anyway.
+         * The two thumbs went past the rule above, which kept morphs to the
+         * keys the learning display drew. They were asked for anyway, and
+         * since 2026-09-17 the display draws the thumbs as well.
          */
         gm_esc: gm_esc {
             compatible = "zmk,behavior-mod-morph";
@@ -743,8 +747,8 @@
          * plus, and zero is still on the right thumb and the A+BackSpace
          * chord.
          *
-         * Holding Shift here turns the twelve keys the display draws into the
-         * navigation block and the system keys; see the mod-morphs above.
+         * Holding Shift here turns the twelve keys of the two upper rows into
+         * the navigation block and the system keys; see the mod-morphs above.
          * Digits and the point are keypad usages, so an IME passes them through
          * as half width - the reason for this mode - but they need Num Lock.
          * The point has a key of its own here as well as the 14+15 chord,

@@ -241,9 +241,9 @@ path.combo {
 <text x="540" y="90" class="combo tap">/</text>
 </g>
 <g class="combo combopos-8">
-<rect rx="6" ry="6" x="211" y="107" width="28" height="26" class="combo"/>
-<text x="225" y="120" class="combo tap">
-<tspan x="225" dy="-0.6em">LEFT</tspan><tspan x="225" dy="1.2em">ALT</tspan>
+<rect rx="6" ry="6" x="196" y="47" width="28" height="26" class="combo"/>
+<text x="210" y="60" class="combo tap">
+<tspan x="210" dy="-0.6em">LEFT</tspan><tspan x="210" dy="1.2em">ALT</tspan>
 </text>
 </g>
 <g class="combo combopos-9">
@@ -535,9 +535,9 @@ path.combo {
 <text x="540" y="30" class="combo tap">Ctl+X</text>
 </g>
 <g class="combo combopos-4">
-<rect rx="6" ry="6" x="211" y="107" width="28" height="26" class="combo"/>
-<text x="225" y="120" class="combo tap">
-<tspan x="225" dy="-0.6em">LEFT</tspan><tspan x="225" dy="1.2em">ALT</tspan>
+<rect rx="6" ry="6" x="196" y="47" width="28" height="26" class="combo"/>
+<text x="210" y="60" class="combo tap">
+<tspan x="210" dy="-0.6em">LEFT</tspan><tspan x="210" dy="1.2em">ALT</tspan>
 </text>
 </g>
 <g class="combo combopos-5">

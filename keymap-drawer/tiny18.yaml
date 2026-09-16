@@ -195,7 +195,7 @@ combos:
 - p: [4, 5]
   k: Ctl+X
   l: [nav]
-- p: [9, 15]
+- p: [2, 9]
   k: LEFT ALT
   l: [default, nav]
 - p: [3, 10]

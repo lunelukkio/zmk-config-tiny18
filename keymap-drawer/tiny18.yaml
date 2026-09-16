@@ -201,9 +201,9 @@ combos:
 - p: [3, 10]
   k: LEFT GUI
   l: [default, nav]
-- p: [7, 15]
+- p: [0, 9]
   k: Ctl+SPACE
-  l: [default, nav]
+  l: [default]
 - p: [0, 2]
   k: {t: default, h: toggle}
   l: [default, bluetooth, nav, number, fn, game]

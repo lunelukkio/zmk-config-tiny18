@@ -6,19 +6,8 @@
 #include <dt-bindings/zmk/keys.h>
 
 /*
- * Two builds come out of this file, and they differ in one row: AI mode's
- * arrows.
- *
- *   plain build (tiny18-right.uf2)          up on E, Delete on R, right on F
- *   -DTINY18_PERSONAL_ARROWS                Delete on E, BackSpace on R,
- *   (tiny18-right-personal.uf2)             up on F, right on D+F together
- *
- * The plain build is the one to hand to anybody else: its arrows sit in the
- * usual inverted T. The author's build moves up down onto the home row to free
- * the top row for Delete and BackSpace, which is faster once learned but is
- * nobody else's habit. build.yaml passes the define through
- * -DDTS_EXTRA_CPPFLAGS; everything else in this file is shared, and a change
- * to AI mode has to be made in both branches of nav_layer.
+ * The right-hand image is tiny18-right.uf2. AI mode uses an inverted T for
+ * its arrows and a Shift face for the six commands on the right hand.
  *
  * Six modes, each entered by one pair of keys from any other mode:
  *   text entry  layer 0   green     0+2
@@ -136,6 +125,16 @@
             bindings = <&m_esc>, <&kp>;
         };
 
+        /* AI mode: tap BackSpace, hold Delete for host auto-repeat. */
+        bs_del: backspace_delete_hold_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <175>;
+            bindings = <&kp>, <&kp>;
+        };
+
         /*
          * Number mode's second face. Shift is the right little finger there,
          * and holding it turns the twelve keys of the two upper rows into
@@ -240,6 +239,66 @@
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
+        /* The digit page's right thumbs type punctuation, or parentheses
+         * when Shift is held. The parentheses carry their own implicit Shift. */
+        dp_comma: dp_comma {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp COMMA>, <&kp LEFT_PARENTHESIS>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        dp_period: dp_period {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp PERIOD>, <&kp RIGHT_PARENTHESIS>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        /* AI mode's six right-hand keys are commands only while Shift is
+         * held. There is no ninth layer in the display's state byte. */
+        ai_model: ai_model {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&none>, <&m_model>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        ai_resume: ai_resume {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&none>, <&m_resume>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        ai_status: ai_status {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&none>, <&m_status>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        ai_clear: ai_clear {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp COMMA>, <&m_clear>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        ai_context: ai_context {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp PERIOD>, <&m_context>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        ai_perm: ai_perm {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp SLASH>, <&m_perm>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
         /*
          * Game mode's second face, the same mechanism as number mode's. Key 6
          * is a plain Shift there and is also the run key, so Shift is kept
@@ -308,12 +367,17 @@
     };
 
     /*
-     * AI mode's typed commands. Three take the right hand's top row and two
-     * the J and K positions below it; copy and paste are combos on the left
-     * hand, which is the hand that is free while the right one is on the
-     * trackball.
+     * AI mode's six typed commands occupy the right-hand top and home rows
+     * while Shift is held. Without Shift, the top row is unassigned and the
+     * home row types comma, period and slash. Copy and paste are combos on
+     * the left hand, which is free while the right one is on the trackball.
      *
-     * Each one starts with LANG2. The keyboard cannot tell whether the host's
+     * Each command releases the triggering Shift, returns to macro tap mode,
+     * then sends LANG2. A macro is queued after the mod-morph's Shift mask
+     * ends, so the mask alone would turn /model into ?MODEL. Releasing Shift
+     * means a second command needs a fresh Shift press.
+     *
+     * The keyboard cannot tell whether the host's
      * IME is in Japanese, and a command typed through a Japanese IME arrives
      * as kana. LANG2 is the HID usage Windows maps to VK_IME_OFF and macOS to
      * the JIS Eisu key, so it forces alphanumeric input whatever the state
@@ -344,31 +408,37 @@
         m_resume: m_resume {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp LANG2 &kp SLASH &kp R &kp E &kp S &kp U &kp M &kp E>;
+            bindings = <&macro_release &kp LSHFT>, <&macro_tap &kp LANG2 &kp SLASH &kp R &kp E &kp S &kp U &kp M &kp E>;
         };
 
         m_status: m_status {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp LANG2 &kp SLASH &kp S &kp T &kp A &kp T &kp U &kp S>;
+            bindings = <&macro_release &kp LSHFT>, <&macro_tap &kp LANG2 &kp SLASH &kp S &kp T &kp A &kp T &kp U &kp S>;
         };
 
         m_model: m_model {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp LANG2 &kp SLASH &kp M &kp O &kp D &kp E &kp L>;
+            bindings = <&macro_release &kp LSHFT>, <&macro_tap &kp LANG2 &kp SLASH &kp M &kp O &kp D &kp E &kp L>;
         };
 
         m_clear: m_clear {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp LANG2 &kp SLASH &kp C &kp L &kp E &kp A &kp R>;
+            bindings = <&macro_release &kp LSHFT>, <&macro_tap &kp LANG2 &kp SLASH &kp C &kp L &kp E &kp A &kp R>;
         };
 
         m_context: m_context {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&kp LANG2 &kp SLASH &kp C &kp O &kp N &kp T &kp E &kp X &kp T>;
+            bindings = <&macro_release &kp LSHFT>, <&macro_tap &kp LANG2 &kp SLASH &kp C &kp O &kp N &kp T &kp E &kp X &kp T>;
+        };
+
+        m_perm: m_perm {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_release &kp LSHFT>, <&macro_tap &kp LANG2 &kp SLASH &kp P &kp E &kp R &kp M &kp I &kp S &kp S &kp I &kp O &kp N &kp S>;
         };
     };
 
@@ -441,36 +511,11 @@
         };
 
         /*
-         * AI mode's right arrow. Up and down took the home row so that E and R
-         * could carry Delete and BackSpace, which left no key for right, so it
-         * is the two keys beside it together: D and F, up and down.
-         *
-         * No require-prior-idle-ms: arrows come in runs, and a right arrow
-         * straight after a down arrow has to work. That costs two things.
-         * Up and down tapped in turn inside the 50 ms combo window give a
-         * right arrow instead of the two, and the up arrow now waits up to
-         * that window before it is sent. Down already did, through the Alt
-         * chord on F and Space. If either gets in the way, move the chord to a
-         * pair with only one arrow in it; R+F and W+F are free in this mode.
-         *
-         * Only in the author's build: the shared one puts right on F instead,
-         * so the chord would be a second way to type an arrow that already has
-         * a key. Edit both branches of nav_layer when AI mode changes.
-         */
-#ifdef TINY18_PERSONAL_ARROWS
-        nav_right {
-            bindings = <&kp RIGHT_ARROW>;
-            key-positions = <8 9>;
-            layers = <2>;
-        };
-#endif
-
-        /*
          * AI mode's copy and paste sit on the left hand's top row, because the
          * right hand is on the trackball and reaching over costs the pointer.
          * They use the two pairs the three keys leave free - 0+2 already
          * switches to text entry. require-prior-idle-ms is what makes it
-         * safe: Delete and BackSpace here are worked in bursts, and a
+         * safe: arrows and BackSpace here are worked in bursts, and a
          * combo that only fires from a standstill cannot land in the middle
          * of one.
          */
@@ -489,14 +534,14 @@
         };
 
         /*
-         * The right hand's top row now types three commands, so undo and cut
-         * become chords across the same three keys: the two on the left give
-         * undo, the two on the right give cut.
+         * The right hand's top row types commands while Shift is held. Undo
+         * and cut use its adjacent pairs: the two on the left give undo, the
+         * two on the right give cut.
          *
          * No require-prior-idle-ms here, unlike the pair above. Undo is what
          * follows a mistake, so it is pressed the instant after a keystroke.
-         * An idle condition would let those presses through as two separate
-         * keys instead, which here means sending a command to the AI.
+         * An idle condition would make the chord unavailable just after a
+         * mistake, when undo is most useful.
          */
         nav_undo {
             bindings = <&kp LC(Z)>;
@@ -690,48 +735,25 @@
         };
 
         /*
-         * AI mode. This is the one layer the two builds disagree on, so it
-         * carries both rows; see the note at the top of this file.
+         * AI mode. The left hand has Tab/Escape, an inverted T of arrows and
+         * BackSpace/Delete on key 2. Tab is the tap of key 0 and Escape its
+         * hold, so Shift+Tab remains available. Key 2 taps BackSpace and holds
+         * Delete; quick-tap keeps BackSpace auto-repeat available.
          *
-         * The author's row: left, up and down on the left home row, and right
-         * as D and F together (nav_right). Up used to sit on E, above down; it
-         * moved down to the home row so that the top row could carry Delete on
-         * E and BackSpace on R. This BackSpace is a plain key, so holding it
-         * repeats - holding the thumb's BackSpace opens the digit page
-         * instead.
+         * The right top row is unassigned until Shift is held. Then the top
+         * and home rows send /model, /resume, /status, /clear, /context and
+         * /permissions. Without Shift, the home row types comma, period and
+         * slash. Undo and cut are top-row combos; copy and paste are on the
+         * left top row while the right hand is on the trackball.
          *
-         * Both rows start with Tab on W, holding for Escape: Tab is what a
-         * prompt wants every few words, Escape only now and then, and holding
-         * a key that is not a modifier costs nothing else here. Shift+Tab
-         * survives, which a mod-morph on Shift would have eaten.
-         *
-         * The shared row is the older arrangement, an inverted T with up on E
-         * and right on F, and Delete back on R: four arrow keys, nothing to
-         * learn, and no chord. Anyone flashing this keymap who has not spent a
-         * week with the other one gets that.
-         *
-         * Keys 6 and 13 are both the text-entry Enter, tap for
-         * Enter and hold for Shift, so Shift+arrow selection is a left-hand
-         * job with the little finger and the right hand keeps an Enter of
-         * its own.
-         *
-         * The thumbs hold what text entry holds. The left pair is &trans, so
-         * BackSpace and Space with the pages on hold come straight from
-         * layer 0. The right pair taps the comma and the full stop, the
-         * punctuation a prompt needs most, and holds the editing page on key
-         * 16 and Ctrl on key 17. The comma and the full stop used to sit on
-         * keys 10 and 11; those now type two more commands, /clear and
-         * /context, beside the three on the top row. Undo and cut ride on
-         * the top row as chords, and copy and paste sit on the left hand's
-         * top row, which the trackball leaves free.
+         * Keys 6 and 13 tap Enter and hold Shift, allowing Shift+arrow
+         * selection on the left hand. The left thumbs are transparent and
+         * retain the text-entry BackSpace and Space with their held pages.
+         * The right thumbs retain comma and period, editing page and Ctrl.
          */
         nav_layer {
             bindings = <
-#ifdef TINY18_PERSONAL_ARROWS
-&esc_tab 0 TAB  &kp DELETE  &kp BACKSPACE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp UP_ARROW  &kp DOWN_ARROW  &m_clear  &m_context  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
-#else
-&esc_tab 0 TAB  &kp UP_ARROW  &kp DELETE  &m_model  &m_resume  &m_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &m_clear  &m_context  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
-#endif
+&esc_tab 0 TAB  &kp UP_ARROW  &bs_del DELETE BACKSPACE  &ai_model  &ai_resume  &ai_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &ai_clear  &ai_context  &ai_perm  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
             >;
         };
 
@@ -743,9 +765,9 @@
          * The right hand is the rest of a calculator: plus, minus and equals
          * on the top row, divide and multiply below them, and the backslash.
          * The brackets left on 2026-09-16 for the two operators; they are
-         * Shift over 9 and 0 on the digit page. The top-row zero went to the
-         * plus, and zero is still on the right thumb and the A+BackSpace
-         * chord.
+         * Shift over 9 and 0 or the right thumbs on the digit page. The
+         * top-row zero went to plus, and zero is still on the right thumb
+         * and the A+BackSpace chord.
          *
          * Holding Shift here turns the twelve keys of the two upper rows into
          * the navigation block and the system keys; see the mod-morphs above.
@@ -821,14 +843,12 @@
          * Keys 14 and 15 are &trans: 14 is the thumb holding this page open,
          * so it can never be pressed here, and 15 is the text-entry Space, so
          * a space can follow a number without letting go; holding it opens
-         * the editing page on top of this one. The right thumbs carry the
-         * dash and the slash: what follows a digit is a date or a katakana
-         * vowel far more often than a sentence, and the dash is otherwise
-         * only on the right hand, which rests on the trackball. The comma and
-         * the full stop stay on the editing page. */
+         * the editing page on top of this one. The right thumbs type comma
+         * and period, or parentheses when Shift is held. The top-row minus
+         * and equals retain their underscore and plus Shift outputs. */
         digit_symbol_layer {
             bindings = <
-&kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &bmt LSHFT ENTER  &kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &bmt LSHFT ENTER  &trans  &trans  &kp MINUS  &kp SLASH
+&kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &bmt LSHFT ENTER  &kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &bmt LSHFT ENTER  &trans  &trans  &dp_comma  &dp_period
             >;
         };
 
@@ -840,17 +860,16 @@
          * keys. Key 6 is Z here rather than Shift, so this page's Shift is
          * the right little finger.
          *
-         * The right thumbs are the comma and the full stop, and this is the
-         * only page that carries them: the digit page traded them for the
-         * dash and the slash. Copy and paste have no keys of their own here:
+         * The right thumbs are the comma and the full stop, as on the digit
+         * page. Copy and paste have no keys of their own here:
          * hold both this page and the Ctrl on key 17, then tap C or V on the
          * left home row - the same shape that already gives Ctrl+Z and
          * Ctrl+X.
          *
          * Keys 14 and 15 are &trans, the text-entry thumbs. They used to
          * carry the IME toggle and a question mark: the toggle is now the
-         * S+Space chord, and the question mark is Shift over the slash, on
-         * this page or on the digit page, three fingers either way. */
+         * S+Space chord, and the question mark is Shift over the slash on
+         * this page. */
         edit_bracket_layer {
             bindings = <
 &esc_tab 0 TAB  &kp GRAVE  &kp F10  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &kp COMMA  &kp PERIOD

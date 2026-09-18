@@ -7,36 +7,36 @@ Seeed Studio XIAO nRF52840 を2個使う18キー左右分割キーボード [Tin
 
 ## 上流との違い
 
-- **キーマップ。** 6つのモードと押しっぱなしで開く2つの面、全8レイヤー、combo 26個（作者用のビルドでは27個）。右手はトラックボールの上に置いたままなので、日常的に使う操作は左手9キーに収めてあります。配置図と理由は [lunelukkio.com/public/tiny18/keymap.html](https://lunelukkio.com/public/tiny18/keymap.html) にまとめてあります。
-- **右手の uf2 は2種類。** 違いは AI モードの矢印の並びだけです。`tiny18-right.uf2` は矢印が普通の逆 T 字で、作者以外はこちらを書き込んでください。`tiny18-right-personal.uf2` は `-DTINY18_PERSONAL_ARROWS` を付けたビルドで、↑ をホーム行へ下ろし、→ を `D + F` の同時押しにして、上段を Delete と BackSpace に空けてあります。上のページが説明しているのはこちらです。ほかはすべて同じで、左手の `tiny18-left.uf2` はどちらとも組めます。
+- **キーマップ。** 6つのモードと押しっぱなしで開く2つの面、全8レイヤー、combo 26個。右手はトラックボールの上に置いたままなので、日常的に使う操作は左手9キーに収めてあります。配置図と理由は [lunelukkio.com/public/tiny18/keymap.html](https://lunelukkio.com/public/tiny18/keymap.html) にまとめてあります。
+- **右手の uf2 は1種類。** `tiny18-right.uf2` の AI モードは矢印が逆 T 字で、R の位置はタップで BackSpace、長押しで Delete です。右手の6キーは Shift を押さえている間、`/model`、`/resume`、`/status`、`/clear`、`/context`、`/permissions` になります。
 - **レイヤーの色。** 右手側の RGB LED がモードを示します。文字入力は緑、AI は青、数字キーパッドは黄、ゲームはシアン、ファンクションはマゼンタ、Bluetooth は赤、押しっぱなしの面を開いている間は白です。
 - **deep sleep。** 左右とも無操作30分で眠ります（`CONFIG_ZMK_SLEEP=y`、`CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=1800000`）。起こすには右手側のキーを1回押す必要があり、その打鍵は送られません。
 - **学習用表示器。** [`src/layer_uart.c`](src/layer_uart.c) が UART1（D1、送信のみ、9600 baud、8N1）で状態1 byte を送ります。起動時、レイヤーか押している修飾キーが変わったとき、キーを押したときに送り、bit 0〜2 が最高位のレイヤー、bit 3〜6 が Shift、Ctrl、Alt、GUI です。USB 給電の CH32V003 基板が透明 OLED に現在のキー配置を描きます。受信側のファームウェアは [lunelukkio/t-display](https://github.com/lunelukkio/t-display) にあります。右手側の `CONFIG_TINY18_LAYER_UART=y` で有効になります。
 
 ## キーマップ
 
-キーマップの正本は [`config/tiny18.keymap`](config/tiny18.keymap) で、判断の理由はその中のコメントに書いてあります。右手の2種類はこの1ファイルから作っていて、[`build.yaml`](build.yaml) が `DTS_EXTRA_CPPFLAGS` 経由で渡す `TINY18_PERSONAL_ARROWS` が作者用の矢印を選びます。ファームウェア関連のファイルを push すると GitHub Actions が [`keymap-drawer/tiny18.svg`](keymap-drawer/tiny18.svg) を描き直します。図は define なしのビルドです。
+キーマップの正本は [`config/tiny18.keymap`](config/tiny18.keymap) で、判断の理由はその中のコメントに書いてあります。[`build.yaml`](build.yaml) は左右に1種類ずつのファームウェアを作ります。ファームウェア関連のファイルを push すると GitHub Actions が [`keymap-drawer/tiny18.svg`](keymap-drawer/tiny18.svg) を描き直します。
 
 ![Tiny18 keymap](keymap-drawer/tiny18.svg)
 
 | モード | レイヤー | 入り方 | 用途 |
 | --- | --- | --- | --- |
 | 文字入力 | 0 | `W + R` | 文字。起動時はここ |
-| AI | 2 | `S + F` | 矢印、Delete、`/model` `/resume` `/status` `/clear` `/context`、右の親指に読点と句点、コピーと貼り付けの combo。矢印の段だけが右手の uf2 2種類で違います |
+| AI | 2 | `S + F` | 逆T字の矢印、BackSpace/Delete、Shift中の6つのslash command、右手の句読点、コピーと貼り付けのcombo |
 | 数字キーパッド | 3 | `J + L` | テンキーのコード。日本語入力でも半角のまま通る |
 | ゲーム | 5 | `R + S` | VRChat 用の WASD と、R I O P、チャット用のキー |
 | ファンクション | 4 | `U + O` | F1 から F12 |
 | Bluetooth | 1 | `O + J` | 接続プロファイルの切り替え |
 
-モードの切り替えはモードごとに 2 キーの combo が 1 つで、どのモードからでも直接どのモードへも行けます。打鍵後 150 ms おかないと効きません。ほかに親指を押さえている間だけ開く面が 2 つあります。BackSpace で数字と記号の面、Space か N で ZXCV の面です。面はレイヤー 6 と 7 で、いちばん大きい番号なので、どのモードからも開きます。
+モードの切り替えはモードごとに 2 キーの combo が 1 つです。ゲームモード内では AI モード行きとゲームモード行きが無効です。切替comboは打鍵後 150 ms おかないと効きません。ほかに親指を押さえている間だけ開く面が 2 つあります。BackSpace で数字と記号の面、Space か N で ZXCV の面です。面はレイヤー 6 と 7 で、いちばん大きい番号です。文字入力の親指を残しているモードから開けます。
 
 キーは文字入力モードで出る文字の名前で呼びます。
 
 - `A` と `Enter` は hold-tap で、軽く叩けば文字か Enter、押さえれば Shift です。`Enter` のキーのこの二役はすべてのモードと面で同じです。数字の面と AI モードでは `A` のキーも同じ二役になり、ゲームモードの `A` のキーだけは素の Shift です。
-- `BackSpace` を押さえると数字の面、`Space` か `N` を押さえると ZXCV の面、`M` を押さえると Ctrl です。左の親指 2 つは、数字キーパッドモード以外のどこでもこの割り当てです。
-- `W + F` の同時押しで日本語と英語を切り替えます（Ctrl+Space）。文字入力モードだけで、打鍵後 150 ms おいてから効きます。`wf` で始まる語は無く、親指を使わないので面のキーとも重なりません。AI モードの 5 つの slash command は先頭で USB の `LANG2` キーを送ります。Windows では IME オフ、macOS では英数として届くので、IME が日本語のままでも ASCII で届きます。
+- `BackSpace` を押さえると数字の面、`Space` か `N` を押さえると ZXCV の面、`M` を押さえると Ctrl です。左の親指 2 つは、数字キーパッドモードとゲームモード以外でこの割り当てです。
+- `E + F` の同時押しで日本語と英語を切り替えます（Ctrl+Space）。文字入力モードだけで、打鍵後 150 ms おいてから効きます。AI モードの6つのslash commandは USB の `LANG2` キーを送り、Windows では IME オフ、macOS では英数として届くので、IME が日本語のままでも ASCII で届きます。
 - キーを持たない文字は隣り合う 2 キーで出します。文字入力モードでは `Q T Y P G H`、ZXCV の面では `B` です。`A` はキーと combo の両方で出ます。
-- Alt は `F + Space`、GUI は `U + J` で、文字入力モードと AI モードで同じです。
+- Alt は `R + F`、GUI は `U + J` で、文字入力モードと AI モードで同じです。
 
 ## ダウンロード
 
@@ -45,18 +45,17 @@ Seeed Studio XIAO nRF52840 を2個使う18キー左右分割キーボード [Tin
 | ファイル | 書き込み先 |
 | --- | --- |
 | `tiny18-right.uf2` | 右手側。AI モードの矢印は普通の逆 T 字。Bluetooth 中央側、ZMK Studio 接続側、学習用表示器の送信側 |
-| `tiny18-right-personal.uf2` | 右手側。AI モードの矢印が作者の配置。ほかは同じ |
-| `tiny18-left.uf2` | 左手側。Bluetooth 周辺側。どちらの右手とも組めます |
+| `tiny18-left.uf2` | 左手側。Bluetooth 周辺側 |
 | `settings-reset.uf2` | 保存された Bluetooth・左右接続情報の消去 |
-| `SHA256SUMS` | 4つの UF2 の SHA-256 チェックサム |
+| `SHA256SUMS` | 3つの UF2 の SHA-256 チェックサム |
 
-左右のファイルは入れ替えられません。取り違えたら、もう一度ブートローダーへ入り、正しい UF2 を書き込んでください。キーマップを解釈するのは右手側だけなので、左手の UF2 は右手2種類で共通です。左手が変わるのは combo や macro、`.conf`、overlay を変えたときで、キーの割り当てを差し替えただけなら変わりません。左手側を書き直す前にチェックサムを比べてください。
+左右のファイルは入れ替えられません。取り違えたら、もう一度ブートローダーへ入り、正しい UF2 を書き込んでください。キーマップを解釈するのは右手側だけです。左右とも同じビルドの UF2 を書き込んでください。
 
 ## 書き込み
 
 1. キーボードのバッテリー電源を切り、USBデータケーブルで片側をPCへ接続します。
 2. XIAO のリセットボタンを素早く2回押します。`XIAO-SENSE` ドライブが表示されます。
-3. 右手側には `tiny18-right.uf2`（または `tiny18-right-personal.uf2`）、左手側には `tiny18-left.uf2` をコピーします。
+3. 右手側には `tiny18-right.uf2`、左手側には `tiny18-left.uf2` をコピーします。
 4. USBを外して左右の電源を入れ、PCのBluetooth設定から `tiny18` をペアリングします。
 
 初回導入時や接続不調時は、両側へ `settings-reset.uf2` を書き込んでから、改めて左右それぞれの UF2 を書き込んでください。PCに残っている古い `tiny18` のペアリングも削除してから再接続します。
@@ -79,7 +78,6 @@ Seeed Studio XIAO nRF52840 を2個使う18キー左右分割キーボード [Tin
 [`build.yaml`](build.yaml) は次の3つを作ります。
 
 - 右手側。RGB LED のレイヤー・電池表示、USB 経由の ZMK Studio、レイヤー送信用 UART 付き
-- 同じ右手側を `-DTINY18_PERSONAL_ARROWS` 付きでもう一度。`tiny18-right-personal` として出ます
 - 左手側。RGB LED のレイヤー・電池表示付き
 - 復旧用の settings-reset
 

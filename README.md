@@ -9,36 +9,36 @@ ZMK firmware for [Tiny18](https://github.com/k3peta/tiny18), an 18-key wireless 
 
 ## What differs from upstream
 
-- **Keymap.** Six modes and two held pages across eight layers, with 26 combos, or 27 in the author's build. The right hand rests on a trackball, so everything used daily fits on the left nine keys. The full layout, with diagrams and the reasoning, is at [lunelukkio.com/public/tiny18/keymap.html](https://lunelukkio.com/public/tiny18/keymap.html).
-- **Two right-hand images.** They differ in one row: AI mode's arrows. `tiny18-right.uf2` keeps them in the usual inverted T and is the image to flash if you are not the author. `tiny18-right-personal.uf2`, built with `-DTINY18_PERSONAL_ARROWS`, moves up onto the home row, makes right a `D + F` chord, and frees the top row for Delete and BackSpace; that is the layout the page above describes. Everything else is identical, and either one pairs with the same `tiny18-left.uf2`.
+- **Keymap.** Six modes and two held pages across eight layers, with 26 combos. The right hand rests on a trackball, so everything used daily fits on the left nine keys. The full layout, with diagrams and the reasoning, is at [lunelukkio.com/public/tiny18/keymap.html](https://lunelukkio.com/public/tiny18/keymap.html).
+- **One right-hand image.** `tiny18-right.uf2` has inverted-T arrows in AI mode. BackSpace taps and Delete holds on the R position. Holding Shift turns six right-hand keys into `/model`, `/resume`, `/status`, `/clear`, `/context` and `/permissions`.
 - **Layer colours.** The right half's RGB LED shows the mode: green for text entry, blue for AI, yellow for the number keypad, cyan for game, magenta for function, red for Bluetooth, and white while a held page is open.
 - **Deep sleep.** Both halves sleep after 30 minutes idle (`CONFIG_ZMK_SLEEP=y`, `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=1800000`). Waking takes a key press on the right half, and that press is lost.
 - **Learning display.** [`src/layer_uart.c`](src/layer_uart.c) sends one byte over UART1 (D1, TX only, 9600 baud, 8N1) at boot, whenever the layer or a held modifier changes, and on every key press: the highest active layer in bits 0 to 2, then Shift, Ctrl, Alt and GUI in bits 3 to 6. A USB-powered CH32V003 board draws the current key labels on a transparent OLED; its firmware lives in [lunelukkio/t-display](https://github.com/lunelukkio/t-display). The right half enables it with `CONFIG_TINY18_LAYER_UART=y`.
 
 ## Keymap
 
-The canonical keymap is [`config/tiny18.keymap`](config/tiny18.keymap); the comments in it explain each decision. One file builds both right-hand images: `TINY18_PERSONAL_ARROWS`, passed through `DTS_EXTRA_CPPFLAGS` in [`build.yaml`](build.yaml), picks the author's arrow row. GitHub Actions redraws [`keymap-drawer/tiny18.svg`](keymap-drawer/tiny18.svg) whenever a push touches the firmware files; the drawing is the plain build.
+The canonical keymap is [`config/tiny18.keymap`](config/tiny18.keymap); the comments in it explain each decision. [`build.yaml`](build.yaml) builds one image per half. GitHub Actions redraws [`keymap-drawer/tiny18.svg`](keymap-drawer/tiny18.svg) whenever a push touches the firmware files.
 
 ![Tiny18 keymap](keymap-drawer/tiny18.svg)
 
 | Mode | Layer | Switch | What it is for |
 | --- | --- | --- | --- |
 | Text entry | 0 | `W + R` | Letters; the mode at power-on |
-| AI | 2 | `S + F` | Arrows, Delete, `/model` `/resume` `/status` `/clear` `/context`, comma and full stop on the right thumbs, copy and paste chords. The arrow row is the one thing the two right-hand images differ in |
+| AI | 2 | `S + F` | Inverted-T arrows, BackSpace/Delete, six slash commands while Shift is held, punctuation on the right, and copy and paste chords |
 | Number keypad | 3 | `J + L` | Keypad digits, which pass through an IME as half width |
 | Game | 5 | `R + S` | WASD for VRChat, with R I O P and chat keys |
 | Function | 4 | `U + O` | F1 to F12 |
 | Bluetooth | 1 | `O + J` | Profile selection |
 
-Each mode is entered by one two-key combo, live in every mode, so any mode reaches any other directly; the combos fire only after 150 ms without typing. Two more layers open only while a thumb is held: the digit and symbol page on BackSpace, the ZXCV page on Space or N. They are layers 6 and 7, the two highest, so they open from every mode.
+Each mode is entered by one two-key combo; AI and game mode entry are disabled within game mode. The switching combos fire only after 150 ms without typing. Two more layers open only while a thumb is held: the digit and symbol page on BackSpace, the ZXCV page on Space or N. They are layers 6 and 7, the two highest, and open from modes that retain the text-entry thumbs.
 
 Keys are named by what they type in text entry:
 
 - `A` and `Enter` are hold-taps: tap for the letter or Enter, hold for Shift. The Enter key keeps that double role in every mode and page; the digit page and AI mode give the A key the same one, while game mode keeps a plain Shift there.
-- `BackSpace` opens the digit page while held, `Space` and `N` open the ZXCV page, and `M` holds Ctrl. Everywhere but number mode the two left thumbs are these same keys.
-- `W + F` pressed together toggles the IME (Ctrl+Space) in text entry, once 150 ms have passed without typing. No word begins "wf", and no thumb is involved, so the chord cannot be mistaken for a held page. The five slash commands in AI mode start with the HID `LANG2` key, which Windows takes as IME off and macOS as Eisu, so they arrive as ASCII whatever the IME was doing.
+- `BackSpace` opens the digit page while held, `Space` and `N` open the ZXCV page, and `M` holds Ctrl. The two left thumbs retain those roles outside number and game modes.
+- `E + F` pressed together toggles the IME (Ctrl+Space) in text entry, once 150 ms have passed without typing. The six slash-command macros in AI mode send the HID `LANG2` key, which Windows takes as IME off and macOS as Eisu, so they arrive as ASCII whatever the IME was doing.
 - Letters without a key of their own come from adjacent pairs: `Q T Y P G H` in text entry and `B` on the ZXCV page. `A` has both a key and a pair.
-- Alt is `F + Space` and GUI is `U + J`, in text entry and AI mode.
+- Alt is `R + F` and GUI is `U + J`, in text entry and AI mode.
 
 ## Download
 
@@ -47,18 +47,17 @@ UF2 files for tagged versions are on the [Releases](https://github.com/lunelukki
 | File | Target |
 | --- | --- |
 | `tiny18-right.uf2` | Right half, AI-mode arrows in the usual inverted T; Bluetooth central, ZMK Studio host, learning display sender |
-| `tiny18-right-personal.uf2` | Right half, the author's AI-mode arrows; identical otherwise |
-| `tiny18-left.uf2` | Left half; Bluetooth peripheral. Pairs with either right image |
+| `tiny18-left.uf2` | Left half; Bluetooth peripheral |
 | `settings-reset.uf2` | Clears stored Bluetooth and split settings |
-| `SHA256SUMS` | SHA-256 checksums for the four UF2 files |
+| `SHA256SUMS` | SHA-256 checksums for the three UF2 files |
 
-The right and left files are not interchangeable. If the wrong image is flashed, enter the bootloader again and flash the correct image. Only the right half interprets the keymap, so the left image is shared by both right images; it changes when combos, macros, `.conf` or overlays change, but not for a plain swap of key bindings. Compare the checksums before reflashing the left half.
+The right and left files are not interchangeable. If the wrong image is flashed, enter the bootloader again and flash the correct image. Only the right half interprets the keymap. Flash the right and left images from the same build together.
 
 ## Flashing
 
 1. Turn the keyboard's battery power switch off and connect one half with a USB data cable.
 2. Double-press the XIAO reset button. A drive named `XIAO-SENSE` should appear.
-3. Copy `tiny18-right.uf2` (or `tiny18-right-personal.uf2`) to the right half and `tiny18-left.uf2` to the left half.
+3. Copy `tiny18-right.uf2` to the right half and `tiny18-left.uf2` to the left half.
 4. Disconnect USB, turn both halves on, and pair the Bluetooth device named `tiny18`.
 
 For a first installation, or if the halves or host no longer pair correctly:
@@ -88,7 +87,6 @@ Actions artifacts are intended for testing and expire. Permanent downloads come 
 [`build.yaml`](build.yaml) produces:
 
 - right half with RGB LED layer/battery widget, ZMK Studio over USB and the layer UART
-- the same right half again with `-DTINY18_PERSONAL_ARROWS`, as `tiny18-right-personal`
 - left half with RGB LED layer/battery widget
 - settings-reset image for recovery
 

@@ -17,22 +17,14 @@
 #     artifact-name: corne_left_with_logging
 #
 ---
-# The two right-hand images differ only in AI mode's arrow row, which
-# config/tiny18.keymap picks with TINY18_PERSONAL_ARROWS. Without the define
-# the arrows sit in the usual inverted T, so tiny18-right.uf2 is the image to
-# hand to anybody else. The left half interprets no keymap at all, so one
-# left image goes with either right one.
+# One right-hand image uses the AI mode defined in config/tiny18.keymap.
+# The left half interprets no keymap of its own.
 include:
   - board: seeeduino_xiao_ble
     shield: tiny18_r rgbled_adapter
     snippet: studio-rpc-usb-uart
     cmake-args: -DCONFIG_ZMK_STUDIO=y
     artifact-name: tiny18-right
-  - board: seeeduino_xiao_ble
-    shield: tiny18_r rgbled_adapter
-    snippet: studio-rpc-usb-uart
-    cmake-args: -DCONFIG_ZMK_STUDIO=y -DDTS_EXTRA_CPPFLAGS=-DTINY18_PERSONAL_ARROWS
-    artifact-name: tiny18-right-personal
   - board: seeeduino_xiao_ble
     shield: tiny18_l rgbled_adapter
     artifact-name: tiny18-left

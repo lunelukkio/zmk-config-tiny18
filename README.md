@@ -9,8 +9,8 @@ ZMK firmware for [Tiny18](https://github.com/k3peta/tiny18), an 18-key wireless 
 
 ## What differs from upstream
 
-- **Keymap.** Six modes and two held pages across eight layers, with 26 combos. The right hand rests on a trackball, so everything used daily fits on the left nine keys. The full layout, with diagrams and the reasoning, is at [lunelukkio.com/public/tiny18/keymap.html](https://lunelukkio.com/public/tiny18/keymap.html).
-- **One right-hand image.** `tiny18-right.uf2` has inverted-T arrows in AI mode. BackSpace taps and Delete holds on the R position. Holding Shift turns six right-hand keys into `/model`, `/resume`, `/status`, `/clear`, `/context` and `/permissions`.
+- **Keymap.** Six modes and two held pages across eight layers, with 24 combos. The right hand rests on a trackball, so everything used daily fits on the left nine keys. The full layout, with diagrams and the reasoning, is at [lunelukkio.com/public/tiny18/keymap.html](https://lunelukkio.com/public/tiny18/keymap.html).
+- **One right-hand image.** `tiny18-right.uf2` has inverted-T arrows in AI mode. W sends Escape, or Tab with Shift; R sends BackSpace, or Delete with Shift. The right top row sends Ctrl+Z, Ctrl+Shift+Z and Ctrl+X. Holding Shift turns the six right-hand keys into `/model`, `/resume`, `/status`, `/clear`, `/context` and `/permissions`.
 - **Layer colours.** The right half's RGB LED shows the mode: green for text entry, blue for AI, yellow for the number keypad, cyan for game, magenta for function, red for Bluetooth, and white while a held page is open.
 - **Deep sleep.** Both halves sleep after 30 minutes idle (`CONFIG_ZMK_SLEEP=y`, `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=1800000`). Waking takes a key press on the right half, and that press is lost.
 - **Learning display.** [`src/layer_uart.c`](src/layer_uart.c) sends one byte over UART1 (D1, TX only, 9600 baud, 8N1) at boot, whenever the layer or a held modifier changes, and on every key press: the highest active layer in bits 0 to 2, then Shift, Ctrl, Alt and GUI in bits 3 to 6. A USB-powered CH32V003 board draws the current key labels on a transparent OLED; its firmware lives in [lunelukkio/t-display](https://github.com/lunelukkio/t-display). The right half enables it with `CONFIG_TINY18_LAYER_UART=y`.
@@ -24,7 +24,7 @@ The canonical keymap is [`config/tiny18.keymap`](config/tiny18.keymap); the comm
 | Mode | Layer | Switch | What it is for |
 | --- | --- | --- | --- |
 | Text entry | 0 | `W + R` | Letters; the mode at power-on |
-| AI | 2 | `S + F` | Inverted-T arrows, BackSpace/Delete, six slash commands while Shift is held, punctuation on the right, and copy and paste chords |
+| AI | 2 | `S + F` | Inverted-T arrows, Escape/Tab, BackSpace/Delete, undo/redo/cut on the right top row, six slash commands while Shift is held, punctuation on the right, and copy and paste chords |
 | Number keypad | 3 | `J + L` | Keypad digits, which pass through an IME as half width |
 | Game | 5 | `R + S` | WASD for VRChat, with R I O P and chat keys |
 | Function | 4 | `U + O` | F1 to F12 |

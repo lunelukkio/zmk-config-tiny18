@@ -38,13 +38,18 @@ jobs:
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: >-
-          gh release create "${GITHUB_REF_NAME}"
-          dist/settings-reset.uf2
-          dist/tiny18-left.uf2
-          dist/tiny18-right.uf2
-          dist/SHA256SUMS
-          --repo "${GITHUB_REPOSITORY}"
-          --title "Tiny18 firmware ${GITHUB_REF_NAME}"
-          --generate-notes
-          --prerelease
+        shell: bash
+        run: |
+          args=()
+          if [[ "${GITHUB_REF_NAME}" == v0.* ]]; then
+            args+=(--prerelease)
+          fi
+          gh release create "${GITHUB_REF_NAME}" \
+            dist/settings-reset.uf2 \
+            dist/tiny18-left.uf2 \
+            dist/tiny18-right.uf2 \
+            dist/SHA256SUMS \
+            --repo "${GITHUB_REPOSITORY}" \
+            --title "Tiny18 firmware ${GITHUB_REF_NAME}" \
+            --generate-notes \
+            "${args[@]}"

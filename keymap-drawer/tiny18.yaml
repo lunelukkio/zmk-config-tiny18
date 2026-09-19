@@ -41,17 +41,17 @@ layers:
   nav:
   - {t: TAB, h: '&m_esc'}
   - UP ARROW
-  - DELETE
-  - '&m_model'
-  - '&m_resume'
-  - '&m_status'
+  - {t: BACKSPACE, h: DELETE}
+  - {s: '&m_model'}
+  - {s: '&m_resume'}
+  - {s: '&m_status'}
   - {t: ENTER, h: LSHFT}
   - LEFT ARROW
   - DOWN ARROW
   - RIGHT ARROW
-  - '&m_clear'
-  - '&m_context'
-  - /
+  - {t: ',', s: '&m_clear'}
+  - {t: ., s: '&m_context'}
+  - {t: /, s: '&m_perm'}
   - {t: ENTER, h: LSHFT}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -131,8 +131,8 @@ layers:
   - {t: ENTER, h: LSHFT}
   - {type: held}
   - {t: ▽, type: trans}
-  - '-'
-  - /
+  - {t: ',', s: (}
+  - {t: ., s: )}
   edit_bracket:
   - {t: TAB, h: '&m_esc'}
   - '`'

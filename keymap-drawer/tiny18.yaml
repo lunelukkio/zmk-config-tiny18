@@ -39,12 +39,12 @@ layers:
   - ''
   - ''
   nav:
-  - {t: TAB, h: '&m_esc'}
+  - {t: '&m_esc', s: TAB}
   - UP ARROW
-  - {t: BACKSPACE, h: DELETE}
-  - {s: '&m_model'}
-  - {s: '&m_resume'}
-  - {s: '&m_status'}
+  - {t: BACKSPACE, s: DELETE}
+  - {t: Ctl+Z, s: '&m_model'}
+  - {t: Ctl+Sft+Z, s: '&m_resume'}
+  - {t: Ctl+X, s: '&m_status'}
   - {t: ENTER, h: LSHFT}
   - LEFT ARROW
   - DOWN ARROW
@@ -188,12 +188,6 @@ combos:
   l: [nav]
 - p: [1, 2]
   k: Ctl+V
-  l: [nav]
-- p: [3, 4]
-  k: Ctl+Z
-  l: [nav]
-- p: [4, 5]
-  k: Ctl+X
   l: [nav]
 - p: [2, 9]
   k: LEFT ALT

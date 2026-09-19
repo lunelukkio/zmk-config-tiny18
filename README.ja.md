@@ -40,7 +40,7 @@ Seeed Studio XIAO nRF52840 を2個使う18キー左右分割キーボード [Tin
 
 ## ダウンロード
 
-タグを打ったバージョンの UF2 は [Releases](https://github.com/lunelukkio/zmk-config-tiny18/releases) にあり、有効期限はありません。`main` は最新の Release より進んでいることがあります。最新の [ビルド実行](https://github.com/lunelukkio/zmk-config-tiny18/actions/workflows/build.yml) の `firmware` アーティファクトが現在のイメージですが、こちらには期限があります。
+タグを打ったバージョンの UF2 は [Releases](https://github.com/lunelukkio/zmk-config-tiny18/releases) にあり、有効期限はありません。`v0.x.y` は実機確認中の pre-release で、1.0 より前の互換性は保証しません。`main` は最新の Release より進んでいることがあります。最新の [ビルド実行](https://github.com/lunelukkio/zmk-config-tiny18/actions/workflows/build.yml) の `firmware` アーティファクトが現在のイメージですが、こちらには期限があります。
 
 | ファイル | 書き込み先 |
 | --- | --- |
@@ -58,6 +58,13 @@ Seeed Studio XIAO nRF52840 を2個使う18キー左右分割キーボード [Tin
 3. 右手側には `tiny18-right.uf2`、左手側には `tiny18-left.uf2` をコピーします。
 4. USBを外して左右の電源を入れ、PCのBluetooth設定から `tiny18` をペアリングします。
 
+### v0.1.0 を導入するとき
+
+1. [v0.1.0 の Release](https://github.com/lunelukkio/zmk-config-tiny18/releases/tag/v0.1.0) から `tiny18-right.uf2` と `tiny18-left.uf2` を取得します。
+2. 右手と左手をそれぞれブートローダーへ入れ、対応する UF2 を片方ずつコピーします。コピー後に `XIAO-SENSE` が消えてから、もう片方へ進みます。
+3. 両方を書き込んでから電源を入れ直します。この版では macro と combo の定義も変わっているため、片手だけを旧版のまま使わないでください。
+4. 学習用 OLED を使う場合は、同じ keymap の `tiny18_layer.bin` を UIAPduino へ書き込みます。[t-display の tiny18-layer firmware](https://github.com/lunelukkio/t-display/tree/main/firmware/tiny18-layer) を更新してbuildし、UIAPduinoへ書き込みます。
+
 初回導入時や接続不調時は、両側へ `settings-reset.uf2` を書き込んでから、改めて左右それぞれの UF2 を書き込んでください。PCに残っている古い `tiny18` のペアリングも削除してから再接続します。
 
 右手側では ZMK Studio が有効です。Studio で編集したキーマップは設定領域に保存され、コンパイル済みのものより優先されます。書き込んだはずのキーマップが出てこないときは、先に `settings-reset.uf2` を書き込んでください。
@@ -71,7 +78,7 @@ Seeed Studio XIAO nRF52840 を2個使う18キー左右分割キーボード [Tin
 3. 必要なら `config/tiny18.keymap` を変更します。
 4. push 後、成功した Actions 実行の `firmware` アーティファクトを取得します。
 
-正式配布では `v3.1.0` のようなタグを push します。リリース用ワークフローが同じコミットをビルドし、チェックサム付きの GitHub Release を自動作成します。
+公開前の版は `v0.1.0` のようなtagをpushします。リリース用workflowが同じcommitをbuildし、チェックサム付きのpre-releaseを自動作成します。実機で互換性を確認してから1.0以降へ進めます。
 
 ### ビルドの内訳
 

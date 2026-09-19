@@ -47,3 +47,4 @@ jobs:
           --repo "${GITHUB_REPOSITORY}"
           --title "Tiny18 firmware ${GITHUB_REF_NAME}"
           --generate-notes
+          --prerelease

@@ -9,6 +9,7 @@ Seeed Studio XIAO nRF52840 を2個使う18キー左右分割キーボード [Tin
 
 - **キーマップ。** 6つのモードと押しっぱなしで開く2つの面、全8レイヤー、combo 24個。右手はトラックボールの上に置いたままなので、日常的に使う操作は左手9キーに収めてあります。配置図と理由は [lunelukkio.com/public/tiny18/keymap.html](https://lunelukkio.com/public/tiny18/keymap.html) にまとめてあります。
 - **右手の uf2 は1種類。** `tiny18-right.uf2` の AI モードは矢印が逆 T 字です。W の位置は Escape、Shift 中は Tab、R の位置は BackSpace、Shift 中は Delete です。右上段は `Ctrl+Z`、`Ctrl+Shift+Z`、`Ctrl+X`。右手の6キーは Shift を押さえている間、`/model`、`/resume`、`/status`、`/clear`、`/context`、`/permissions` になります。
+- **起動時は AI。** 電源投入、リセット、deep sleepからの復帰はいずれもAIモードから始まります。右手のRGB LEDは青で始まり、文字を入力するときは従来どおりcomboで文字入力モードへ切り替えます。
 - **レイヤーの色。** 右手側の RGB LED がモードを示します。文字入力は緑、AI は青、数字キーパッドは黄、ゲームはシアン、ファンクションはマゼンタ、Bluetooth は赤、押しっぱなしの面を開いている間は白です。
 - **deep sleep。** 左右とも無操作30分で眠ります（`CONFIG_ZMK_SLEEP=y`、`CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=1800000`）。起こすには右手側のキーを1回押す必要があり、その打鍵は送られません。
 - **学習用表示器。** [`src/layer_uart.c`](src/layer_uart.c) が UART1（D1、送信のみ、9600 baud、8N1）で状態1 byte を送ります。起動時、レイヤーか押している修飾キーが変わったとき、キーを押したときに送り、bit 0〜2 が最高位のレイヤー、bit 3〜6 が Shift、Ctrl、Alt、GUI です。USB 給電の CH32V003 基板が透明 OLED に現在のキー配置を描きます。受信側のファームウェアは [lunelukkio/t-display](https://github.com/lunelukkio/t-display) にあります。右手側の `CONFIG_TINY18_LAYER_UART=y` で有効になります。
@@ -21,8 +22,8 @@ Seeed Studio XIAO nRF52840 を2個使う18キー左右分割キーボード [Tin
 
 | モード | レイヤー | 入り方 | 用途 |
 | --- | --- | --- | --- |
-| 文字入力 | 0 | `W + R` | 文字。起動時はここ |
-| AI | 2 | `S + F` | 逆T字の矢印、Escape/Tab、BackSpace/Delete、右上段の元に戻す・やり直す・切り取り、Shift中の6つのslash command、右手の句読点、コピーと貼り付けのcombo |
+| 文字入力 | 0 | `W + R` | 文字 |
+| AI | 2 | `S + F` | 起動時のモード。逆T字の矢印、Escape/Tab、BackSpace/Delete、右上段の元に戻す・やり直す・切り取り、Shift中の6つのslash command、右手の句読点、コピーと貼り付けのcombo |
 | 数字キーパッド | 3 | `J + L` | テンキーのコード。日本語入力でも半角のまま通る |
 | ゲーム | 5 | `R + S` | VRChat 用の WASD と、R I O P、チャット用のキー |
 | ファンクション | 4 | `U + O` | F1 から F12 |
@@ -95,7 +96,7 @@ Seeed Studio XIAO nRF52840 を2個使う18キー左右分割キーボード [Tin
 | `config/tiny18.keymap` | キーマップの正本 |
 | `config/tiny18_*.conf` | 左右それぞれの ZMK 設定。LED の色、deep sleep、右手側は ZMK Studio とレイヤー送信 UART |
 | `boards/shields/tiny18/` | Tiny18 のシールド定義と direct-pin の配線。右手側の overlay が D1 に UART1 を足す |
-| `src/layer_uart.c`、`Kconfig`、`CMakeLists.txt`、`zephyr/module.yml` | 学習用表示器への送信部。このリポジトリ自体を Zephyr モジュールとしてビルドする |
+| `src/layer_uart.c`、`src/start_in_ai.c`、`Kconfig`、`CMakeLists.txt`、`zephyr/module.yml` | 学習用表示器への送信とAIモードでの起動。このリポジトリ自体を Zephyr モジュールとしてビルドする |
 | `build.yaml` | ビルドの組み合わせと成果物の名前 |
 | `keymap-drawer/` | 自動生成のキーマップ図 |
 | `.github/workflows/build.yml` | 継続的ビルドと図の生成 |

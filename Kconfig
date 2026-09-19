@@ -7,4 +7,10 @@ config TINY18_LAYER_UART
     help
       Send the highest active Tiny18 keymap layer as one byte through UART1.
 
+config TINY18_START_IN_AI
+    bool "Start Tiny18 in AI mode"
+    default n
+    help
+      Activate Tiny18's AI layer after the ZMK keymap is initialized.
+
 endmenu

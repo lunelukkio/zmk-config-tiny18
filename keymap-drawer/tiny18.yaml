@@ -7,7 +7,7 @@ layers:
   - U
   - I
   - O
-  - {t: A, h: LSHFT}
+  - A
   - S
   - D
   - F

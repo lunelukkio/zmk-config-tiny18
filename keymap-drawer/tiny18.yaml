@@ -7,7 +7,7 @@ layers:
   - U
   - I
   - O
-  - A
+  - {t: A, h: LSHFT}
   - S
   - D
   - F
@@ -134,7 +134,7 @@ layers:
   - {t: ',', s: (}
   - {t: ., s: )}
   edit_bracket:
-  - {t: TAB, h: '&m_esc'}
+  - {t: '&m_esc', s: TAB}
   - '`'
   - F10
   - '['

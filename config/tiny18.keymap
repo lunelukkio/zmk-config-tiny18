@@ -46,10 +46,10 @@
  * &trans, so they are the text-entry BackSpace and Space, digit page and
  * editing page on hold, whatever mode or page is open. Key 13 is the
  * text-entry Enter in every mode and page: tap for Enter, hold for Shift.
- * The digit page and AI mode give key 6 the same job, so Shift is under
- * either little finger there. Function mode holds Ctrl on key 6 instead, so
- * an F key can be chorded with either modifier, and game mode keeps a plain
- * Shift there.
+ * In AI mode and on the digit page, key 6 is also Enter / Shift, with a
+ * longer term for the left little finger. In text entry it is a plain A so
+ * holding it repeats A. Function mode holds Ctrl on key 6 instead, and game
+ * mode keeps a plain Shift there.
  *
  * Every layer is still escapable: the held layers end on key release, and the
  * mode layers are left by combo, which ZMK matches independently of what the
@@ -59,9 +59,9 @@
 / {
     behaviors {
         /*
-         * Tap for the letter or Enter, hold for the modifier. "balanced" rather than
-         * ZMK's default hold-preferred: rolling from A straight into the next
-         * letter must still type A, and balanced only resolves to the hold
+         * Tap for the key, hold for the modifier. "balanced" rather than
+         * ZMK's default hold-preferred: rolling from Enter straight into the
+         * next key must still type Enter, and balanced only resolves to the hold
          * when the second key is released before this one. quick-tap lets a
          * doubled letter through.
          */
@@ -70,6 +70,18 @@
             #binding-cells = <2>;
             flavor = "balanced";
             tapping-term-ms = <200>;
+            quick-tap-ms = <175>;
+            bindings = <&kp>, <&kp>;
+        };
+
+        /* AI and the digit page use the left little finger for Enter / Shift.
+         * Its longer term avoids turning a deliberate Enter into Shift when
+         * the key is released a little slowly. */
+        lmt: left_enter_mod_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <350>;
             quick-tap-ms = <175>;
             bindings = <&kp>, <&kp>;
         };
@@ -704,7 +716,7 @@
 
         default_layer {
             bindings = <
-&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &bmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &bmt LSHFT ENTER  &blt 6 BACKSPACE  &lt 7 SPACE  &lt 7 N  &bmt LCTRL M
+&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &kp A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &bmt LSHFT ENTER  &blt 6 BACKSPACE  &lt 7 SPACE  &lt 7 N  &bmt LCTRL M
             >;
         };
 
@@ -738,7 +750,7 @@
          */
         nav_layer {
             bindings = <
-&ai_esc_tab  &kp UP_ARROW  &bs_del  &ai_model  &ai_resume  &ai_status  &bmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &ai_clear  &ai_context  &ai_perm  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
+&ai_esc_tab  &kp UP_ARROW  &bs_del  &ai_model  &ai_resume  &ai_status  &lmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &ai_clear  &ai_context  &ai_perm  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
             >;
         };
 
@@ -833,7 +845,7 @@
          * and equals retain their underscore and plus Shift outputs. */
         digit_symbol_layer {
             bindings = <
-&kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &bmt LSHFT ENTER  &kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &bmt LSHFT ENTER  &trans  &trans  &dp_comma  &dp_period
+&kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &lmt LSHFT ENTER  &kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &bmt LSHFT ENTER  &trans  &trans  &dp_comma  &dp_period
             >;
         };
 

@@ -109,36 +109,8 @@
             bindings = <&mo>, <&kp>;
         };
 
-        /*
-         * Tap for Tab, hold for one Escape. "tap-preferred" rather than
-         * balanced, because neither half is a modifier here: rolling Tab into
-         * the next key has to stay a Tab, so only the timer decides. quick-tap
-         * lets a run of Tabs through.
-         *
-         * The hold side is the m_esc macro rather than &kp ESCAPE. A held
-         * &kp stays down, and the host's own auto-repeat then sends Escape
-         * over and over. The macro taps it once and lets go, so a second
-         * Escape needs the key released and held again.
-         *
-         * The first parameter is unused, because a macro takes none; a
-         * hold-tap always has two, so the keymap passes 0.
-         *
-         * 350 ms rather than the 200 the other hold-taps use: a Tab held a
-         * moment too long was turning into an Escape. Nothing waits on this
-         * number except Escape itself - tap-preferred sends the Tab when the
-         * key is released, so the longer term costs the tap nothing.
-         */
-        esc_tab: escape_hold_tab_tap {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            flavor = "tap-preferred";
-            tapping-term-ms = <350>;
-            quick-tap-ms = <175>;
-            bindings = <&m_esc>, <&kp>;
-        };
-
-        /* AI mode: Escape normally, plain Tab while either Shift is held. */
-        ai_esc_tab: ai_escape_tab {
+        /* AI mode and the ZXCV page: Escape normally, plain Tab with Shift. */
+        esc_tab: escape_tab {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
             bindings = <&m_esc>, <&kp TAB>;
@@ -414,8 +386,8 @@
      */
     macros {
         /*
-         * One Escape, pressed and released. The hold side of esc_tab uses it
-         * so that holding the key cannot turn into a run of Escapes.
+         * One Escape, pressed and released. esc_tab uses it so Escape cannot
+         * turn into a run of Escapes while the key is held.
          */
         m_esc: m_esc {
             compatible = "zmk,behavior-macro";
@@ -750,7 +722,7 @@
          */
         nav_layer {
             bindings = <
-&ai_esc_tab  &kp UP_ARROW  &bs_del  &ai_model  &ai_resume  &ai_status  &lmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &ai_clear  &ai_context  &ai_perm  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
+&esc_tab  &kp UP_ARROW  &bs_del  &ai_model  &ai_resume  &ai_status  &lmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &ai_clear  &ai_context  &ai_perm  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
             >;
         };
 
@@ -849,8 +821,8 @@
             >;
         };
 
-        /* Hold key 15 (Space) or 16 (N): Tab with Escape on its hold, F10 and
-         * the brackets on the
+        /* Hold key 15 (Space) or 16 (N): Escape, with Tab while Shift is
+         * held, F10 and the brackets on the
          * top row, Z X C V on the left home row, punctuation on the right,
          * the text-entry Enter on 13 with Shift on its hold, the comma and
          * the full stop on the right thumbs. B is a combo on the C and V
@@ -869,7 +841,7 @@
          * this page. */
         edit_bracket_layer {
             bindings = <
-&esc_tab 0 TAB  &kp GRAVE  &kp F10  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &kp COMMA  &kp PERIOD
+&esc_tab  &kp GRAVE  &kp F10  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &kp COMMA  &kp PERIOD
             >;
         };
     };

@@ -35,7 +35,7 @@ Each mode is entered by one two-key combo; AI and game mode entry are disabled w
 
 Keys are named by what they type in text entry:
 
-- In text entry, `A` is a plain key and repeats while held. `Enter` is a hold-tap there and in every mode and page: tap for Enter, hold for Shift. AI mode and the digit page also give the `A` position that Enter / Shift role, with a 350 ms term for the left little finger; game mode keeps a plain Shift there.
+- In text entry, `A` taps A and holds Shift after 350 ms. A quick tap followed by holding it again keeps A held for the host's auto-repeat. `Enter` is a hold-tap there and in every mode and page: tap for Enter, hold for Shift. AI mode and the digit page give the `A` position that Enter / Shift role with the same 350 ms term; game mode keeps a plain Shift there.
 - `BackSpace` opens the digit page while held, `Space` and `N` open the ZXCV page, and `M` holds Ctrl. The two left thumbs retain those roles outside number and game modes.
 - `E + F` pressed together toggles the IME (Ctrl+Space) in text entry, once 150 ms have passed without typing. The six slash-command macros in AI mode send the HID `LANG2` key, which Windows takes as IME off and macOS as Eisu, so they arrive as ASCII whatever the IME was doing.
 - Letters without a key of their own come from adjacent pairs: `Q T Y P G H` in text entry and `B` on the ZXCV page. `A` has both a key and a pair.

@@ -46,10 +46,10 @@
  * &trans, so they are the text-entry BackSpace and Space, digit page and
  * editing page on hold, whatever mode or page is open. Key 13 is the
  * text-entry Enter in every mode and page: tap for Enter, hold for Shift.
- * In AI mode and on the digit page, key 6 is also Enter / Shift, with a
- * longer term for the left little finger. In text entry it is a plain A so
- * holding it repeats A. Function mode holds Ctrl on key 6 instead, and game
- * mode keeps a plain Shift there.
+ * In text entry, AI mode and on the digit page, key 6 is a tap/hold key with
+ * a longer term for the left little finger: A / Shift in text entry and
+ * Enter / Shift elsewhere. Function mode holds Ctrl on key 6 instead, and
+ * game mode keeps a plain Shift there.
  *
  * Every layer is still escapable: the held layers end on key release, and the
  * mode layers are left by combo, which ZMK matches independently of what the
@@ -74,10 +74,11 @@
             bindings = <&kp>, <&kp>;
         };
 
-        /* AI and the digit page use the left little finger for Enter / Shift.
-         * Its longer term avoids turning a deliberate Enter into Shift when
-         * the key is released a little slowly. */
-        lmt: left_enter_mod_tap {
+        /* The left little finger uses 350 ms for A / Shift in text entry and
+         * Enter / Shift in AI mode and on the digit page. The longer term
+         * avoids turning a deliberate tap into Shift when it is released a
+         * little slowly. */
+        lmt: left_pinky_mod_tap {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "balanced";
@@ -688,7 +689,7 @@
 
         default_layer {
             bindings = <
-&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &kp A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &bmt LSHFT ENTER  &blt 6 BACKSPACE  &lt 7 SPACE  &lt 7 N  &bmt LCTRL M
+&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &lmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &bmt LSHFT ENTER  &blt 6 BACKSPACE  &lt 7 SPACE  &lt 7 N  &bmt LCTRL M
             >;
         };
 

@@ -106,8 +106,12 @@ Actions artifacts are intended for testing and expire. Permanent downloads come 
 
 ## Hardware
 
-PCB production files, BOM, and fabrication notes are in the [Tiny18 hardware repository](https://github.com/k3peta/tiny18). This repository carries no hardware files.
+This project distributes keyboard software and optional learning-display software, together with their source and documentation. Physical PCBs and PCB manufacturing files are not distributed here. For hardware information and production files, see the original author's [Tiny18 hardware repository](https://github.com/k3peta/tiny18). The files under `boards/shields/` are software configuration needed to build the firmware, not PCB manufacturing data.
 
 ## License
 
-Tiny18-specific firmware configuration and shield files are licensed under the [MIT License](LICENSE); the copyright notice in that file is the upstream author's and stays with the fork. ZMK and external modules are separate projects and retain their respective licenses.
+Tiny18-specific firmware configuration and shield files are licensed under the [MIT License](LICENSE). The upstream copyright notice, `Copyright (c) 2025-2026 k3peta`, is preserved. Original software additions and modifications by lunelukkio are also licensed under MIT, with `Copyright (c) 2026 lunelukkio`.
+
+ZMK, Zephyr, and external libraries retain their own copyright notices and licenses. The MIT license for this fork does not relicense those dependencies. See [Licensing and distribution scope](docs/licensing.md) for the source references and firmware distribution requirements.
+
+Purchased Gerber files and purchased case or switch-plate STL files, including mirrored or modified versions, have no redistribution permission and must not be included in this repository, source archives, firmware packages, or published documentation. They are outside the scope of the software license.

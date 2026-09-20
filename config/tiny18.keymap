@@ -373,7 +373,7 @@
      * as kana. LANG2 is the HID usage Windows maps to VK_IME_OFF and macOS to
      * the JIS Eisu key, so it forces alphanumeric input whatever the state
      * was, and the letters that follow arrive as typed. It leaves the host in
-     * alphanumeric mode; the S+Space chord brings Japanese back.
+     * alphanumeric mode; the E+F chord brings Japanese back.
      *
      * wait-ms and tap-ms are left at ZMK's defaults on purpose. Shortening
      * them makes the macro finish sooner but risks a dropped character, and a
@@ -838,7 +838,7 @@
          *
          * Keys 14 and 15 are &trans, the text-entry thumbs. They used to
          * carry the IME toggle and a question mark: the toggle is now the
-         * S+Space chord, and the question mark is Shift over the slash on
+         * E+F chord, and the question mark is Shift over the slash on
          * this page. */
         edit_bracket_layer {
             bindings = <

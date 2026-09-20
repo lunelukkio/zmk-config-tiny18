@@ -49,3 +49,4 @@ jobs:
       keymap_patterns: "config/*.keymap"
       config_path: "keymap_drawer.config.yaml"
       output_folder: "keymap-drawer"
+      draw_args: "tiny18:'-d boards/shields/tiny18/tiny18.dtsi'"

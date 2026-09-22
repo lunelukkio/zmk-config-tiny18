@@ -7,7 +7,8 @@
 
 /*
  * The right-hand image is tiny18-right.uf2. AI mode puts an inverted T of
- * arrows under each hand, and a Shift face for six commands on the right.
+ * arrows under each hand; two of the right hand's six keys, period and
+ * slash, are also a Shift face for /model and /status.
  *
  * Six modes, each entered by one pair of keys from any other mode:
  *   text entry  layer 0   green     0+2
@@ -246,9 +247,10 @@
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
-        /* AI mode's six right-hand keys are the period, up arrow and slash
-         * over left, down and right, and commands only while Shift is held.
-         * There is no ninth layer in the display's state byte. */
+        /* AI mode's period and slash are commands while Shift is held; the
+         * four arrows around them stay plain arrows under Shift too, so
+         * Shift+arrow selects with the right hand as well as the left. There
+         * is no ninth layer in the display's state byte. */
         ai_model: ai_model {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
@@ -256,38 +258,10 @@
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
-        ai_resume: ai_resume {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp UP_ARROW>, <&m_resume>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-        };
-
         ai_status: ai_status {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
             bindings = <&kp SLASH>, <&m_status>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-        };
-
-        ai_clear: ai_clear {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp LEFT_ARROW>, <&m_clear>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-        };
-
-        ai_context: ai_context {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp DOWN_ARROW>, <&m_context>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-        };
-
-        ai_perm: ai_perm {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp RIGHT_ARROW>, <&m_perm>;
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
@@ -359,12 +333,12 @@
     };
 
     /*
-     * AI mode's six typed commands occupy the right-hand top and home rows
-     * while Shift is held. Without Shift, the top row types the period, up
-     * arrow and slash, and the home row carries left, down and right. Copy
-     * and paste are combos on the left hand, which is free while the right
-     * one is on the trackball; undo, redo, cut and find are combos on the
-     * right.
+     * AI mode's two typed commands sit on the right-hand top row's period and
+     * slash while Shift is held. The four arrows around them, and the rest of
+     * the six-key face, are plain arrows whether or not Shift is held, so
+     * Shift+arrow selects with the right hand as well as the left. Copy and
+     * paste are combos on the left hand, which is free while the right one is
+     * on the trackball; undo, redo, cut and find are combos on the right.
      *
      * Each command releases the triggering Shift, returns to macro tap mode,
      * then sends LANG2. A macro is queued after the mod-morph's Shift mask
@@ -380,10 +354,10 @@
      *
      * wait-ms and tap-ms are left at ZMK's defaults on purpose. Shortening
      * them makes the macro finish sooner but risks a dropped character, and a
-     * command that arrives as "/resme" is worse than one that takes an extra
+     * command that arrives as "/statu" is worse than one that takes an extra
      * moment.
      *
-     * None of them sends Enter any more, as of 2026-09-16. The command lands
+     * Neither sends Enter any more, as of 2026-09-16. The command lands
      * in the prompt and waits: /model can take an argument, a command pressed
      * by accident can be deleted rather than run, and the Enter key is right
      * there under either little finger when it should go.
@@ -399,12 +373,6 @@
             bindings = <&macro_tap &kp ESCAPE>;
         };
 
-        m_resume: m_resume {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&macro_release &kp LSHFT>, <&macro_tap &kp LANG2 &kp SLASH &kp R &kp E &kp S &kp U &kp M &kp E>;
-        };
-
         m_status: m_status {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -415,24 +383,6 @@
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&macro_release &kp LSHFT>, <&macro_tap &kp LANG2 &kp SLASH &kp M &kp O &kp D &kp E &kp L>;
-        };
-
-        m_clear: m_clear {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&macro_release &kp LSHFT>, <&macro_tap &kp LANG2 &kp SLASH &kp C &kp L &kp E &kp A &kp R>;
-        };
-
-        m_context: m_context {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&macro_release &kp LSHFT>, <&macro_tap &kp LANG2 &kp SLASH &kp C &kp O &kp N &kp T &kp E &kp X &kp T>;
-        };
-
-        m_perm: m_perm {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&macro_release &kp LSHFT>, <&macro_tap &kp LANG2 &kp SLASH &kp P &kp E &kp R &kp M &kp I &kp S &kp S &kp I &kp O &kp N &kp S>;
         };
     };
 
@@ -752,21 +702,21 @@
          * binding.
          *
          * The right hand has a second inverted T: period, up arrow and slash
-         * on the top row, left, down and right on the home row. With Shift,
-         * the same six keys send /model, /resume, /status, /clear, /context
-         * and /permissions, so Shift+arrow selection works on the left hand
-         * only. Undo, redo, cut and find are chords of neighbouring right-hand
-         * keys; copy and paste are on the left top row while the right hand is
-         * on the trackball.
+         * on the top row, left, down and right on the home row. Only the
+         * period and slash change under Shift, to /model and /status; the
+         * four arrows stay plain arrows, so Shift+arrow selection works with
+         * either hand. Undo, redo, cut and find are chords of neighbouring
+         * right-hand keys; copy and paste are on the left top row while the
+         * right hand is on the trackball.
          *
          * Keys 6 and 13 tap Enter and hold Shift, allowing Shift+arrow
-         * selection on the left hand. The left thumbs are transparent and
+         * selection from either hand. The left thumbs are transparent and
          * retain the text-entry BackSpace and Space with their held pages.
          * The right thumbs retain comma and period, editing page and Ctrl.
          */
         nav_layer {
             bindings = <
-&esc_tab  &kp UP_ARROW  &bs_del  &ai_model  &ai_resume  &ai_status  &lmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &ai_clear  &ai_context  &ai_perm  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
+&esc_tab  &kp UP_ARROW  &bs_del  &ai_model  &kp UP_ARROW  &ai_status  &lmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
             >;
         };
 

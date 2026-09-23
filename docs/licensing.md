@@ -35,7 +35,8 @@ MIT にしても、組み込んだ第三者のコードは元のライセンス�
 ZMK の版は [config/west.yml](../config/west.yml) にあり、Zephyr の版は
 [ZMK v0.3.0 の manifest](https://github.com/zmkfirmware/zmk/blob/v0.3.0/app/west.yml)
 で指定されています。表は主要なソフトウェアの説明であり、完成したバイナリの
-全依存を確認済みとする一覧ではありません。OLED の source 統合は別の作業です。
+全依存を確認済みとする一覧ではありません。OLEDのsourceと固定版ch32funは
+[`addons/oled/`](../addons/oled/)に含まれます。submodule内の元の表示も保持します。
 
 Apache-2.0 も改変・再配布を認めています。配布時にはライセンス本文を渡し、
 配布する source の関係する著作権・帰属表示を保持します。Apache-2.0 のファイルを
@@ -46,8 +47,31 @@ Apache-2.0 も改変・再配布を認めています。配布時にはライセ
 
 配布用パッケージには、この fork の LICENSE と、実際に組み込む依存ソフトウェアの
 ライセンス本文・必要な帰属表示を同梱します。README にリンクだけを置くことを
-同梱の代わりにはしません。現在の配布物については、全依存の確認とライセンスの
-同梱が別途必要です。
+同梱の代わりにはしません。統合版の[配布用workflow](../.github/workflows/release.yml)は、
+実際のbuildに使ったwest workspaceからライセンス本文とC/Rust sourceの帰属コメントを
+収集し、ch32funとSDK runtimeのライセンスもZIPの`LICENSES/`へ同梱します。
+Git projectの依存commitは`LICENSES/inventory.json`と`resolved-west.yml`に記録します。
+SDK runtimeは、使用した版、公式配布元、同梱したlicense file一覧を
+`inventory.json`に記録します。
+
+この収集処理は、未使用のmodule・fileも含む保守的な資料作成です。
+バイナリへlinkされた全コードのライセンスを自動判定したり、再配布条件への適合を
+保証したりするものではありません。v0.3.1のlocal review buildでは、OLEDの最終mapに
+ch32funの`misc/libgcc.a`から`muldi3.o`の`__mulsi3`だけが22 bytes残り、`div.o`は
+discardされています。対応する`misc/LIBGCC_LICENSE`はch32funの資料として同梱します。
+compilerやsourceが変わればlink結果も変わり得るため、SDK runtimeとファイル固有の条件を
+毎回buildのmapと照合し、レビューを通してからRelease下書きを公開します。
+旧ReleaseのUF2へ、この統合版の収集結果をそのまま流用しないでください。
+
+## 旧形式のbinaryとActions artifact
+
+ライセンス付きのversioned ZIPを、新しい統合版の再配布単位とします。旧形式の公開
+Releaseには、個別のUF2とchecksumだけで、対応する第三者license資料が付属しないものが
+あります。通常の`build.yml`と`oled.yml`が作る期限付きActions artifactも、binaryだけで
+完全なlicense bundleを含みません。これらは履歴確認・個人の動作確認用であり、binaryを
+単独で再配布するための完全なpackageとしては扱いません。再配布する場合は、対象sourceと
+依存に対応する`LICENSES/`を含む統合ZIPを作り直してください。この文書の更新だけでは、
+既存Releaseのasset追加・取り下げやActions artifactの構成変更は行いません。
 
 ## 再配布禁止のハードウェアデータ
 
@@ -56,7 +80,13 @@ Apache-2.0 も改変・再配布を認めています。配布時にはライセ
 パッケージ、公開文書へ含めてはいけません。これらに本ソフトウェアの MIT を
 適用することもできません。
 
+本プロジェクトで使用した Gerber とケース・トッププレートの STL が必要な場合は、
+元作者の有料記事 [Tiny18ビルドマニュアル：ver1／ver2のハードウェアと共通ファームウェア](https://note.com/3peta/n/n44d2c364cadc)
+から購入してください。記事の有料部分には、基板発注用 Gerber とケース・
+トッププレート用 STL が含まれます。購入したデータを、この repository の
+一部として再配布することはできません。
+
 元作者が GitHub で公開している基板製造データは別の配布物で、CERN-OHL-P-2.0
 です。このライセンスを購入データの再配布許可として扱ってはいけません。
-基板の入手先は [元作者の hardware repository](https://github.com/k3peta/tiny18)
-へ案内します。
+一般的なハードウェア情報と、元作者が別途公開している資料は
+[元作者の hardware repository](https://github.com/k3peta/tiny18) を参照してください。

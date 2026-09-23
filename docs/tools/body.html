@@ -1,0 +1,584 @@
+<p class="breadcrumb"><a class="back-link" href="../README.ja.md">Tiny18 README</a> &rsaquo; キーマップ</p>
+
+<h1>Tiny18 キーマップ — 18 キーを 6 つのモードで使い分ける</h1>
+<p class="meta">作成日: 2026-09-06 ・ 全面改稿: 2026-09-11 / ZMK ファームウェア</p>
+
+<div class="sheet">
+<img src="./tiny18-keymap.png?v={{SHEET_V}}" width="{{SHEET_W}}" height="{{SHEET_H}}"
+     alt="Tiny18 の全モードと押しっぱなしの面を縦に並べたキー配置表">
+</div>
+<p class="sheet-note">全モードと押しっぱなしの面を 1 枚に並べた表。ここでは全体の形が見える大きさに置いてある。
+<a href="./tiny18-keymap.png?v={{SHEET_V}}" target="_blank" rel="noopener">画像だけを別タブで開く</a>と拡大して読める。</p>
+
+<div class="takeaway">
+<strong>このノートの中心命題:</strong><br>
+Tiny18 は物理キーが 18 しかない。そのうえ<strong>右手はトラックボールの上に置いたまま</strong>なので、
+日常的に使う操作は<strong>左手 9 キーだけ</strong>で完結させる必要がある。<br>
+答えは 2 つの仕掛けの組み合わせになった。ひとつは<strong>モード制</strong>で、用途ごとに独立した 6 つのモードを
+<strong>どのモードからでも 2 キーの combo ひとつで</strong>行き来する。もうひとつは<strong>1 キー 2 役</strong>で、
+親指と左小指が<strong>軽く叩けば文字、押さえれば別の面</strong>という二重の役目を持つ。
+この 2 つで、18 キーに A から Z の 26 文字と 6 モード分の機能が収まっている。
+</div>
+
+<div class="info">
+<strong>このページはキーを「文字入力モードで何が出るか」で呼ぶ。</strong>
+<code>BackSpace</code> と書いてあれば左の親指の外側、<code>N</code> と書いてあれば右の親指の内側である。
+番号ではなく名前で書くのは、指がどこへ行くかを番号から思い出すのが難しいためである。
+ZMK のファイルを読むときに要る position 番号は <a href="#s2">2 節</a>の図に添えてある。
+</div>
+
+<nav><h4>目次</h4>
+<ul class="tight">
+<li><a href="#s1">1. Tiny18 とは</a></li>
+<li><a href="#s2">2. キーの名前と position 番号</a></li>
+<li><a href="#s3">3. 6 つのモードの全体像</a></li>
+<li><a href="#s4">4. モードの切り替え方</a></li>
+<li><a href="#s5">5. 文字入力モード</a></li>
+<li><a href="#s6">6. 1 キー 2 役の仕組み</a></li>
+<li><a href="#s7">7. 26 文字の内訳</a></li>
+<li><a href="#s8">8. combo 全 {{N_COMBOS}} 個</a></li>
+<li><a href="#s9">9. 他の 5 モードの配置</a></li>
+<li><a href="#s10">10. LED はモードだけを示す</a></li>
+<li><a href="#s11">11. deep sleep と復帰</a></li>
+<li><a href="#src">出典</a></li>
+</ul></nav>
+
+<h2 id="s1">1. Tiny18 とは</h2>
+
+<div class="info">
+<strong>Tiny18 は <a href="https://note.com/3peta/n/n44d2c364cadc">神沼三平太</a> さんが設計したキーボードである。</strong>
+このページで扱っているのは、その Tiny18 を組み立てたうえで<strong>キーマップだけを自分用に作り直した記録</strong>であって、
+ハードウェアの設計や基板は神沼さんの作である。<br>
+組み立て手順・部品表・ハードウェアの詳細は、作者本人による
+<a href="https://note.com/3peta/n/n44d2c364cadc">Tiny18 ビルドマニュアル：ver1／ver2 のハードウェアと共通ファームウェア</a>（note、2025-07-30）を参照のこと。
+ファームウェアの設定も、同じく神沼さんの
+<a href="https://github.com/k3peta/zmk-config-tiny18">k3peta/zmk-config-tiny18</a> を fork して作っている。
+</div>
+
+<p>Seeed XIAO nRF52840 を左右に 1 枚ずつ使った、18 キーの無線分割キーボードである。
+キーマトリクスを組まず <code>zmk,kscan-gpio-direct</code> で片手 9 本の GPIO に直結しているため、ダイオードは要らない。
+右手側が親機（central）で、キーマップの解釈も右手側が行う。</p>
+<div class="warn">
+<strong>書き込みは必ず左右同時に。</strong>
+キーマップを解釈するのは親機だけなので、片方だけ新しいファームを焼くと、
+古い方の定義で押下が解釈されて意図しない文字が出る。<br>
+<strong>焼いた uf2 の日付も必ず確認すること。</strong>
+古いファイルを焼いてしまい、キーマップの不具合だと思い込んで半日追いかけたことがある。
+症状は「特定のキーだけ反応しない」だったが、原因はビルド日時の取り違えだった。
+</div>
+<div class="info">
+<strong>右手の uf2 は <code>{{RIGHT_IMAGE}}</code> の 1 種類。</strong>
+このページの配置がそのまま入る。左手は <code>tiny18-left.uf2</code> を使う。
+左手はキーマップを解釈せず、右手が両手の押下を処理する。
+</div>
+
+<h2 id="s2">2. キーの名前と position 番号</h2>
+<p>以降の説明では、キーを<strong>文字入力モードで出る文字</strong>で呼ぶ。
+ZMK のキーマップ自体は position 番号の順に書くので、その番号も小さく添えてある。</p>
+{{FIG1}}
+<div class="figure-caption">図 1. 各キーの呼び名（大きい文字）と position 番号（小さい数字）。座標は <code>tiny18.dtsi</code> の <code>tiny18_physical_layout</code> そのまま。</div>
+
+<div class="warn">
+<strong>番号についての重要な注意（よく誤解される）</strong><br>
+「0〜8 が片手、9〜17 がもう片手」という説明を見ることがあるが、これは <strong>2 つの別の番号体系が混ざっている</strong>。
+<ul class="tight" style="margin-top:0.6em;">
+<li><strong>RC カラム番号（電気的な配線番号）</strong>は確かに <strong>0〜8 = 左手、9〜17 = 右手</strong>である。
+    kscan の GPIO は片手 9 本で、<code>tiny18_r.overlay</code> の <code>col-offset = &lt;9&gt;</code> が右手分を 9 ずらす。</li>
+<li><strong>しかしキーマップの position 番号はそうなっていない。</strong>
+    <code>default_transform</code> の <code>map</code> が両者を並べ替えているため、実際には上の図のとおりになる。</li>
+</ul>
+<table style="margin-bottom:0;">
+<tr><th style="width:7em;">手</th><th>キー</th><th>keymap position</th><th>RC カラム</th></tr>
+<tr><td>左手（9 キー）</td><td><code>W E R A S D F BackSpace Space</code></td><td><code>0, 1, 2, 6, 7, 8, 9, 14, 15</code></td><td><code>0〜8</code></td></tr>
+<tr><td>右手（9 キー）</td><td><code>U I O J K L Enter N M</code></td><td><code>3, 4, 5, 10, 11, 12, 13, 16, 17</code></td><td><code>9〜17</code></td></tr>
+</table>
+</div>
+
+<div class="info">
+<strong>この対応が設計を決めている。</strong>
+右手がトラックボールで塞がっている以上、毎日使う操作は左手の 9 キーに収める必要がある。
+モードの入口も、文字を補う combo も、押しっぱなし面も、すべてここから逆算して置いてある。
+</div>
+
+<h2 id="s3">3. 6 つのモードの全体像</h2>
+<p>モードは 6 つある。<strong>LED の色がそのままモードを表す</strong>ので、今どこにいるかは光を見れば分かる（<a href="#s10">10 節</a>）。</p>
+{{MODE_TABLE}}
+<div class="info">
+<strong>「モード」と「押しっぱなし面」は別物として扱っている。</strong>
+ZMK の実装上はどちらもレイヤーだが、役割が違う。
+<strong>モード</strong>は <code>&amp;to</code> で切り替えて<strong>そこに留まる</strong>もの。
+<strong>押しっぱなし面</strong>は<strong>キーを押している間だけ</strong>開き、指を離せば消える。
+面は 2 つあり、<strong>{{PAGE3}}</strong>（{{HOLD3}} を長押し）と<strong>{{PAGE4}}</strong>（{{HOLD4}} を長押し）である。
+使う側が意識するのはモード 6 つだけでよい。全部で 8 レイヤーある。
+</div>
+
+<h2 id="s4">4. モードの切り替え方</h2>
+<p>6 つとも <strong>2 キーの combo ひとつ</strong>で切り替える。ゲームモードから AI モードへ行く場合を除き、<strong>どのモードからでも直接</strong>飛べる。
+行き先が固定なので、「今どこにいるか」を覚えていなくても目的のモードへ行ける。</p>
+{{SWITCH_TABLE}}
+
+<h3>打鍵中は絶対にモードが変わらないようにしてある</h3>
+<p>切替 combo には 6 つとも <code>require-prior-idle-ms = &lt;150&gt;</code> を付けている。
+<strong>直前 150 ミリ秒以内にキーを打っていたら、その combo は発火しない</strong>という ZMK の機能である。</p>
+<div class="warn">
+<strong>これが無いと数字キーパッドモードが使い物にならない。</strong>
+上の表の 3 列目のとおり、数字キーパッドモードでは切替に使うキーがすべて数字か記号で埋まっている。
+つまり速く打つだけで別のモードへ飛んでしまう。<br>
+150 ミリ秒の待機で「打鍵中は絶対に変わらない、一拍おけば切り替わる」という動作になった。
+文字入力モードでも <code>{{SW_num}}</code> が H（<code>J + K</code>）と /（<code>K + L</code>）の間、
+<code>{{SW_fn}}</code> が Y（<code>U + I</code>）と P（<code>I + O</code>）の間にあるので、同じ仕組みが誤爆を防いでいる。
+</div>
+<div class="note">
+<strong>それでも打ち間違いでモードが変わることはある。</strong>
+一拍おいてから <code>{{SW_fn}}</code> と転がすと、たとえば <code>out</code> の <code>ou</code> でファンクションモードに入ってしまう。
+その状態で <code>L</code> を叩くと <code>F9</code> が出る。
+<strong>意図しない F キーや記号が出たときは、まず LED の色を見ること。</strong>色が変わっていればモードが飛んでいる。
+</div>
+
+<h3>ゲームモードだけ <code>{{SW_ai}}</code> を外してある</h3>
+<p>ゲームモードでは <code>S</code> のキーが <code>A</code>、<code>F</code> のキーが <code>D</code> である。左右の平行移動を同時に押すのは
+ゲーム中のごく普通の操作なので、<code>{{SW_ai}}</code>（AI モードへ）はゲームモードで無効にしてある。ゲームモードへの切替 <code>{{SW_game}}</code> も、ゲームモードの中では意味が無いうえに、そこでの V と A の同時押しを食うので外した。
+ゲームモードから AI モードへ行くときは、いったん文字入力モードを経由する。
+残る 4 つの切替はゲームモードでも生きていて、<code>I</code> と <code>P</code>、<code>P</code> と <code>Z</code> のように文字の同時押しになる。
+打鍵後 150 ミリ秒の間合い条件があるので、連打の最中には誤爆しない。</p>
+
+<h2 id="s5">5. 文字入力モード</h2>
+<div class="layer-head" style="background:#22aa44;">文字入力モード（LED: 緑）— 素の状態</div>
+{{FIG_default_layer}}
+{{LEGEND}}
+
+<div class="note">
+<strong>図中の英字は、入力結果ではなくキーの名前としてすべて大文字で書く。</strong>
+Shift によって割り当て自体が変わる面だけを別の図にする。
+</div>
+
+<p><strong>キーを持たない文字は combo で補う。</strong>
+7 文字を含む全 combo の押す位置と有効な場面は <a href="#s8">8 節</a>にまとめてある。</p>
+
+<p>橙色の 6 つが<strong>タップと長押しで二役を持つキー</strong>である。軽く叩けば文字、押さえれば別の面か修飾キーになる。
+とくに<strong>左の親指 2 つ</strong>が要で、文章を打つうえでいちばん押す BackSpace と Space をタップで受け持ちながら、
+下の 2 面への入口も兼ねている。<br>
+<strong>文字入力モードの Shift は左右どちらの小指にもある。</strong>右の <code>Enter</code> と左の <code>A</code> はどちらも長押しで Shift になる。左の <code>A</code> はタップで A、350 ミリ秒以上で Shift である。いったん A をタップしてすぐに押さえ直せば、2回目は A のまま保持されて OS の自動反復になる。<br>
+AI モードと{{PAGE3}}では、左の <code>A</code> の位置も Enter / Shift になる。左小指でゆっくり押しても Enter になりやすいよう、この 2 場面の左 Enter だけは判定を 350 ミリ秒にしている。</p>
+
+<table>
+<tr><th style="width:8em;">キー</th><th style="width:8em;">タップ</th><th>長押し</th></tr>
+<tr><td><code>A</code></td><td><strong>A</strong></td><td>Shift（左の小指、350ミリ秒）</td></tr>
+<tr><td><code>Enter</code></td><td><strong>Enter</strong></td><td>Shift（右の小指）</td></tr>
+<tr><td><code>BackSpace</code></td><td><strong>BackSpace</strong></td><td>{{PAGE3}}</td></tr>
+<tr><td><code>Space</code></td><td><strong>Space</strong></td><td>{{PAGE4}}</td></tr>
+<tr><td><code>N</code></td><td><strong>N</strong></td><td>{{PAGE4}}（Space と同じ面）</td></tr>
+<tr><td><code>M</code></td><td><strong>M</strong></td><td>Ctrl</td></tr>
+</table>
+
+<p><code>M</code> の長押しが Ctrl なのが効いている。Ctrl+A も Ctrl+S も Ctrl+C も、すべて 2 キーで済む。</p>
+<div class="note">
+<strong>日本語入力の切り替えだけは、この形をやめた。</strong>
+Ctrl+Space は <code>M</code> を押さえて <code>Space</code> を叩く形になるが、これが 2 通りに失敗する。
+<code>Space</code> を判定時間より長く押すと{{PAGE4}}が開いて何も送られず、
+<code>Space</code> のほうが先に落ちると{{PAGE4}}が開いて <code>M</code> の位置が句点になる。<br>
+そこで<strong><code>{{IME_KEYS}}</code> を一緒に落とす combo にした</strong>。中指を上段、人差し指をホーム行に置く斜めで、順番も時間も関係なく、左手だけで終わる。<br>
+<strong>親指を使う組はすべて避けた。</strong>親指を押さえると面が開くので、たとえば <code>S + Space</code> は「面を開いて S を叩く」、つまり <code>X</code> と同じ 2 キーになってしまう。速さの違いだけで意味が変わるのは分かりにくい。
+この組には二重の意味が無く、<code>ef</code> で始まる語は <code>effort</code> の系統くらいしかない。<br>
+直前の打鍵から 150 ミリ秒おいたときだけ効く。単語の途中では候補にすら入らないので、打鍵が遅くなることもない。
+</div>
+
+<div class="note">
+<strong>Alt と GUI はキーを持たず combo にしてある。</strong>
+Alt が <code>{{LALT_KEYS}}</code>、GUI が <code>{{LGUI_KEYS}}</code> で、どちらも<strong>文字入力モードと AI モードで同じ指使い</strong>である。
+GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z</code> の同時押しになる。
+</div>
+
+<h3>{{PAGE3}} — {{HOLD3}} を長押ししている間だけ</h3>
+{{FIG_digit_symbol_layer}}
+{{LEGEND}}
+<p>Shift を重ねたときの記号も、一覧表ではなく同じ配列のまま確認できる。</p>
+{{FIG_digit_symbol_layer_shift}}
+{{LEGEND}}
+
+<h3>{{PAGE4}} — {{HOLD4}} を長押ししている間だけ</h3>
+{{FIG_edit_bracket_layer}}
+{{LEGEND}}
+<p>Shift 中の図では Escape が Tab になり、各キーから実際に届く側を同じ配列で表示する。</p>
+{{FIG_edit_bracket_layer_shift}}
+{{LEGEND}}
+<p><code>W</code> の位置は<strong>Escape、Shift を押さえている間は Tab</strong>で、<code>R</code> の位置が <code>F10</code>、そのほかに括弧 3 種と <code>Z X C V</code> がここにある。
+<code>E</code> の位置はバッククォートで、Shift を足せばチルダになる。
+<code>J</code> と <code>K</code> の位置はセミコロンとアポストロフィで、Shift を足せば <code>:</code> と <code>&quot;</code> になる。
+右の親指は読点と句点で、<strong>文字入力モードで句読点が打てるのはこの面だけ</strong>である。AI モードでも右の親指のタップがそのまま句読点になる。
+{{PAGE3}}でも右の親指は読点と句点で、Shift を重ねると <code>(</code> <code>)</code> になる。
+</p>
+<div class="note">
+<strong>コピーと貼り付けは専用キーをやめた。</strong>右の親指を句読点に譲ったためである。
+代わりに<strong>この面と Ctrl を同時に押さえて、左手のホーム行を叩く</strong>。
+<code>N</code> と <code>M</code> を両方押さえたまま <code>C</code> でコピー、<code>V</code> で貼り付けになる。
+左の親指で開くなら <code>Space</code> と <code>M</code> の組でもよい。<br>
+指は 3 本要るが、<code>Ctrl+Z</code> と <code>Ctrl+X</code> も同じ形なので、4 つが 1 つの指使いに揃う。<br>この形が使えるのは<strong>文字入力モードと AI モード</strong>である。ファンクションモードも <code>M</code> の位置が Ctrl なので <code>Space</code> と <code>M</code> の組なら使える（<code>N</code> の位置は Alt）。ほかのモードは <code>M</code> の位置に Ctrl が無いので、この形では出ない。AI モードでは <code>Ctrl+Z</code> と <code>Ctrl+X</code> が右手の隣り合う 2 キーの combo でも出るが、そちらは AI モードでしか効かない別の指使いである。
+</div>
+<div class="warn">
+<strong>押さえた親指の位置は、その面では押せない。</strong>面を開く役目でふさがっているためである。
+この面は <code>Space</code> と <code>N</code> の 2 通りで開くので、どちらで開いたかで届く範囲が変わる。
+読点は <code>Space</code> で開いたときだけ、Space は <code>N</code> で開いたときだけ届く。<br>
+<strong>左の親指 2 つは、数字キーパッドモードとゲームモードを除いて、どの面でもどのモードでも文字入力モードと同じ</strong>である。図では薄い色で描いてある。
+{{PAGE3}}を <code>BackSpace</code> で押さえたまま <code>Space</code> を叩けば空白、押さえればその上に{{PAGE4}}が重なる。
+<code>;</code> と <code>'</code> は右手のホーム行にあるので、どちらの親指で開いても届く。
+</div>
+<div class="note">
+<strong><code>?</code> は 3 キーである。</strong>
+この面は <code>Enter</code> の位置を押さえると Shift、<code>L</code> の位置が <code>/</code> なので、
+面と Shift を押さえて <code>L</code> を叩く。
+<code>&lt;</code> と <code>&gt;</code> も同じ形で、Shift を押さえてこの面の右の親指の読点と句点を叩く。<br>
+以前は <code>Space</code> の位置に <code>?</code> のキーを置いて 2 キーにしていたが、左の親指 2 つをどこでも文字入力モードと同じにするために外した。
+</div>
+
+<div class="info">
+<strong>記号の段は Shift で出す。</strong>
+{{PAGE3}}は左右の端がどちらも、タップで Enter、押さえると Shift のキーになっている。
+左手で数字を打つなら右端、右手で数字を打つなら左端を押さえればよい。数字を打ってそのまま Enter で確定もできる。
+各キーの Shift 側は上の図に同じ配列で示してある。<br>
+割り当てのない場所は<strong>無効</strong>で、押しても何も起きない。下のレイヤーの文字が漏れてこないようにするためである。
+</div>
+
+<h2 id="s6">6. 1 キー 2 役の仕組み</h2>
+<p>ZMK ではこれを hold-tap と呼ぶ。<strong>押している時間</strong>で意味が分かれる。
+通常は 200 ミリ秒で、それより短く離せばタップ、長く押さえれば長押しになる。文字入力モードの <code>A</code> と、AI モード・{{PAGE3}}の左 Enter は、左小指で押しやすくするため 350 ミリ秒である。</p>
+
+<h3>判定方式を balanced にしてある理由</h3>
+<p>問題は、Enter や M から次のキーへ指を<strong>転がした</strong>ときである。ZMK の既定である hold-preferred は、
+押している最中に別のキーが押されたら即座に「長押し」と決めてしまう。
+それだと Enter や M を含む操作で、意図しない Shift や Ctrl になりやすい。</p>
+<p><strong>balanced</strong> は「次のキーが<strong>先に離された</strong>ときだけ長押し」と判定する。
+指を転がすと自分の方を先に離すので、素直にタップとして出る。
+一方 Shift や Ctrl を意図して押すときは、もう一方のキーを先に離すので、ちゃんと修飾キーになる。
+ホームロー修飾キーで定番の設定である。</p>
+<div class="note">
+<code>quick-tap-ms</code> も 175 ミリ秒で入れてある。
+タップした直後にもう一度同じキーを押したときは長押し判定をせず、続けてタップとして扱う。
+文字入力モードの <code>A</code> は、1回タップした直後にもう一度押さえ続けるとAのまま保持され、OSの自動反復になる。
+<code>Enter</code> や <code>M</code> も同じ仕組みで続けて打てる。
+</div>
+
+<h3><code>BackSpace</code> の連打を残す判定</h3>
+<p>面を開く役目が乗ったキーは、長押しがふさがっている。
+ZMK 標準の layer-tap には <code>quick-tap-ms</code> が無いので、
+<code>BackSpace</code> は<strong>押さえ続けても連打にならない</strong>。</p>
+<p><strong><code>quick-tap-ms</code></strong> は、叩いた直後にもう一度押さえたときに面を開かせない。
+<code>BackSpace</code> のまま押しっぱなしになるので、OS の自動連打が効く。</p>
+<div class="note">
+<strong>Escape は通常時、Tab は Shift 中である。</strong>
+AI モードと{{PAGE4}}の <code>W</code> の位置は通常時に Escape を1回だけ送り、Shiftを押さえている間は通常のTabを送る。
+Escape側はmacroで押下と解放をまとめて送るため、押さえ続けてもEscapeが自動反復しない。2回目は指を離して押し直す。
+</div>
+<div class="note">
+<strong>以前は <code>retro-tap</code> も入れていた。</strong>
+押さえている間に他のキーを押さなかったときに、離した時点でタップを送る設定である。
+ただし ZMK はこの設定があると、200 ミリ秒経っても面を開かず、<strong>別のキーが押されるまで待つ</strong>。
+学習用の表示器がその間ずっと文字入力の面を映すので、2026-09-14 に外した。
+少し長く押しただけの <code>BackSpace</code> は、Space や N と同じく何も出さない。
+</div>
+
+<h2 id="s7">7. 26 文字の内訳</h2>
+<p>アルファベット 26 文字がすべて打てる。素のキーに 15 文字、combo に 6 文字、押しっぱなし面に 5 文字である。</p>
+{{LETTER_TABLE}}
+<div class="info">
+<code>A</code> は <code>A</code> キーのタップと <code>S + D</code> の combo の<strong>両方</strong>で出せる。
+combo の側は、ホーム行の文字 combo の並びを崩さないために残してある。<br>
+押しっぱなし面の <code>Z X C V</code> は、<strong>Ctrl と組み合わせる場所</strong>でもある。
+ただし文字入力モードで Ctrl と重ねると 3 キーになる。コピーと貼り付けを 2 キーで済ませるなら、AI モードの combo を使う。
+</div>
+
+<h2 id="s8">8. combo 全 {{N_COMBOS}} 個</h2>
+<p>combo は<strong>最上位の有効レイヤーだけ</strong>で照合される。これがモードごとに combo を完全に独立させられる理由である。
+文字入力モードの文字 combo は、AI モードや数字キーパッドモードに入った瞬間すべて止まる。
+通常は<strong>50 ミリ秒以内に両方が押されたとき</strong>に発火し、外れればそれぞれのキーとして届く。</p>
+
+<h3>① 文字 combo（7 個・文字入力モード）</h3>
+{{COMBO_LETTERS}}
+
+<h3>② {{PAGE4}}の combo（2 個）</h3>
+{{COMBO_NUMLAYER}}
+<div class="note">
+<strong>ここは同じ位置が二重に使われている。</strong>
+{{PAGE4}}の <code>S D F</code> のキーは <code>X C V</code> だが、そのうち <code>D + F</code> は B の combo でもある。
+つまり <strong>{{HOLD4}} を押しながら <code>cv</code> を速く打つと B</strong> が出る。ゆっくり打てば問題ない。
+</div>
+
+<h3>③ 修飾キーとスラッシュと日英切替（4 個）</h3>
+{{COMBO_MISC}}
+<p>左 Alt は音声入力ソフトの起動キーに割り当てている。よく使うので、
+<strong>文字入力モードと AI モードで同じ指使い</strong>にしてある。人差し指の上段とホーム行を一緒に落とす。
+2026-09-16 までは <code>F + Space</code> だったが、これは <code>V</code>（Space を押さえて F）と同じ 2 キーだったので、親指から離した。
+そのかわり打鍵後 150 ミリ秒の条件が付いた。<code>perfect</code> や <code>surface</code> のように <code>rf</code> は単語の途中に現れるためで、一呼吸おけば効く。
+GUI も同じ考えで、どちらのモードでも人差し指 2 本である。<br>
+Alt の combo はゲームモードとファンクションモードには無く、どちらのモードも親指に Alt のキーがある。GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z</code> の同時押しになる。
+間合いの条件が無いので、ゲームモードの <code>I</code> と <code>Z</code> は単独で押すと combo の判定を待つ分（最大 50 ミリ秒）だけ遅れる。<br>
+日本語と英語の切替は <code>{{IME_KEYS}}</code>、中指を上段、人差し指をホーム行に置いて一緒に落とす。<strong>文字入力モードだけにある。</strong>
+ほかのモードには文字キーが無く、日本語を打つことがないためである。AI モードに置くと <code>↑</code> と <code>→</code> の同時押しと重なるという事情もある。<br>
+打鍵後 150 ミリ秒おかないと効かないので、単語の途中では候補にすら入らない。ローマ字に <code>ef</code> という並びは無く、英語でも <code>effort</code> の系統だけである。</p>
+
+<h3>④ モード切替（6 個）</h3>
+{{COMBO_MODE}}
+
+<h3>⑤ 数字キーパッドモードの 0・小数点・Num Lock（3 個）</h3>
+{{COMBO_NUMBER}}
+<p>数字キーパッドモードの左手はテンキーだが、<code>0</code> と小数点を置く場所が足りない。
+そこで<strong>1 と 2 を持つキーの組で 0</strong>、<strong>2 と 3 を持つキーの組で小数点</strong>を出すようにしてある。
+<strong>6 と / の組は Num Lock</strong>で、状態がずれたときだけ一拍おいて押す。</p>
+
+<h3>⑥ AI モードの編集操作（6 個）</h3>
+{{COMBO_NAV}}
+<p>AI モードのコピーと貼り付けは<strong>左手の上段</strong>にある。右手はトラックボールの上なので、
+ポインタを手放さずに押せる側へ置いた。
+上段 3 キーのうち両端の組は文字入力モードへの切替で埋まっているので、残る 2 通りを使っている。<br>
+元に戻す・やり直す・切り取り・検索は<strong>右手の隣り合う 2 キー</strong>で出す。
+上段の組が <code>Ctrl+Z</code> と <code>Ctrl+Shift+Z</code>、ホーム行の組が <code>Ctrl+X</code> と <code>Ctrl+F</code> である。</p>
+<div class="note">
+<strong>6 つとも間合い条件を付けてある。</strong>左手上段の <code>↑</code> と <code>BackSpace</code>、右手の矢印は続けて叩くキーなので、
+そのまま置くと操作の途中でコピーや切り取りが飛び出す。
+直前の打鍵から間が空いたときだけ効くようにしてあるので、連打の最中には発火しない。
+</div>
+
+<h2 id="s9">9. 他の 5 モードの配置</h2>
+
+<div class="layer-head" style="background:#1e6fd9;">AI モード（LED: 青）— combo <code>{{SW_ai}}</code></div>
+{{FIG_nav_layer}}
+{{LEGEND}}
+<p>矢印と Tab と BackSpace と Delete は左手だけで押せる。
+<strong><code>E</code> の位置が ↑、ホーム行が ← ↓ →</strong> の逆 T 字で、4 方向ともキーを 1 つ押すだけで出る。
+<code>W</code> の位置は<strong>Escape、Shift を押さえている間は Tab</strong>、<code>R</code> の位置は<strong>BackSpace、Shift を押さえている間は Delete</strong> である。
+<strong>この Escape は押さえ続けても 1 回しか出ない。</strong>2 回目は指を離して押し直す。<br>
+<strong><code>A</code> と <code>Enter</code> のキーは、どちらもタップで Enter、押さえると Shift</strong> で、
+文字入力モードの <code>Enter</code> のキーと同じ二役である。
+左手に矢印が 4 つともあるので、<code>A</code> の位置を小指で押さえれば
+<strong>Shift+矢印の範囲選択が左手だけで完結する</strong>。右手は右手の Enter で確定できる。</p>
+<div class="note">
+<strong>BackSpace は 2 つある。</strong><code>R</code> の位置と、文字入力モードと同じ左の親指である。
+<code>R</code> の位置は Shift と一緒なら Delete、左の親指は長押しで{{PAGE3}}を開く。
+<code>R</code> の位置はそのまま押さえれば BackSpace が連打される。左の親指は 1 回叩いてから押さえ直すと BackSpace を連打できる（<a href="#s6">6 節</a>）。
+</div>
+<div class="info">
+<strong>親指 4 つの長押しは文字入力モードと同じ。</strong><code>BackSpace</code> を押さえれば{{PAGE3}}、<code>Space</code> と <code>N</code> の位置を押さえれば{{PAGE4}}、<code>M</code> の位置を押さえれば Ctrl である。<br>
+<strong>右の親指のタップは読点と句点。</strong>プロンプトに要る句読点を、面を開かずに打てる。
+</div>
+<p>右手にも同じ形の矢印がある。<strong>上段の中央が ↑、ホーム行が ← ↓ →</strong> で、上段の両端は <code>.</code> と <code>/</code> である。
+<code>A</code> か <code>Enter</code> の位置で Shift を押さえると、<strong>両端の <code>.</code> と <code>/</code> だけ</strong>がコマンドになり、4 方向の矢印は変わらない。
+そのため<strong>Shift+矢印の範囲選択は左右どちらの手でもできる</strong>。</p>
+{{FIG_nav_layer_shift}}
+{{LEGEND}}
+<div class="note">
+<strong><code>/model</code> <code>/status</code> は macro である。</strong>
+Shift と、上段両端の <code>.</code> か <code>/</code> のキー 1 つで文字列をまとめて打ち込む。<strong>送信はしない。</strong>
+入力欄に文字が並ぶだけなので、<code>/model</code> に続けて引数を打てるし、間違って押しても消せばよい。送るときは <code>Enter</code> のキーを押す。<br>
+<strong>コマンドを送ると Shift が外れる。</strong>Shift を押さえたまま 2 つ目のコマンドは出ないので、次は押し直す。<br>
+送っているのは素のキーなので、日本語入力が入っていると仮名になる。そこで<strong>どの macro も入力を英数に固定する</strong>。
+キーボードは IME の状態を知れないが、USB の <code>LANG2</code> という usage は Windows では IME オフ、macOS では英数キーとして届く。
+状態に関係なく英数になるので、その後の文字はそのまま届く。日本語に戻すのは、文字入力モードへ戻ってから <code>{{IME_KEYS}}</code> の combo である。そもそも AI モードには文字キーが無いので、戻るのは日本語を打つときになる。
+</div>
+<p><strong>コピーと貼り付けは左手の combo にある。</strong>右手はトラックボールの上なので、
+右上段へ取りに行くとポインタを手放すことになる。そこで左手の上段へ移した。押す位置は <a href="#s8">8 節</a>に載せてある。</p>
+<p>この 2 つは<strong>直前の打鍵から間が空いたときだけ</strong>効く。
+<code>↑</code> と <code>BackSpace</code> は続けて叩くキーなので、そのまま置くと操作の途中でコピーや貼り付けが飛び出すためである。</p>
+<p><strong>元に戻す・やり直す・切り取り・検索は右手の combo にある。</strong>隣り合う 2 キーを一緒に押す。
+<code>.</code> と <code>↑</code> で <code>Ctrl+Z</code>、<code>↑</code> と <code>/</code> で <code>Ctrl+Shift+Z</code>、
+<code>←</code> と <code>↓</code> で <code>Ctrl+X</code>、<code>↓</code> と <code>→</code> で <code>Ctrl+F</code> になる。
+前の 3 つは右上段の単独キーだったもので、検索は新しく足した。
+コピーと貼り付けと同じく直前の打鍵から間が空いたときだけ効くので、矢印を続けて押している間には出ない。</p>
+
+<div class="layer-head" style="background:#d4a017;">数字キーパッドモード（LED: 黄）— combo <code>{{SW_num}}</code></div>
+{{FIG_number_layer}}
+{{LEGEND}}
+<p><strong>左手がテンキー</strong>で、<code>7 8 9 / 4 5 6 / 1 2 3</code> が電卓と同じ並びに入っている。
+<strong>右手は演算キー</strong>で、上段が <code>+</code> <code>-</code> <code>=</code>、ホーム行が <code>÷</code> <code>×</code> とバックスラッシュである。
+左の親指は <code>2</code> と <code>3</code>、右の親指は <code>0</code> と<strong>小数点</strong>になる。</p>
+<div class="note">
+2026-09-16 に括弧 2 つと上段の <code>0</code> を譲って、割り算・掛け算・足し算を入れた。
+括弧は{{PAGE3}}で Shift を足した <code>9</code> と <code>0</code>、または Shift と右の親指でも出せる。<code>0</code> は右の親指と <code>{{ZERO_KEYS}}</code> の combo で出せる。
+</div>
+
+<h3>Shift を押している間は、フルキーボードの残りが出る</h3>
+<p>18 キーに入りきらなかったキー、つまり<strong>移動ブロックとロック系</strong>は、このモードで <code>{{SW_num_shift_key}}</code> の位置を押さえている間だけ出る。
+左手が <code>Insert</code> <code>Home</code> <code>PgUp</code> と <code>Delete</code> <code>End</code> <code>PgDn</code> で、<strong>フルキーボードの移動ブロックと同じ並び</strong>である。
+右手が <code>PrtSc</code> <code>Menu</code> <code>CapsLk</code> と <code>NumLk</code> <code>ScrLk</code> <code>Pause</code> である。</p>
+{{FIG_number_layer_shift}}
+{{LEGEND}}
+<div class="note">
+<strong>レイヤーではなく、キーごとの切り替えである。</strong>ZMK の mod-morph という仕組みで、Shift を押していれば別のキーを送る。
+送るときに Shift は外れるので、<code>Shift+Home</code> ではなく <code>Home</code> が届く。<br>
+<strong>変わるのは上 2 段の 12 キーだけ</strong>である。左の小指、親指 4 つ、Shift 自身は押さえても変わらない。決めた 2026-09-16 の学習用表示器はこの 12 キーしか出しておらず、表示に出ないキーが黙って変わると覚えられないためである（2026-09-17 からは表示器が 18 キーすべてを出す）。<br>
+このモードの combo は Shift を見ないので、押さえたままでも <code>{{ZERO_KEYS}}</code> は <code>0</code>、<code>{{DOT_KEYS}}</code> は小数点、<code>{{NUMLOCK_KEYS}}</code> は Num Lock のままである。
+</div>
+
+<div class="warn">
+<strong>数字と小数点はテンキーのコードを送る。</strong>文字盤の数字ではない。
+日本語入力でも<strong>半角のまま通る</strong>のがこのモードの狙いである。<br>
+引き換えが 2 つある。ひとつは <strong>Num Lock がオンでないと数字にならない</strong>こと。
+テンキーの <code>7</code> は HID では「7 と Home」という 1 つのキーで、Num Lock が切れていると Home として届く。<br>
+もうひとつは <strong>Shift を足しても記号にならない</strong>こと。テンキーの <code>1</code> に Shift を足しても <code>!</code> は出ない。
+記号が要るときは{{PAGE3}}（{{HOLD3}} を長押し）を使う。あちらは文字盤の数字なので Shift が効く。
+</div>
+<div class="note">
+<strong>Num Lock がずれたときは <code>{{NUMLOCK_KEYS}}</code> で直せる。</strong>
+このモードの中だけで効く combo で、両手の人差し指である。
+ZMK は <code>CONFIG_ZMK_HID_INDICATORS</code> でホストの Num Lock 状態を受け取れるが、
+<strong>その状態で分岐する behavior が標準に無い</strong>ので、モードに入った瞬間に自動で合わせることはできない。
+無条件に Num Lock を送ると、すでにオンのときに切ってしまう。
+</div>
+<div class="info">
+<strong>小数点は右の親指にある。</strong>左手だけで打つときのために <code>{{DOT_KEYS}}</code> の combo にも同じ小数点を置いてある。
+<code>0</code> も同じく <code>{{ZERO_KEYS}}</code> で出せる。<br>
+<strong>Enter は <code>Enter</code> のキーのタップにある。</strong>押さえると Shift になるのは文字入力モードと同じである。<br>
+<strong>BackSpace とセミコロンは無い。</strong>訂正が要るときは文字入力モードへ戻る。
+</div>
+
+<div class="layer-head" style="background:#b5389e;">ファンクションモード（LED: マゼンタ）— combo <code>{{SW_fn}}</code></div>
+{{FIG_fn_layer}}
+{{LEGEND}}
+<p>F1 から F12 は、数字の面で同じ数字があるキーに並ぶ。F10 から F12 は <code>0</code>、<code>-</code>、<code>=</code> の位置に入る。
+<code>A</code> のキーを押さえると Ctrl、<code>Enter</code> のキーを押さえると Shift になるので、
+<code>Ctrl+F5</code> や <code>Shift+F10</code> のような組み合わせを作れる。
+<code>Enter</code> のキーはタップすれば Enter で、文字入力モードと同じ二役である。<br>
+<strong>右の親指は <code>N</code> のキーが Alt、<code>M</code> のキーが Ctrl。</strong>
+文字入力モードで Ctrl を押さえる親指がここでも Ctrl なので、いつもの指のまま <code>Ctrl+F5</code> が打てる。
+Alt を <code>M</code> に置かなかったのは、その癖で <code>F4</code> を叩いたときに窓を閉じる <code>Alt+F4</code> ではなく、タブを閉じる <code>Ctrl+F4</code> になるようにするためである。</p>
+
+<div class="layer-head" style="background:#17b8c4;">ゲームモード（LED: シアン）— combo <code>{{SW_game}}</code></div>
+{{FIG_game_layer}}
+{{LEGEND}}
+<p>VRChat 向け。<code>E</code> のキーが W、<code>S D F</code> のキーが A S D で、W が S の真上に来るので
+<strong>通常の WASD のダイヤ型</strong>になる。<code>A</code> のキーが Shift（走る）。
+<code>W</code> のキーには Escape を置いてあり、メニューを開ける。<code>R</code> のキーが V（マイク）、<code>U I O</code> のキーが I O P、右手のホーム行が Z X C である。<br>
+<strong>親指 4 つは左から Ctrl、Space、Space、Alt</strong>で、ジャンプは左右どちらの親指でも押せる。
+<code>Enter</code> の位置はタップで Enter、押さえると Shift で、文字入力モードと同じ。<br>
+<code>U</code> と <code>J</code> のキー（ここでは I と Z）を一緒に押すと Windows キーになる。</p>
+<div class="warn">
+<strong>このモードの左の親指は文字入力モードと違う。</strong>BackSpace が無く、{{PAGE3}}も{{PAGE4}}も開かない。
+チャットは文字と Space と Enter で打つことになり、消したり数字を入れたりするときは文字入力モードへ戻る。
+</div>
+
+<h3>Shift を押している間は 7 キーが変わる</h3>
+<p><code>A</code> か <code>Enter</code> のキーで Shift を押さえている間だけ、Escape が Z、V が R、右手のホーム行の Z X C が G M K、
+親指の Ctrl と Alt が右 Ctrl と右 Alt になる。
+W A S D、I O P、2 つの Space は変わらないので、<strong>走りながら動くこともジャンプすることもできる</strong>。</p>
+{{FIG_game_layer_shift}}
+{{LEGEND}}
+<div class="note">
+数字キーパッドモードと同じ mod-morph で、変わったキーは Shift を外して単独キーとして送る。そのため Shift を押さえて <code>R</code> のキーを叩くと R のキー入力が届き、押している一瞬だけ走りが止まる。<br>
+学習用表示器は 3 行目に親指も出すので、Shift を押さえている間は親指の表示も右 Ctrl（<code>RCT</code>）と右 Alt（<code>RAL</code>）に変わる。
+</div>
+<div class="note">
+ゲームモードでは AI モードへの切替（<code>{{SW_ai}}</code> = A と D）と、ゲームモードへの切替（<code>{{SW_game}}</code> = V と A）の combo を外してある。
+AI モード行きは移動キーの同時押しになり、ゲームモード行きはこのモードの中では意味が無いためである。ほかの切替 combo は生きているので、打鍵後 150 ミリ秒おいて <code>I</code> と <code>P</code> を一緒に押すとファンクションモードへ行く。
+</div>
+
+<div class="layer-head" style="background:#dd2222;">Bluetooth モード（LED: 赤）— combo <code>{{SW_bt}}</code></div>
+{{FIG_bluetooth_layer}}
+{{LEGEND}}
+<div class="note">
+<strong><code>BT 4</code> だけが右手にある。</strong>
+<code>A S D F</code> は左手だが <code>J</code> は右手である（<a href="#s2">2 節の表</a>）。
+プロファイルは 5 つあり、左手のキーは外側 1 つとホーム 3 つで 4 つしか使えないので、
+5 番目が右手のホーム最内側に回っている。
+</div>
+
+<h2 id="s10">10. LED はモードだけを示す</h2>
+<p>右手側の XIAO に載っている RGB LED を、<code>caksoylar/zmk-rgbled-widget</code> でレイヤー表示に使っている。
+色の割り当ては<strong>モードと 1 対 1</strong>にしてある。</p>
+{{LED_TABLE}}
+<div class="info">
+<strong>押しっぱなし面だけは白にしてある。</strong>
+{{PAGE3}}も{{PAGE4}}も、親指が別のキーになる数字キーパッドモードとゲームモード以外の<strong>どのモードからも開く</strong>ので、
+どちらかのモード色を割り当てると「色を見ればモードが分かる」という関係が崩れる。
+白は「どのモードでもない、面を開いている最中」を意味する。指を離せば元のモードの色に戻る。<br>
+この widget が機能するのは<strong>親機（右手側）だけ</strong>で、左手側は光らない。
+</div>
+<div class="warn">
+<strong>色の設定はレイヤー番号で引く。</strong>
+<code>CONFIG_RGBLED_WIDGET_LAYER_N_COLOR</code> の <code>N</code> は実際のレイヤー番号である。
+押しっぱなし面 2 枚を数え落として番号を 1 つずつずらしていたため、
+2026-09-11 まで<strong>数字キーパッドモードがシアンに光っていた</strong>。シアンはゲームモードの色である。
+</div>
+
+<h2 id="s11">11. deep sleep と復帰</h2>
+<p>文字入力モードにも色を付けた結果 LED が常時点灯になるため、待機電力を抑える目的で
+<code>CONFIG_ZMK_SLEEP=y</code> を左右へ入れてある。<strong>30 分</strong>無操作で deep sleep に入る。
+既定は 15 分だが、待たされる回数のほうが気になったので <code>CONFIG_ZMK_IDLE_SLEEP_TIMEOUT</code> で倍にした。
+<strong>この値は左右そろえること。</strong>短いほうが先に眠ると、どちらが落ちたかで挙動が変わる。
+ただし USB 給電中は仕様上眠らないので、確認は必ず電池のみで行う。</p>
+
+<h3>キーで起こすには <code>wakeup-source;</code> が要る</h3>
+<p>最初はスリープに入ったきり、どのキーを押しても復帰できなかった。原因は
+<code>boards/shields/tiny18/tiny18.dtsi</code> の <code>kscan</code> ノードに <code>wakeup-source;</code> が無かったことである。
+ZMK v0.3.0 のソースで経路を追うと、次のようになっている。</p>
+<ul class="tight">
+<li><code>app/src/pm.c</code> の <code>zmk_pm_suspend_devices()</code> は、
+    <code>pm_device_wakeup_is_enabled()</code> が真のデバイスだけを suspend 対象から除外する。</li>
+<li><code>kscan_gpio_direct.c</code> の PM ハンドラは suspend 時に
+    <code>kscan_direct_disconnect_inputs()</code> を呼び、<strong>全キーの GPIO を <code>GPIO_DISCONNECTED</code> にする</strong>。
+    割り込み源が消えるので、物理的に起床できなくなる。</li>
+<li>ZMK 公式の同方式 shield（<code>clog</code>）には <code>wakeup-source;</code> がある。</li>
+</ul>
+<div class="note">
+<strong><code>wakeup-source;</code> だけでは足りない。</strong>
+Zephyr 3.5 の <code>Z_PM_DEVICE_FLAGS</code> は、この devicetree プロパティから
+<strong>WS_CAPABLE（起床できる素質がある）しか立てない</strong>。
+判定に使われる WS_ENABLED を立てるのは <code>app/src/physical_layouts.c</code> の
+<code>zmk_physical_layouts_init()</code> で、<strong>physical layout の <code>kscan</code> プロパティが
+指しているデバイスに対してだけ</strong>実行される。Tiny18 はこの条件を満たしているので 1 行で足りた。
+</div>
+
+<h3>復帰は再起動であり、きっかけの打鍵は失われる</h3>
+<p><code>app/src/activity.c</code> は <code>sys_poweroff()</code> を呼ぶ。nRF52840 ではこれが System OFF で、
+<strong>GPIO による起床はリセット扱い</strong>になる。ファームが起動し直して Bluetooth を張り直すまでの間に、
+復帰のきっかけになった打鍵は失われる。実測で <strong>2〜3 秒</strong>かかった。復帰用に一度空打ちする運用になり、
+再起動後のモードはAIになる。</p>
+
+<div class="warn">
+<strong>左手だけでは復帰できない（2026-09-11 実機確認）。</strong>
+両方が System OFF に入ると<strong>無線も止まる</strong>ため、子機（左手）が目を覚まして接続を試みても、
+親機（右手）には届かない。親機を起こせるのは親機自身の GPIO だけである。
+実機でもそのとおりで、左手のキーでは戻らず、右手のキーを押して初めて復帰した。<br>
+右手はトラックボールの上にあるので、これは使い勝手としては不利である。
+親機を起こしっぱなしにすれば左手だけで復帰できるようになるが、
+そのぶん電池を食い続けることになるため、<strong>両側ともスリープを有効にしたまま、時間だけ 30 分へ延ばした</strong>。
+起こす回数を半分にする折衷であって、左手だけで復帰できるようになるわけではない。
+</div>
+
+<h3>左手側の UART がキーを 2 つ奪っていた</h3>
+<div class="note">
+XIAO の D6 は P1.11、D7 は P1.12 で、これは UART0 の送信・受信ピンそのものである。
+ボード定義で UART0 は <code>status = "okay"</code> になっている。
+右手側の overlay は <code>&amp;xiao_serial { status = "disabled"; };</code> で無効にしていたが、
+<strong>左手側の overlay にはこの 1 行が無かった</strong>。
+D6 は <code>S</code> のキー、D7 は <code>D</code> のキーにあたる。2026-09-11 に左手側へも同じ行を入れて揃えた。
+</div>
+
+<h2 id="src">出典</h2>
+<p><strong>Tiny18 の設計者は 神沼三平太 さんである。</strong>
+ハードウェア、基板、上流のファームウェア設定はすべて神沼さんの作であり、
+このページはそれを組み立てたうえでキーマップを自分用に作り替えた記録にすぎない。</p>
+<ul class="tight">
+<li>神沼三平太（@3peta）
+    「<a href="https://note.com/3peta/n/n44d2c364cadc">Tiny18 ビルドマニュアル：ver1／ver2 のハードウェアと共通ファームウェア</a>」
+    note、2025-07-30 — ハードウェア 2 種の違い、部品表、組み立て手順、ファームウェアの書き込み</li>
+<li><a href="https://github.com/k3peta/zmk-config-tiny18">k3peta/zmk-config-tiny18</a>（GitHub）
+    — 上流のファームウェア設定。shield 定義・物理配置・<code>default_transform</code> はここから引き継いでいる</li>
+<li><a href="https://zmk.dev/">ZMK Firmware</a> v0.3.0 — 挙動の確認はすべてこのバージョンのソースで行った</li>
+</ul>
+
+<h2>参照したファイル</h2>
+<p>いずれも上流の <a href="https://github.com/k3peta/zmk-config-tiny18">k3peta/zmk-config-tiny18</a> を fork した自分のリポジトリ内。</p>
+<ul class="tight">
+<li><code>config/tiny18.keymap</code> — このページの図はすべてこのファイルから生成している</li>
+<li><code>config/tiny18_l.conf</code> / <code>tiny18_r.conf</code> — LED の色、deep sleep</li>
+<li><code>boards/shields/tiny18/tiny18.dtsi</code> — 物理配置、<code>default_transform</code>、<code>wakeup-source;</code></li>
+<li><code>boards/shields/tiny18/tiny18_l.overlay</code> / <code>tiny18_r.overlay</code> — UART 無効化、<code>col-offset</code></li>
+<li><code>boards/shields/tiny18/Kconfig.defconfig</code> — 親機の指定</li>
+</ul>
+
+<h2>関連項目</h2>
+<ul class="tight">
+<li><a href="../README.ja.md">Tiny18 README</a></li>
+</ul>
+
+</body>
+</html>

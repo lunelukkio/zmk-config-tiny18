@@ -1,0 +1,53 @@
+name: Optional OLED and documentation checks
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  push:
+    paths:
+      - "config/tiny18.keymap"
+      - "addons/oled/**"
+      - "docs/tools/**"
+      - "tools/**"
+      - "tests/**"
+      - ".gitmodules"
+      - ".github/workflows/oled.yml"
+  pull_request:
+    paths:
+      - "config/tiny18.keymap"
+      - "addons/oled/**"
+      - "docs/tools/**"
+      - "tools/**"
+      - "tests/**"
+      - ".gitmodules"
+      - ".github/workflows/oled.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  oled:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+      - name: Test generators and bundle tooling
+        run: |
+          uv run --no-project --with pillow python -m unittest discover -s docs/tools -p 'test_*.py'
+          uv run --no-project --with pyyaml python -m unittest discover -s tests
+          uv run --no-project --with pillow python docs/tools/make_oled_layers.py
+          git diff --exit-code -- addons/oled/layers.h
+      - name: Install RISC-V compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-riscv64-unknown-elf libnewlib-dev
+      - name: Build without flashing
+        run: make -C addons/oled PREFIX=riscv64-unknown-elf tiny18_layer.bin
+      - uses: actions/upload-artifact@v4
+        with:
+          name: oled
+          path: addons/oled/tiny18_layer.bin
+          if-no-files-found: error

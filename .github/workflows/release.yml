@@ -1,4 +1,4 @@
-name: Release firmware
+name: Prepare draft firmware release
 
 on:
   push:
@@ -9,47 +9,93 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3.0
+  oled:
+    uses: ./.github/workflows/oled.yml
 
-  release:
-    needs: build
+  keyboard:
+    runs-on: ubuntu-24.04
+    container: zmkfirmware/zmk-build-arm:stable
+    env:
+      CMAKE_BUILD_PARALLEL_LEVEL: "4"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+      - name: Build the three keyboard images
+        shell: bash
+        run: bash tools/build-keyboard.sh "$RUNNER_TEMP/tiny18-build"
+      - name: Preserve licenses from the actual build workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          sdk_licenses=(/opt/zephyr-sdk-*/arm-zephyr-eabi/share/licenses)
+          test "${#sdk_licenses[@]}" -eq 1
+          sdk_root="${sdk_licenses[0]%/arm-zephyr-eabi/share/licenses}"
+          sdk_version="${sdk_root##*/zephyr-sdk-}"
+          test -n "$sdk_version"
+          uv run --no-project --with pyyaml python tools/export_licenses.py \
+            --workspace "$RUNNER_TEMP/tiny18-build" \
+            --sdk-licenses "${sdk_licenses[0]}" --sdk-version "$sdk_version" \
+            --output build/LICENSES
+      - uses: actions/upload-artifact@v4
+        with:
+          name: keyboard-release
+          path: ${{ runner.temp }}/tiny18-build/firmware/*.uf2
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: licenses
+          path: build/LICENSES/
+          if-no-files-found: error
+          include-hidden-files: true
+
+  draft:
+    needs: [keyboard, oled]
     runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
-      - name: Download firmware
-        uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4
         with:
-          name: firmware
-          path: dist
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+      - uses: actions/download-artifact@v4
+        with:
+          name: keyboard-release
+          path: build/images
+      - uses: actions/download-artifact@v4
+        with:
+          name: oled
+          path: build/images
+      - uses: actions/download-artifact@v4
+        with:
+          name: licenses
+          path: build/LICENSES
 
-      - name: Verify expected files and create checksums
+      - name: Assemble a versioned bundle
+        env:
+          RELEASE_VERSION: ${{ github.ref_name }}
+        run: |
+          uv run --no-project python tools/package_firmware.py \
+            --version "$RELEASE_VERSION" --keyboard build/images \
+            --oled build/images/tiny18_layer.bin --licenses build/LICENSES \
+            --source-commit "$(git rev-parse HEAD)" --source-state clean-tag \
+            --actions-run "$GITHUB_RUN_ID"
+
+      - name: Create an unpublished draft for manual review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ github.ref_name }}
         shell: bash
         run: |
           set -euo pipefail
-          expected=(settings-reset.uf2 tiny18-left.uf2 tiny18-right.uf2)
-          for file in "${expected[@]}"; do
-            test -s "dist/${file}"
-          done
-          cd dist
-          sha256sum "${expected[@]}" > SHA256SUMS
-
-      - name: Publish GitHub Release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          args=()
-          if [[ "${GITHUB_REF_NAME}" == v0.* ]]; then
+          args=(--draft --verify-tag)
+          if [[ "$RELEASE_VERSION" == v0.* ]]; then
             args+=(--prerelease)
           fi
-          gh release create "${GITHUB_REF_NAME}" \
-            dist/settings-reset.uf2 \
-            dist/tiny18-left.uf2 \
-            dist/tiny18-right.uf2 \
-            dist/SHA256SUMS \
-            --repo "${GITHUB_REPOSITORY}" \
-            --title "Tiny18 firmware ${GITHUB_REF_NAME}" \
-            --generate-notes \
-            "${args[@]}"
+          gh release create "$RELEASE_VERSION" "firmware/tiny18-${RELEASE_VERSION}.zip" \
+            --repo "$GITHUB_REPOSITORY" --title "Tiny18 firmware ${RELEASE_VERSION}" \
+            --generate-notes "${args[@]}"

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Tiny18 キーマップ — 18 キーを 6 つのモードで使い分ける</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+         max-width: 980px; margin: 2em auto; padding: 0 1.5em; line-height: 1.8; color: #222; background: #fafaf7; }
+  h1 { color: #1a3a5c; border-bottom: 3px solid #1a3a5c; padding-bottom: 0.3em; font-size: 1.5em; }
+  h2 { color: #1a3a5c; margin-top: 2.2em; border-left: 6px solid #2a9d8f; padding-left: 0.6em; }
+  h3 { color: #264653; margin-top: 1.6em; }
+  .meta { color: #888; font-size: 0.9em; margin-top: -0.5em; margin-bottom: 1.5em; }
+  .takeaway { background: #fff3cd; border-left: 6px solid #ffc107; padding: 1em 1.2em; margin: 1.5em 0; border-radius: 4px; }
+  .info    { background: #d1ecf1; border-left: 6px solid #0c5460; padding: 1em 1.2em; margin: 1.5em 0; border-radius: 4px; }
+  .note    { background: #f0ece0; border-left: 6px solid #b8860b; padding: 1em 1.2em; margin: 1.5em 0; border-radius: 4px; }
+  .warn    { background: #fdecea; border-left: 6px solid #c0392b; padding: 1em 1.2em; margin: 1.5em 0; border-radius: 4px; }
+  table  { border-collapse: collapse; margin: 1.5em 0; width: 100%; }
+  th, td { border: 1px solid #aaa; padding: 0.5em 0.8em; vertical-align: top; }
+  th     { background: #1a3a5c; color: white; }
+  tr:nth-child(even) td { background: #f5f5f0; }
+  code   { background: #eee; padding: 0.15em 0.4em; border-radius: 3px; font-size: 0.94em;
+           font-family: Consolas, Monaco, monospace;
+           /* A long path is one unbreakable word, and on a phone it pushed the
+              whole page sideways. anywhere, not break-word: only anywhere
+              lets the browser count the broken width as the minimum. */
+           overflow-wrap: anywhere; }
+  svg    { display: block; margin: 1em auto; max-width: 100%; height: auto;
+           background: white; border: 1px solid #ddd; border-radius: 4px; }
+  svg.mini { margin: 0; border: none; background: transparent; width: 100%; }
+  img    { display: block; max-width: 100%; height: auto; }
+  /* The img carries its own pixel size - a fraction of the PNG, see
+     SHEET_FRACTION in build_html.py - so the sheet never grows past that and
+     only shrinks when the window is narrower. At the current size it sits well
+     inside the text column; the 50% / -50% pair keeps it centred either way,
+     so a future chart wide enough to spill past the column still lands in the
+     middle. */
+  .sheet { width: max-content; max-width: calc(100vw - 4em); box-sizing: border-box;
+           margin: 1.2em 0 0.4em 50%; transform: translateX(-50%);
+           background: white; border: 1px solid #ddd; border-radius: 6px; padding: 0.6em; }
+  .sheet-note { text-align: center; color: #555; font-size: 0.9em; margin: 0 0 2em 0; }
+  .figure-caption { text-align: center; color: #555; font-size: 0.9em; margin-top: -0.4em; margin-bottom: 2em; }
+  nav    { background: #eef2f5; padding: 1em 1.5em; border-radius: 6px; margin-bottom: 2em; }
+  nav h4 { margin: 0 0 0.5em 0; color: #1a3a5c; }
+  .back-link { color: #1a3a5c; text-decoration: none; font-size: 0.95em; }
+  .back-link:hover { text-decoration: underline; }
+  ul.tight li { margin-bottom: 0.3em; }
+  .combo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+                gap: 0.9em; margin: 1.2em 0; }
+  .combo-card { background: white; border: 1px solid #ddd; border-radius: 6px; padding: 0.7em 0.8em; }
+  .combo-card .out { font-weight: bold; color: #c0392b; font-size: 1.15em; }
+  .combo-card .keys { font-family: Consolas, Monaco, monospace; color: #1a3a5c; font-size: 0.95em; }
+  .combo-card .desc { color: #666; font-size: 0.84em; line-height: 1.55; margin-top: 0.25em; }
+  .layer-head { border-radius: 6px 6px 0 0; color: white; padding: 0.5em 1em; font-weight: bold;
+                margin-top: 2em; }
+  .legend { font-size: 0.86em; color: #555; text-align: center; margin: -0.3em 0 1.6em 0; }
+  .legend span { display: inline-block; margin: 0 0.5em; }
+  .sw { display: inline-block; width: 0.85em; height: 0.85em; border-radius: 2px;
+        vertical-align: -1px; margin-right: 0.25em; border: 1px solid #999; }
+  .led { display: inline-block; width: 0.8em; height: 0.8em; border-radius: 50%;
+         vertical-align: -1px; margin-right: 0.3em; border: 1px solid #666; }
+  /* Column widths are set per table in em, which reads well on a desktop but
+     adds up to more than a narrow phone has. They are only hints, so drop
+     them rather than let a table push the whole page sideways. */
+  @media (max-width: 30em) {
+    th { width: auto !important; }
+    th, td { padding: 0.4em 0.45em; }
+  }
+</style>
+</head>
+<body>

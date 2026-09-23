@@ -1,0 +1,25 @@
+# Local build environments, generated packages and caches.
+/build/
+/firmware/v*/
+/dist/
+/.venv/
+/.uv-cache/
+/.ruff_cache/
+/.agent-loop/
+**/__pycache__/
+*.pyc
+/addons/oled/*.elf
+/addons/oled/*.map
+/addons/oled/*.lst
+/addons/oled/*.hex
+/addons/oled/*.bin
+/addons/oled/*.ld
+
+# Purchased hardware manufacturing data must never be distributed here.
+*.stl
+*.STL
+*.gbr
+*.GBR
+*.gerber
+*.drl
+*.zip

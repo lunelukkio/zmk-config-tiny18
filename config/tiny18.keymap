@@ -89,7 +89,7 @@
         };
 
         /*
-         * BackSpace only. ZMK's stock &lt has no quick-tap window, so holding
+         * BackSpace. ZMK's stock &lt has no quick-tap window, so holding
          * BackSpace down never repeats: the hold is spoken for by the digit
          * page. quick-tap-ms keeps a second press straight after a tap a tap,
          * so the host repeats it. Everything else stays stock &lt.
@@ -103,6 +103,18 @@
          * accept the late display.
          */
         blt: backspace_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <175>;
+            bindings = <&mo>, <&kp>;
+        };
+
+        /* Match BackSpace: tap Space, then press and hold it within 175 ms to
+         * keep Space pressed for host repeat. A first hold still opens layer 7.
+         * Use N to open layer 7 immediately after typing a Space. */
+        slt: space_layer_tap {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "tap-preferred";
@@ -680,7 +692,7 @@
 
         default_layer {
             bindings = <
-&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &lmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &bmt LSHFT ENTER  &blt 6 BACKSPACE  &lt 7 SPACE  &lt 7 N  &bmt LCTRL M
+&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &lmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &bmt LSHFT ENTER  &blt 6 BACKSPACE  &slt 7 SPACE  &lt 7 N  &bmt LCTRL M
             >;
         };
 

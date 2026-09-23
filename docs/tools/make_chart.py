@@ -203,7 +203,7 @@ def chart_model(layers, combos):
     holders = {}
     holder_positions = {}
     for position, tok in enumerate(bindings["default_layer"]):
-        match = re.match(r"&b?lt (\d+)", tok)
+        match = re.match(r"&(?:b?lt|slt) (\d+)", tok)
         if match:
             layer = int(match.group(1))
             holders.setdefault(layer, []).append(key_names[position])

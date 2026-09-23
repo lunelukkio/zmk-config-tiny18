@@ -627,12 +627,14 @@ GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z<
 <code>Enter</code> や <code>M</code> も同じ仕組みで続けて打てる。
 </div>
 
-<h3><code>BackSpace</code> の連打を残す判定</h3>
+<h3><code>BackSpace</code> と <code>Space</code> の連打を残す判定</h3>
 <p>面を開く役目が乗ったキーは、長押しがふさがっている。
-ZMK 標準の layer-tap には <code>quick-tap-ms</code> が無いので、
-<code>BackSpace</code> は<strong>押さえ続けても連打にならない</strong>。</p>
+ZMK 標準の layer-tap は <code>quick-tap-ms</code> が無効なので、
+<code>BackSpace</code> と <code>Space</code> は<strong>最初から押さえ続けても連打にならない</strong>。</p>
 <p><strong><code>quick-tap-ms</code></strong> は、叩いた直後にもう一度押さえたときに面を開かせない。
-<code>BackSpace</code> のまま押しっぱなしになるので、OS の自動連打が効く。</p>
+どちらも 175 ミリ秒以内に叩いてから押さえ直すと、そのキーのまま押しっぱなしになり、OS の自動連打が効く。</p>
+<p>空白を打った直後にZXCV の面を開くときは、<code>Space</code> を押さえ直す代わりに
+<code>N</code> を押さえる。</p>
 <div class="note">
 <strong>Escape は通常時、Tab は Shift 中である。</strong>
 AI モードとZXCV の面の <code>W</code> の位置は通常時に Escape を1回だけ送り、Shiftを押さえている間は通常のTabを送る。

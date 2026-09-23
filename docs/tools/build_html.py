@@ -28,7 +28,7 @@ CD = dict((c["name"], c) for c in combos)
 # which text-mode keys open each held page, e.g. {3: ['BackSpace'], 4: ['Space', 'N']}
 HOLDERS = {}
 for p, tok in enumerate(L["default_layer"]):
-    m = re.match(r"&b?lt (\d+)", tok)
+    m = re.match(r"&(?:b?lt|slt) (\d+)", tok)
     if m:
         HOLDERS.setdefault(int(m.group(1)), []).append(NAMES[p])
 

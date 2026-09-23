@@ -264,7 +264,7 @@ def label(tok):
     m = re.match(r"&to (\d+)", tok)
     if m:
         return "\u21d2 " + m.group(1), "layer"
-    m = re.match(r"&b?lt (\d+) (.+)", tok)
+    m = re.match(r"&(?:b?lt|slt) (\d+) (.+)", tok)
     if m:
         # Tap on top, the page it opens underneath, by name rather than number.
         page = PAGE_NAME.get(int(m.group(1)), "hold " + m.group(1))
@@ -301,7 +301,7 @@ def held(tok):
     m = re.match(r"&(\w+) (\w+) ", tok)
     if m and m.group(1) in KP_HOLD_TAP:
         return label("&kp " + m.group(2))[0]
-    m = re.match(r"&b?lt (\d+) ", tok) or re.match(r"&mo (\d+)$", tok)
+    m = re.match(r"&(?:b?lt|slt) (\d+) ", tok) or re.match(r"&mo (\d+)$", tok)
     if m:
         return PAGE_NAME.get(int(m.group(1)), m.group(1))
     return label(tok)[0].split("\n")[0]
@@ -394,7 +394,7 @@ def hold_pages(layers):
     """Base-layer positions that open a page while held, mapped to that page."""
     pages = {}
     for p, tok in enumerate(dict(layers)["default_layer"]):
-        m = re.match(r"&b?lt (\d+) ", tok) or re.match(r"&mo (\d+)$", tok)
+        m = re.match(r"&(?:b?lt|slt) (\d+) ", tok) or re.match(r"&mo (\d+)$", tok)
         if m:
             pages[p] = int(m.group(1))
     return pages

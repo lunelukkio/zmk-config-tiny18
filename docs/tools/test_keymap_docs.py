@@ -5,11 +5,18 @@ import unittest
 import re
 
 import build_html
+import gen_svg
 import make_chart
 from gen_svg import read_keymap
 
 
 class ChartModelTests(unittest.TestCase):
+    def test_space_repeat_behavior_keeps_its_page_in_diagrams(self):
+        layers, _ = read_keymap()
+        self.assertEqual(dict(layers)["default_layer"][15], "&slt 7 SPACE")
+        self.assertEqual(gen_svg.label("&slt 7 SPACE"), ("Space\nZXCV", "dual"))
+        self.assertEqual(gen_svg.hold_pages(layers)[15], 7)
+
     def test_ai_is_first_and_held_pages_have_shift_faces(self):
         layers, combos = read_keymap()
 

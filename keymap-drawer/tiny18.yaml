@@ -42,16 +42,16 @@ layers:
   - {t: '&m_esc', s: TAB}
   - UP ARROW
   - {t: BACKSPACE, s: DELETE}
-  - {t: Ctl+Z, s: '&m_model'}
-  - {t: Ctl+Sft+Z, s: '&m_resume'}
-  - {t: Ctl+X, s: '&m_status'}
+  - {t: ., s: '&m_model'}
+  - UP ARROW
+  - {t: /, s: '&m_status'}
   - {t: ENTER, h: LSHFT}
   - LEFT ARROW
   - DOWN ARROW
   - RIGHT ARROW
-  - {t: ',', s: '&m_clear'}
-  - {t: ., s: '&m_context'}
-  - {t: /, s: '&m_perm'}
+  - LEFT ARROW
+  - DOWN ARROW
+  - RIGHT ARROW
   - {t: ENTER, h: LSHFT}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -188,6 +188,18 @@ combos:
   l: [nav]
 - p: [1, 2]
   k: Ctl+V
+  l: [nav]
+- p: [3, 4]
+  k: Ctl+Z
+  l: [nav]
+- p: [4, 5]
+  k: Ctl+Sft+Z
+  l: [nav]
+- p: [10, 11]
+  k: Ctl+X
+  l: [nav]
+- p: [11, 12]
+  k: Ctl+F
   l: [nav]
 - p: [2, 9]
   k: LEFT ALT

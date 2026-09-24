@@ -52,7 +52,7 @@
 
 // The keyboard sends a byte on every key press, so time without a valid byte
 // is idle time, counted the same way the keyboard counts it.
-#define IDLE_BLANK_MS (30 * 60 * 1000)
+#define IDLE_BLANK_MS (60 * 60 * 1000)
 #define IDLE_BLANK_TICKS (IDLE_BLANK_MS / TICK_MS)
 
 static const uint8_t init_bytes[] = {

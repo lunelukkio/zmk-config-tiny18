@@ -25,8 +25,8 @@ DIM = ("#f1f1ea", "#d5d5cc", "#9a9a8e", 1)  # fill, stroke, text, stroke-width
 
 # Held layers are named after what they hold, never by number. Short enough to
 # fit inside a key box; prose adds "の面" around these.
-PAGE_NAME = {6: "数字", 7: "ZXCV"}
-PAGE_LONG = {6: "数字の面", 7: "ZXCV の面"}
+PAGE_NAME = {6: "数字", 7: "ZXCV", 8: "AI CMD"}
+PAGE_LONG = {6: "数字の面", 7: "ZXCV の面", 8: "AI コマンドの面"}
 
 # Only these text-entry faces describe letter case rather than key names.
 LETTER_CASE_LAYERS = frozenset(("default_layer", "edit_bracket_layer"))
@@ -58,6 +58,7 @@ MACRO_TEXT = {}          # macro label -> the text it types, filled by read_keym
 MACRO_HOLD = {}          # hold-tap name -> the macro its hold side runs, if any
 KP_HOLD_TAP = set()      # hold-tap names whose two sides are both &kp
 MORPH = {}               # mod-morph name -> (plain binding, binding while Shift is held)
+MORPH_MODS = {}
 
 
 def read_macros(s):
@@ -106,6 +107,7 @@ def read_behaviors(s):
     MACRO_HOLD.clear()
     KP_HOLD_TAP.clear()
     MORPH.clear()
+    MORPH_MODS.clear()
     block = re.search(r"\n    behaviors \{(.*?)\n    \};", s, re.S)
     if not block:
         return
@@ -117,6 +119,8 @@ def read_behaviors(s):
             pair = re.findall(r"<\s*(&[^>]+?)\s*>", bindings.group(1))
             if len(pair) == 2:
                 MORPH[name] = (pair[0], pair[1])
+                match = re.search(r"\bmods = <([^>]+)>", body)
+                MORPH_MODS[name] = frozenset(re.findall(r"MOD_[LR](?:SFT|CTL|ALT|GUI)", match.group(1))) if match else frozenset()
             continue
         held_side = re.findall(r"<\s*&(\w+)\s*>", bindings.group(1))
         if held_side and held_side[0] in MACRO_TEXT:
@@ -127,7 +131,20 @@ def read_behaviors(s):
 
 def shifted(tok):
     """What a key sends while Shift is held, for the keys that change."""
-    return MORPH[tok[1:]][1] if tok[1:] in MORPH else tok
+    return resolve_morph(tok, {"MOD_LSFT"})
+
+
+def resolve_morph(tok, mods):
+    """Resolve nested mod-morph decisions using the selected physical modifiers."""
+    seen = set()
+    while tok[1:] in MORPH:
+        name = tok[1:]
+        if name in seen:
+            raise ValueError(f"cyclic mod-morph: {name}")
+        seen.add(name)
+        plain, morphed = MORPH[name]
+        tok = morphed if MORPH_MODS[name] & mods else plain
+    return tok
 
 
 # What an ordinary keyboard key produces while Shift is held. Mod-morph
@@ -157,6 +174,16 @@ def shift_face(bindings):
             tok = "&kp " + HOST_SHIFT_OUTPUT[match.group(1)]
         out.append(tok)
     return out
+
+
+def ai_shift_face(bindings):
+    """Show physical Shift on arrows in the AI documentation face."""
+    face = shift_face(bindings)
+    for position in (1, 4, 7, 8, 9, 10, 11, 12):
+        match = re.fullmatch(r"&kp (\w+_ARROW)", face[position])
+        if match:
+            face[position] = f"&kp LS({match.group(1)})"
+    return face
 
 
 SHIFTED_SYMBOL = {"1": "!", "2": "@", "3": "#", "4": "$", "5": "%", "6": "^",
@@ -199,6 +226,16 @@ def read_keymap():
 
 def label(tok):
     """Short human label for a binding, plus a category used for colouring."""
+    if tok == "&led_mode":
+        return "LED", "bt"
+    if tok == "&led_brightness 0":
+        return "LED-", "bt"
+    if tok == "&led_brightness 1":
+        return "LED+", "bt"
+    if tok == "&oled_control 1":
+        return "OLED-", "bt"
+    if tok == "&oled_control 2":
+        return "OLED+", "bt"
     if tok in ("&trans",):
         return "\u2014", "trans"
     if tok in ("&none",):
@@ -213,9 +250,9 @@ def label(tok):
             ("BACKSPACE", "BkSp"), ("ESCAPE", "Esc"), ("PRINTSCREEN", "PrtSc"),
             ("DOUBLE_QUOTES", "\""), ("COLON", ":"), ("SLASH", "/"),
             ("COMMA", ","), ("PERIOD", "."),
-            ("LSHFT", "Shift"), ("RIGHT_SHIFT", "R Shift"),
+            ("LSHFT", "Shift"), ("RSHFT", "R Shift"), ("RIGHT_SHIFT", "R Shift"),
             ("LEFT_ALT", "Alt"), ("LALT", "Alt"), ("RALT", "R Alt"),
-            ("LEFT_GUI", "GUI"), ("PAGE_UP", "PgUp"), ("PAGE_DOWN", "PgDn"),
+            ("LEFT_GUI", "GUI"), ("LGUI", "GUI"), ("PAGE_UP", "PgUp"), ("PAGE_DOWN", "PgDn"),
             ("HOME", "Home"), ("END", "End"), ("INSERT", "Ins"),
             ("CAPS", "CapsLk"), ("CAPSLOCK", "CapsLk"), ("SCROLLLOCK", "ScrLk"),
             ("PAUSE_BREAK", "Pause"), ("K_APP", "Menu"), ("K_APPLICATION", "Menu"),
@@ -252,7 +289,8 @@ def label(tok):
             modifiers.append(modifier_names[modified.group(1)])
             k = modified.group(2)
         if modifiers:
-            k = {"SPACE": "Space"}.get(k, k)
+            k = {"SPACE": "Space", "UP_ARROW": "↑", "DOWN_ARROW": "↓",
+                 "LEFT_ARROW": "←", "RIGHT_ARROW": "→"}.get(k, k)
             return "+".join(modifiers + [k]), "shortcut"
         cat = "mod" if k in ("Shift", "Ctrl", "Alt", "R Ctrl", "R Alt", "GUI",
                              "Space", "Enter", "R Shift") else "key"
@@ -285,7 +323,7 @@ def label(tok):
     if tok[1:] in MORPH:
         # A key box shows what the key does now; the Shift face has its own
         # figure and the display draws it under "+S".
-        return label(MORPH[tok[1:]][0])
+        return label(resolve_morph(tok, set()))
     if tok[1:] in MACRO_TEXT:
         return MACRO_TEXT[tok[1:]], "shortcut"
     return tok.replace("&", ""), "key"

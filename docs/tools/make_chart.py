@@ -12,7 +12,7 @@ from pathlib import Path
 from dataclasses import dataclass
 from PIL import Image, ImageDraw, ImageFont
 from gen_svg import (read_keymap, label, held, shown, display_lines, text_names, pair,
-                     PAGE_NAME, PAGE_LONG, shifted, shift_face)
+                     PAGE_NAME, PAGE_LONG, shifted, shift_face, ai_shift_face)
 
 # What a combo's output is for, where the key name alone does not say it.
 COMBO_NOTE = {"Ctrl+Space": "日英切替"}
@@ -53,9 +53,8 @@ def chart_font(*, bold=False):
 # very resolution S is here to add. At S = 2 this chart came out 20216 px tall
 # and looked no better than before. The assert at the end of main() catches
 # the day it stops fitting, so the chart fails loudly instead of quietly going
-# soft again; 1.5 stopped fitting when AI mode grew two combos, and 1.4 when
-# its right arrow became a third. The AI Shift face uses the remaining room at
-# 1.3; the assert below guards future additions.
+# soft again. The chart now includes the AI command page and AI combos;
+# the assert below guards future additions.
 #
 # S sets only the PNG's pixel size. The width the reader sees is fixed in
 # build_html.py (SHEET_CSS_W), so lowering S costs sharpness, not size.
@@ -186,7 +185,7 @@ class ComboCardGroup:
 def chart_model(layers, combos):
     """Build the user-visible chart order and its derived Shift faces."""
     bindings = dict(layers)
-    bindings["nav_shift"] = [shifted(tok) for tok in bindings["nav_layer"]]
+    bindings["nav_shift"] = ai_shift_face(bindings["nav_layer"])
     bindings["digit_symbol_shift"] = shift_face(bindings["digit_symbol_layer"])
     bindings["edit_bracket_shift"] = shift_face(bindings["edit_bracket_layer"])
     bindings["number_shift"] = [shifted(tok) for tok in bindings["number_layer"]]
@@ -228,11 +227,6 @@ def chart_model(layers, combos):
             names = f"{names} と {shifts}"
         return f"{names} を押さえている間"
 
-    nav_shifts = " か ".join(
-        key_names[position]
-        for position, tok in enumerate(bindings["nav_layer"])
-        if held(tok) == "Shift"
-    )
     game_shifts = " か ".join(
         key_names[position]
         for position, tok in enumerate(bindings["game_layer"])
@@ -241,8 +235,9 @@ def chart_model(layers, combos):
 
     sections = (
         ChartSection("nav_layer", "AI モード", f"{entry[2]} で入る", MODE[2][1], None),
-        ChartSection("nav_shift", "AI モード（Shift）",
-                     f"{nav_shifts} を押さえている間", MODE[2][1], None),
+        ChartSection("nav_shift", "AI モード＋Shift", "左右どちらかの Enter を長押し", MODE[2][1], None),
+        ChartSection("ai_command_layer", "AI コマンドの面",
+                     "AI モードで Space を長押ししている間", HELD, None, (15,)),
         ChartSection("default_layer", "文字入力モード",
                      f"{entry[0]} で入る", MODE[0][1], "ここから下は文字と記号"),
         ChartSection("digit_symbol_layer", PAGE_NAME[6],
@@ -309,10 +304,13 @@ def combo_card_groups(model, combos):
     held_or_number = []
     for combo in combos:
         if combo["name"].startswith("mode_"):
-            switch.append(ComboCard(
+            card = ComboCard(
                 combo["name"], tuple(combo["pos"]), target(combo),
                 notes(idle_note(combo), "ゲームモードでは無効" if 5 not in combo["layers"] else ""),
-            ))
+            )
+            switch.append(card)
+            if 2 in combo["layers"]:
+                ai.append(card)
             continue
 
         output = label(combo["binding"])[0]
@@ -339,15 +337,16 @@ def combo_card_groups(model, combos):
         card.name for cards in (switch, text, ai, held_or_number) for card in cards
     }
     return (
-        ComboCardGroup("モード切替", (26, 58, 92), tuple(switch)),
+        ComboCardGroup("AI モードの同時押し", MODE[2][1], tuple(ai)),
         ComboCardGroup("文字入力モード", (34, 170, 68), tuple(text)),
-        ComboCardGroup("AI モード", MODE[2][1], tuple(ai)),
         ComboCardGroup("そのモードや面の中だけ", HELD, tuple(held_or_number)),
+        ComboCardGroup("ほかのモードの切替", (26, 58, 92), tuple(switch)),
     )
 
 
 def shorten(t):
-    return {"Space": "Spc", "Enter": "Ent", "Shift": "Sft", "R Shift": "RSft",
+    return {"Shift+↑": "S+↑", "Shift+↓": "S+↓", "Shift+←": "S+←", "Shift+→": "S+→",
+            "Space": "Spc", "Enter": "Ent", "Shift": "Sft", "R Shift": "RSft",
             "R Ctrl": "RCtl", "R Alt": "RAlt", "BackSpace": "BkSp",
             "\\": "＼"}.get(t, t)
 
@@ -404,7 +403,7 @@ def main():
     # short is what costs: Pillow pads a crop past the edge with black, so the
     # bottom of the chart goes missing behind a black band. The assert after
     # the drawing is what turns that into a failure instead of a silent one.
-    combo_h = 6200
+    combo_h = 6600
     H = head_h + intro_h + len(SECTIONS) * (sec_h + KEYS_H + gap_h) + combo_h + MARGIN + 2000
 
     img = Image.new("RGB", (int(W * S), int(H * S)), (250, 250, 247))
@@ -431,21 +430,21 @@ def main():
         d.text((x + 24, by + 54), entry[layer] + " で入る", font=f_body, fill=(90, 90, 90))
     y += 228
     for line in ["ファンクションモードと Bluetooth モードも、同じように 2 キーで入れる。",
-                 "親指を押さえている間だけ開く面が 2 つある。%s、%s。"
-                 % (PAGE_LONG[6], PAGE_LONG[7]),
+                 "親指を押さえている間だけ開く面は 3 つ。数字、ZXCV、AI コマンド。",
+                 "AI コマンドの面だけは、AI モードの Space から開く。",
                  "図中の英字は、入力結果の大小ではなくキー名として大文字で表す。"]:
         d.text((MARGIN, y), line, font=f_body, fill=(90, 90, 90))
         y += 32
 
     # ---- each layer --------------------------------------------------------
-    def draw_keys(top, bindings, letter_case=None):
+    def draw_keys(top, bindings, letter_case=None, *, base=None):
         mid = MARGIN + 4.35 * (K + GAP)
         d.line([(mid, top - 4), (mid, top + KEYS_H)], fill=(205, 205, 205), width=3)
         for i in range(18):
             cx, cy = POS_XY[i]
             x = MARGIN + cx * (K + GAP)
             ky = top + cy * (K + GAP)
-            text, cat = shown(bindings[i], B["default_layer"], i, letter_case=letter_case)
+            text, cat = shown(bindings[i], base or B["default_layer"], i, letter_case=letter_case)
             fill, stroke, tcol = PALETTE[cat]
             d.rounded_rectangle([x, ky, x + K, ky + K], radius=10, fill=fill,
                                 outline=stroke,
@@ -501,8 +500,37 @@ def main():
                    "押さえている間", font=f_body, fill=(90, 90, 90))
             head = sec_h + MINI_H + 36
         top = y + head
-        draw_keys(top, B[name])
+        draw_keys(top, B[name], base=B["nav_layer"] if name == "ai_command_layer" else None)
         y = top + KEYS_H + gap_h
+        if name == "nav_shift":
+            group = combo_card_groups(model, combos)[0]
+            d.text((MARGIN, y), group.heading + "（13 件）", font=f_sec, fill=group.colour)
+            y += 48
+            card_w = (BLOCK_W - 20) / 2
+            for index, card in enumerate(group.cards):
+                x = MARGIN + (index % 2) * (card_w + 20)
+                cy = y + (index // 2) * 108
+                d.rounded_rectangle([x, cy, x + card_w, cy + 96], radius=8,
+                                    fill=(255, 255, 255), outline=group.colour, width=2)
+                for position in range(18):
+                    px, py = POS_XY[position]
+                    kx, ky = x + 10 + px * 19, cy + 9 + py * 19
+                    active = position in card.positions
+                    d.rounded_rectangle([kx, ky, kx + 16, ky + 16], radius=3,
+                                        fill=group.colour if active else (237, 239, 241))
+                ai_names = [label(binding)[0].split("\n")[0]
+                            for binding in B["nav_layer"]]
+                for position in (1, 7, 8, 9):
+                    ai_names[position] = "左" + ai_names[position]
+                for position in (4, 10, 11, 12):
+                    ai_names[position] = "右" + ai_names[position]
+                d.text((x + 190, cy + 12), pair(card.positions, ai_names, "+"),
+                       font=f_sml, fill=(26, 58, 92))
+                d.text((x + 190, cy + 43), card.output, font=f_med, fill=(45, 45, 45))
+                if card.note:
+                    d.text((x + 190, cy + 70), card.note, font=f_tiny,
+                           fill=(120, 120, 120))
+            y += ((len(group.cards) + 1) // 2) * 108 + 26
 
     # ---- key names and position numbers ------------------------------------
     d.line([(MARGIN, y), (W - MARGIN, y)], fill=(26, 58, 92), width=3)
@@ -536,7 +564,7 @@ def main():
     yy += 40
     d.line([(MARGIN, yy), (W - MARGIN, yy)], fill=(26, 58, 92), width=3)
     yy += 26
-    d.text((MARGIN, yy), "combo で押す位置", font=f_sec, fill=(26, 58, 92))
+    d.text((MARGIN, yy), "ほかのモードと面の combo", font=f_sec, fill=(26, 58, 92))
     yy += 52
 
     CARD_H = MINI_H + 26
@@ -559,7 +587,7 @@ def main():
             yy += CARD_H
         yy += 24
 
-    for group in combo_card_groups(model, combos):
+    for group in combo_card_groups(model, combos)[1:3]:
         cards(group)
 
     assert int(yy) + MARGIN <= H, (

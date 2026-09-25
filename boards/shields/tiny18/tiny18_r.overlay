@@ -1,6 +1,7 @@
 #include "tiny18.dtsi"
 #include <input/processors.dtsi>
 #include <zephyr/dt-bindings/pinctrl/nrf-pinctrl.h>
+#include <zephyr/dt-bindings/pwm/pwm.h>
 
 &default_transform {
     col-offset = <9>;};
@@ -14,6 +15,24 @@
  * apply to the left half as well.
  */
 &pinctrl {
+    tiny18_led_pwm_default: tiny18_led_pwm_default {
+        group1 {
+            psels = <NRF_PSEL(PWM_OUT0, 0, 26)>,
+                    <NRF_PSEL(PWM_OUT1, 0, 30)>,
+                    <NRF_PSEL(PWM_OUT2, 0, 6)>;
+            nordic,invert;
+        };
+    };
+
+    tiny18_led_pwm_sleep: tiny18_led_pwm_sleep {
+        group1 {
+            psels = <NRF_PSEL(PWM_OUT0, 0, 26)>,
+                    <NRF_PSEL(PWM_OUT1, 0, 30)>,
+                    <NRF_PSEL(PWM_OUT2, 0, 6)>;
+            low-power-enable;
+        };
+    };
+
     tiny18_uart1_default: tiny18_uart1_default {
         group1 {
             psels = <NRF_PSEL(UART_TX, 0, 3)>,
@@ -26,6 +45,34 @@
             psels = <NRF_PSEL(UART_TX, 0, 3)>,
                     <NRF_PSEL_DISCONNECTED(UART_RX)>;
             low-power-enable;
+        };
+    };
+};
+
+&pwm0 {
+    status = "okay";
+    pinctrl-0 = <&tiny18_led_pwm_default>;
+    pinctrl-1 = <&tiny18_led_pwm_sleep>;
+    pinctrl-names = "default", "sleep";
+};
+
+&{/leds} {
+    status = "disabled";
+};
+
+/ {
+    tiny18_pwm_leds: tiny18_pwm_leds {
+        compatible = "pwm-leds";
+        status = "okay";
+
+        tiny18_pwm_red: red {
+            pwms = <&pwm0 0 PWM_MSEC(1) PWM_POLARITY_INVERTED>;
+        };
+        tiny18_pwm_green: green {
+            pwms = <&pwm0 1 PWM_MSEC(1) PWM_POLARITY_INVERTED>;
+        };
+        tiny18_pwm_blue: blue {
+            pwms = <&pwm0 2 PWM_MSEC(1) PWM_POLARITY_INVERTED>;
         };
     };
 };

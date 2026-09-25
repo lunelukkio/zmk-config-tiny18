@@ -125,9 +125,11 @@ class IntegrationTests(unittest.TestCase):
             self.assertIn(target["board"], script)
             self.assertIn(target["shield"], script)
             self.assertIn(target["artifact-name"] + ".uf2", script)
-            for key in ("snippet", "cmake-args"):
-                if key in target:
-                    self.assertIn(target[key], script)
+            if "snippet" in target:
+                self.assertIn(target["snippet"], script)
+            if "cmake-args" in target:
+                for argument in target["cmake-args"].split():
+                    self.assertIn(argument, script)
 
     def test_public_tools_have_no_private_project_or_host_path(self):
         for path in (ROOT / "docs/tools").glob("*"):

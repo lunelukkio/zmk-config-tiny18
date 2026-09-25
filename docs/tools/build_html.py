@@ -9,7 +9,7 @@ type in text-entry mode, never by position number.
 import hashlib, io, os, re, shutil, struct
 from pathlib import Path
 from gen_svg import (read_keymap, svg, label, held, POS, text_names, pair, PAGE_NAME,
-                     PAGE_LONG, shifted, shift_face)
+                     PAGE_LONG, shifted, shift_face, ai_shift_face)
 
 RIGHT_IMAGE = "tiny18-right.uf2"
 
@@ -21,6 +21,7 @@ CHART = Path(HERE).parent / "tiny18-keymap.png"
 
 layers, combos = read_keymap()
 L = dict(layers)
+L["nav_shift"] = ai_shift_face(L["nav_layer"])
 LNAME = [n for n, _ in layers]
 NAMES = text_names(layers)
 CD = dict((c["name"], c) for c in combos)
@@ -76,13 +77,13 @@ def fig1():
 
 # display name, layer, LED colour name, hex, switch combo, one-line description
 MODES = [
-    ("AI", "nav_layer", "青", "#1e6fd9", "mode_ai", "起動時のモード。左右とも逆 T 字の矢印、Escape、BackSpace。Shift で Tab・Delete と 2 つのコマンド。元に戻す・やり直す・切り取り・検索は右手の combo"),
+    ("AI", "nav_layer", "青", "#1e6fd9", "mode_ai", "起動時のモード。左右に矢印と修飾キー。Space 長押しで9種類のslash command面を開く"),
     ("文字入力", "default_layer", "緑", "#22aa44", "mode_text", "毎日の文字入力"),
     ("数字キーパッド", "number_layer", "黄", "#d4a017", "mode_num", "左手がテンキー、右手が四則演算。Shift 中は移動・ロック・システムキー"),
     ("ゲーム", "game_layer", "シアン", "#17b8c4", "mode_game", "VRChat。WASD、I O P、Z X C、Esc と V。Shift を押さえると Esc が Z、V が R、Z X C が G M K に変わる。親指は Ctrl・Space・Space・Alt"),
     ("ファンクション", "fn_layer", "マゼンタ", "#b5389e", "mode_fn", "F1 から F12。Ctrl は %s の位置、Alt は %s の位置"
      % (mod_keys("fn_layer", "Ctrl"), mod_keys("fn_layer", "Alt"))),
-    ("Bluetooth", "bluetooth_layer", "赤", "#dd2222", "mode_bt", "接続プロファイルの切り替え"),
+    ("Bluetooth", "bluetooth_layer", "赤", "#dd2222", "mode_bt", "左上の3キーでLED、右上の2キーでOLEDの明るさを調整し、BTキーで接続プロファイルを切り替える"),
 ]
 
 FIGNO = [1]
@@ -90,18 +91,20 @@ CAPTION = {
     "default_layer": "文字入力モード。英字は入力結果の大小ではなくキー名として大文字で表す。左の親指 2 つがタップで BackSpace と Space、長押しで%sと%sを開く。" % (PAGE_LONG[6], PAGE_LONG[7]),
     "digit_symbol_layer": "%s を長押ししている間だけ。左手に 1 から 6、右手に 7 8 9 0 - =、右の親指に読点と句点。両端はタップで Enter、押さえると Shift。右の親指は Shift で ( ) になる。薄い色の左の親指は文字入力モードのまま。" % " か ".join(HOLDERS[6]),
     "edit_bracket_layer": "%s を長押ししている間だけ。Escape・括弧・Z X C V・句読点。Shift 中はEscapeがTabになり、通常のShift記号が出る。%s の位置はタップで Enter、押さえると Shift。薄い色の左の親指は文字入力モードのまま。" % (" か ".join(HOLDERS[7]), NAMES[13]),
-    "nav_layer": "AI モード。矢印は左右とも逆 T 字。%s の位置は Escape、Shift 中は Tab。%s の位置は BackSpace、Shift 中は Delete。右手の上段は句点・↑・スラッシュ、ホーム行は ← ↓ → で、両端の . と / だけ Shift を押さえるとコマンドになる。%s と %s の位置はどちらもタップで Enter、押さえると Shift。親指 4 つの長押しは文字入力モードと同じ。" % (NAMES[0], NAMES[2], NAMES[6], NAMES[13]),
+    "nav_layer": "AI モード。左上段はCtrl・↑・Alt、右上段は右Alt・↑・右Ctrl。右親指は!と@。編集操作とモード切替は2キーのcombo。左右のEnterはタップでEnter、長押しで左右それぞれのShift。Space長押しでAIコマンドの面を開く。",
+    "nav_shift": "AI モードで左右どちらかのEnterを長押しした状態。矢印はShift付きで送る。編集操作とモード切替のcomboは同じ位置。",
+    "ai_command_layer": "AIモードのSpaceを長押ししている間だけ開く。上段とホーム行に9種類のslash command。commandは英数入力へ切り替えて文字だけを送り、Enterは送らない。左上はEscape・Tab・GUI。左親指BackSpaceは押し続けると繰り返す。",
     "number_layer": "数字キーパッドモード。数字と小数点はテンキーのコードを送る。左手がテンキー配列、右手が四則演算と =・バックスラッシュ。%s の位置はタップで Enter、押さえると Shift。左の親指は 2 と 3、右の親指は 0 と小数点。" % NAMES[13],
     "game_layer": "ゲームモード。W が S の真上に来て WASD のダイヤ型になる。%s の位置が Escape、%s の位置が V、右上段は I O P、右のホーム行は Z X C。親指 4 つは Ctrl・Space・Space・Alt で、左の親指も文字入力モードとは違う。%s の位置は文字入力モードと同じ。" % (NAMES[0], NAMES[2], NAMES[13]),
     "fn_layer": "ファンクションモード。F キーは数字の面で同じ数字がある位置。%s の位置を押さえると Ctrl、%s の位置を押さえると Alt。%s の位置と薄い色の左の親指は文字入力モードと同じ。" % (mod_keys("fn_layer", "Ctrl"), mod_keys("fn_layer", "Alt"), NAMES[13]),
-    "bluetooth_layer": "Bluetooth モード。プロファイル 5 つのうち BT 4 だけが右手にある。",
+    "bluetooth_layer": "Bluetooth モード。左上の LED は常時点灯と一瞬点灯の切替、LED- と LED+ はRGB LEDの明るさ。右上はOLED- と OLED+ が学習用OLEDの明るさを調整する。profile keyはBT 0から3が左手、BT 4が右手にある。",
 }
 
 
 def figure(name):
     FIGNO[0] += 1
     return '%s\n<div class="figure-caption">図 %d. %s</div>' % (
-        svg(L[name], name, base=L["default_layer"]),
+        svg(L[name], name, base=L["nav_layer"] if name == "ai_command_layer" else L["default_layer"]),
         FIGNO[0], CAPTION[name])
 
 
@@ -154,19 +157,6 @@ def game_shift_figure():
         svg(b, "game_layer_shift", base=L["default_layer"]), FIGNO[0], caption)
 
 
-def nav_shift_figure():
-    """AI mode while Shift is held: Tab, Delete and two commands."""
-    FIGNO[0] += 1
-    b = [shifted(tok) for tok in L["nav_layer"]]
-    caption = ("AI モードで %s か %s の位置を押さえている間。左上段の Escape と BackSpace は "
-               "Tab と Delete になる。右手の上段は、両端の . と / だけが /model と /status に"
-               "変わり、4 方向の矢印は変わらない。いずれも Shift を外して送るため、コマンドを"
-               "送ると物理的に押した Shift も外れ、次のコマンドには Shift を押し直す。"
-               % (NAMES[6], NAMES[13]))
-    return '%s\n<div class="figure-caption">図 %d. %s</div>' % (
-        svg(b, "nav_layer_shift", base=L["default_layer"]), FIGNO[0], caption)
-
-
 def mode_table():
     rows = ['<table><tr><th style="width:8em;">モード</th><th style="width:4em;">LED</th>'
             '<th style="width:7em;">入り方</th><th>中身</th></tr>']
@@ -205,7 +195,7 @@ def led_table():
                     '<td>%s モード</td></tr>' % (hexcol, col, name))
     rows.append('<tr><td><span class="led" style="background:#ffffff;border:1px solid #bbb;"></span>白</td>'
                 '<td>押しっぱなし面（%s、%s）を開いている間。指を離せば元のモードの色に戻る</td></tr>'
-                % (PAGE_LONG[6], PAGE_LONG[7]))
+                % (PAGE_LONG[6], PAGE_LONG[7] + "、AIコマンド"))
     rows.append('</table>')
     return "\n".join(rows)
 
@@ -233,9 +223,12 @@ def combo_group(pairs, layer=None):
     out = []
     for n, desc in pairs:
         c = CD[n]
-        ks = keys(n) if layer is None else " + ".join(
-            esc(NAMES[p] + " の位置" if tap(layer, p) == "無効キー" else tap(layer, p))
-            for p in c["pos"])
+        def local_key(position):
+            name = NAMES[position] + " の位置" if tap(layer, position) == "無効キー" else tap(layer, position)
+            if layer == "nav_layer" and name in ("↑", "↓", "←", "→"):
+                name = ("左" if position in (1, 7, 8, 9) else "右") + name
+            return esc(name)
+        ks = keys(n) if layer is None else " + ".join(local_key(p) for p in c["pos"])
         name = keyname(c["binding"])
         note = COMBO_NOTE.get(name)
         out.append('<div class="combo-card"><div class="out">%s</div>'
@@ -293,8 +286,8 @@ SUBS = {
     ]),
     "COMBO_MISC": combo_group([
         ("slash", "文字入力モードと %s の両方で効く" % PAGE_NAME[7]),
-        ("lalt", "音声入力の起動用。人差し指の上段とホーム行。文字入力モードと AI モードで、打鍵後 150 ms おいてから"),
-        ("lgui", "Windows キー。文字入力モードと AI モードで同じ。ゲームモードでも効き、そこでは %s"
+        ("lalt", "音声入力の起動用。文字入力モードで、打鍵後 150 ms おいてから"),
+        ("lgui", "Windows キー。文字入力モードとゲームモードで有効。ゲームモードでは %s"
          % " と ".join(tap("game_layer", p) for p in CD["lgui"]["pos"])),
         ("ime", "日本語と英語の切替（Ctrl+Space）。上段の薬指とホーム行の人差し指。文字入力モードだけ、打鍵後 150 ms おいてから"),
     ]),
@@ -309,13 +302,19 @@ SUBS = {
         ("num_lock", on_page("num_lock") + "。打鍵後 150 ms おいてから"),
     ]),
     "COMBO_NAV": combo_group([
-        ("nav_copy", on_page("nav_copy")), ("nav_paste", on_page("nav_paste")),
-        ("nav_undo", on_page("nav_undo")), ("nav_redo", on_page("nav_redo")),
-        ("nav_cut", on_page("nav_cut")), ("nav_find", on_page("nav_find")),
-    ]),
+        ("ai_copy", "コピー"), ("ai_paste", "貼り付け"),
+        ("ai_undo", "元に戻す"), ("ai_newline", "改行"),
+        ("ai_redo", "やり直し"), ("ai_cut", "切り取り"),
+        ("ai_find", "検索"),
+        ("mode_text", "文字入力モードへ"), ("mode_ai", "AIモードへ"),
+        ("mode_num", "数字モードへ"), ("mode_game", "ゲームモードへ"),
+        ("mode_fn", "ファンクションモードへ"),
+        ("mode_bt", "Bluetoothモードへ"),
+    ], layer="nav_layer"),
+    "FIG_nav_shift": "",
     "FIG_number_layer_shift": "",   # filled after the numbered figures below
     "FIG_game_layer_shift": "",     # filled after the numbered figures below
-    "FIG_nav_layer_shift": "",       # filled after the numbered figures below
+    "FIG_ai_command_layer": "",
     "FIG_digit_symbol_layer_shift": "",  # filled after the numbered figures below
     "FIG_edit_bracket_layer_shift": "",  # filled after the numbered figures below
     "SW_num_shift_key": NAMES[13],
@@ -324,7 +323,7 @@ SUBS = {
 for name, layer, col, hexcol, cname, desc in MODES:
     SUBS["SW_" + cname[5:]] = keys(cname)
 # Numbered in the order body.html shows them, or the captions count out of turn.
-for n in ("default_layer", "digit_symbol_layer", "edit_bracket_layer", "nav_layer",
+for n in ("default_layer", "digit_symbol_layer", "edit_bracket_layer", "nav_layer", "nav_shift", "ai_command_layer",
           "number_layer", "fn_layer", "game_layer", "bluetooth_layer"):
     SUBS["FIG_" + n] = figure(n)
     if n == "digit_symbol_layer":
@@ -335,8 +334,6 @@ for n in ("default_layer", "digit_symbol_layer", "edit_bracket_layer", "nav_laye
         SUBS["FIG_number_layer_shift"] = number_shift_figure()
     if n == "game_layer":
         SUBS["FIG_game_layer_shift"] = game_shift_figure()
-    if n == "nav_layer":
-        SUBS["FIG_nav_layer_shift"] = nav_shift_figure()
 
 # The sheet is around 15000 px tall at its own resolution, which buries the
 # prose under screen after screen of scrolling, so the img tag shows it at a

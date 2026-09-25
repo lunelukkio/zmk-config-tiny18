@@ -1,0 +1,5 @@
+description: Decrease or increase Tiny18 RGB LED brightness
+
+compatible: "tiny18,behavior-led-brightness"
+
+include: one_param.yaml

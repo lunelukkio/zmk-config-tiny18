@@ -2,25 +2,17 @@
  * Send Tiny18's display state through UART1.
  *
  * The external display is deliberately a separate USB-powered device.  A
- * single byte travels from the right-half XIAO's D1 TX pin to its receiver;
+ * state frames travel from the right-half XIAO's D1 TX pin to its receiver;
  * no keyboard power or host-facing data path is involved.
  *
- * The byte carries the highest active keymap layer in bits 0-2 and one bit
- * each for Shift, Ctrl, Alt and GUI in bits 3-6, whichever side is held.
- * Bit 7 stays clear so the receiver can tell a byte from line noise.
+ * Three-byte frames carry layer and left/right modifiers. Bytes 0x80-0x84
+ * carry activity, OLED controls and a keyboard boot notice.
  *
- * It goes out at boot, whenever the layer state changes, whenever a modifier
- * key goes down or up, and on every key press.  The last one is what lets a
- * display plugged in later catch up: the first key pressed brings it to the
- * current state, with no timer and no request line.
+ * The current state goes out at boot, on layer and modifier changes, and on
+ * key presses. Each frame is one queue record; controls are one-byte records.
  *
- * The listeners do not send directly.  They queue one work item, and the
- * work reads the state and writes the byte.  Two reasons: this file's
- * listener can run before ZMK's own HID listener for the same event, so the
- * modifier state is only current once the event has finished its round; and
- * uart_poll_out blocks for about a millisecond per byte, which does not
- * belong in the event path.  Several events from one keystroke collapse into
- * a single byte this way.
+ * Listeners enqueue records without blocking. A worker reads modifier state
+ * after event processing; a dedicated thread writes complete records to UART.
  */
 
 #include <errno.h>
@@ -37,37 +29,63 @@
 #include <zmk/hid.h>
 #include <zmk/keymap.h>
 #include <zmk/keys.h>
-
-#define STATE_SHIFT 0x08
-#define STATE_CTRL 0x10
-#define STATE_ALT 0x20
-#define STATE_GUI 0x40
+#include "tiny18_oled_uart.h"
 
 static const struct device *const layer_uart = DEVICE_DT_GET(DT_NODELABEL(uart1));
+struct oled_record {
+    uint8_t length;
+    uint8_t bytes[3];
+};
+K_MSGQ_DEFINE(oled_tx_queue, sizeof(struct oled_record), 64, 1);
 
-static uint8_t current_state(void) {
+static void oled_tx_thread(void *a, void *b, void *c) {
+    struct oled_record record;
+    while (true) {
+        k_msgq_get(&oled_tx_queue, &record, K_FOREVER);
+        if (device_is_ready(layer_uart)) {
+            for (uint8_t i = 0; i < record.length; i++) {
+                uart_poll_out(layer_uart, record.bytes[i]);
+            }
+        }
+    }
+}
+K_THREAD_DEFINE(oled_tx_thread_id, 512, oled_tx_thread, NULL, NULL, NULL, 10, 0, 0);
+
+int tiny18_oled_send(uint8_t command) {
+    if (command < TINY18_OLED_ACTIVITY || command > TINY18_OLED_BOOT) {
+        return -EINVAL;
+    }
+    const struct oled_record record = {.length = 1, .bytes = {command}};
+    return k_msgq_put(&oled_tx_queue, &record, K_NO_WAIT);
+}
+
+static uint8_t side_mods(zmk_mod_flags_t mods, bool right) {
+    if (right) {
+        return ((mods & MOD_RCTL) ? TINY18_MOD_CTRL : 0) |
+               ((mods & MOD_RSFT) ? TINY18_MOD_SHIFT : 0) |
+               ((mods & MOD_RALT) ? TINY18_MOD_ALT : 0) |
+               ((mods & MOD_RGUI) ? TINY18_MOD_GUI : 0);
+    }
+    return ((mods & MOD_LCTL) ? TINY18_MOD_CTRL : 0) |
+           ((mods & MOD_LSFT) ? TINY18_MOD_SHIFT : 0) |
+           ((mods & MOD_LALT) ? TINY18_MOD_ALT : 0) |
+           ((mods & MOD_LGUI) ? TINY18_MOD_GUI : 0);
+}
+
+static struct oled_record current_state(void) {
     const zmk_mod_flags_t mods = zmk_hid_get_explicit_mods();
-    uint8_t state = zmk_keymap_highest_layer_active() & 0x07;
-
-    if (mods & (MOD_LSFT | MOD_RSFT)) {
-        state |= STATE_SHIFT;
-    }
-    if (mods & (MOD_LCTL | MOD_RCTL)) {
-        state |= STATE_CTRL;
-    }
-    if (mods & (MOD_LALT | MOD_RALT)) {
-        state |= STATE_ALT;
-    }
-    if (mods & (MOD_LGUI | MOD_RGUI)) {
-        state |= STATE_GUI;
-    }
-    return state;
+    const uint8_t layer = zmk_keymap_highest_layer_active();
+    return (struct oled_record){
+        .length = 3,
+        .bytes = {TINY18_STATE_HEADER | layer,
+                  TINY18_STATE_LEFT | side_mods(mods, false),
+                  TINY18_STATE_RIGHT | side_mods(mods, true)},
+    };
 }
 
 static void send_state(struct k_work *work) {
-    if (device_is_ready(layer_uart)) {
-        uart_poll_out(layer_uart, current_state());
-    }
+    const struct oled_record state = current_state();
+    k_msgq_put(&oled_tx_queue, &state, K_NO_WAIT);
 }
 
 K_WORK_DEFINE(send_state_work, send_state);
@@ -87,7 +105,19 @@ static int layer_uart_listener(const zmk_event_t *eh) {
         return ZMK_EV_EVENT_BUBBLE;
     }
     if (keycode != NULL && !is_modifier(keycode)) {
+        if (keycode->state) {
+            tiny18_oled_send(TINY18_OLED_ACTIVITY);
+        }
         return ZMK_EV_EVENT_BUBBLE;
+    }
+
+    if (position != NULL && position->state) {
+        /* A combo using these positions must not send an OLED action. */
+        const bool oled_key = zmk_keymap_highest_layer_active() == 1 &&
+                              position->position >= 4 && position->position <= 5;
+        if (!oled_key) {
+            tiny18_oled_send(TINY18_OLED_ACTIVITY);
+        }
     }
 
     k_work_submit(&send_state_work);
@@ -104,6 +134,7 @@ static int layer_uart_init(void) {
         return -ENODEV;
     }
 
+    tiny18_oled_send(TINY18_OLED_BOOT);
     send_state(NULL);
     return 0;
 }

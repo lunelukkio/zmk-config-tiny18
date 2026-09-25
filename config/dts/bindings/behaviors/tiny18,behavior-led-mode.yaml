@@ -1,0 +1,3 @@
+description: Toggle between steady and pulsed Tiny18 layer LED indications
+compatible: "tiny18,behavior-led-mode"
+include: zero_param.yaml

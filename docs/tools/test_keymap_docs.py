@@ -11,6 +11,13 @@ from gen_svg import read_keymap
 
 
 class ChartModelTests(unittest.TestCase):
+    def test_bluetooth_layer_has_a_labeled_led_mode_key(self):
+        layers, _ = read_keymap()
+        bindings = dict(layers)["bluetooth_layer"]
+
+        self.assertEqual(bindings[0], "&led_mode")
+        self.assertEqual(gen_svg.label(bindings[0]), ("LED", "bt"))
+
     def test_space_repeat_behavior_keeps_its_page_in_diagrams(self):
         layers, _ = read_keymap()
         self.assertEqual(dict(layers)["default_layer"][15], "&slt 7 SPACE")
@@ -23,10 +30,11 @@ class ChartModelTests(unittest.TestCase):
         model = make_chart.chart_model(layers, combos)
 
         self.assertEqual(
-            [section.name for section in model.sections[:7]],
+            [section.name for section in model.sections[:8]],
             [
                 "nav_layer",
                 "nav_shift",
+                "ai_command_layer",
                 "default_layer",
                 "digit_symbol_layer",
                 "digit_symbol_shift",
@@ -47,10 +55,32 @@ class ChartModelTests(unittest.TestCase):
         }
 
         self.assertEqual(set(cards), {combo["name"] for combo in combos})
-        for name in ("mode_text", "lalt", "ime", "nav_copy", "nav_paste",
-                     "nav_undo", "nav_redo", "nav_cut", "nav_find"):
+        self.assertEqual(len(groups[0].cards), 13)
+        for name in ("mode_text", "lalt", "ime"):
             self.assertIn("150ms", cards[name].note)
         self.assertIn("ZXCV", cards["slash"].note)
+
+    def test_ai_combo_bindings_and_command_page(self):
+        layers, combos = read_keymap()
+        bindings = dict(layers)
+        ai = bindings["nav_layer"]
+        expected = {
+            "ai_copy": ((0, 1), "&kp LC(C)"),
+            "ai_paste": ((1, 2), "&kp LC(V)"),
+            "ai_undo": ((0, 7), "&kp LC(Z)"),
+            "ai_newline": ((2, 9), "&kp LC(J)"),
+            "ai_redo": ((3, 10), "&kp LC(LS(Z))"),
+            "ai_cut": ((3, 4), "&kp LC(X)"),
+            "ai_find": ((5, 12), "&kp LC(F)"),
+        }
+        actual = {combo["name"]: (tuple(combo["pos"]), combo["binding"])
+                  for combo in combos if combo["name"].startswith("ai_")}
+        self.assertEqual(actual, expected)
+        self.assertEqual(ai[4], "&kp UP_ARROW")
+        self.assertEqual(ai[17], "&kp AT_SIGN")
+        self.assertEqual(ai[15], "&slt 8 SPACE")
+        self.assertEqual(bindings["ai_command_layer"][14], "&kp BACKSPACE")
+        self.assertEqual(sum(2 in combo["layers"] for combo in combos), 13)
 
     def test_held_shift_faces_show_every_alternative_hold_position(self):
         layers, combos = read_keymap()
@@ -75,6 +105,9 @@ class HtmlOutputTests(unittest.TestCase):
 
         self.assertIn('aria-label="digit_symbol_layer_shift"', page)
         self.assertIn('aria-label="edit_bracket_layer_shift"', page)
+        self.assertIn("500 ms だけ表示する方式", page)
+        self.assertIn("<code>LED</code>", page)
+        self.assertIn("1 時間</strong>無操作", page)
         self.assertNotIn('aria-label="default_layer_shift"', page)
         self.assertNotIn("組み合わせて出す記号", page)
         self.assertNotIn("~ { } | : &quot; ? &lt; &gt;", page)
@@ -85,7 +118,8 @@ class HtmlOutputTests(unittest.TestCase):
         self.assertNotIn("右手上段の combo", page)
         self.assertNotIn("右手はフルキーボードの右側にあたる", page)
         self.assertIn("橙色の 6 つ", page)
-        self.assertEqual(page.count('class="combo-card"'), 28)
+        self.assertEqual(page.count('class="combo-card"'), 35)
+        self.assertIn('aria-label="ai_command_layer"', page)
         self.assertIn('<div class="out">NumLk</div>', page)
         self.assertLess(
             page.index("<td><strong>AI</strong></td>"),

@@ -8,9 +8,10 @@ The display shows one state at a time: the highest active layer plus the
 modifiers held.  Shift swaps a plain symbol or digit for what the US layout
 sends (1 becomes !, - becomes _). Letters are always drawn upper case, the
 same as their key names on the board and in the printed diagram; the display
-does not report whether the host is about to receive a lower or upper case
+  does not report whether the host is about to receive a lower or upper case
 letter. Ctrl puts a caret in front (^x or ^X), Alt and GUI
-only show in the title.  Eight layers times Shift times Ctrl is 32 states, far
+  only show in the title. Nine layers and five label-changing modifier flags
+  form 288 states, far
 too many to keep as 1 KB bitmaps in the receiver's 16 KB flash, so the header
 carries text: a glyph table for the 3x5 pixel font below, the box layout, and
 one label set per distinct state.  The receiver's render.c draws them with the
@@ -45,19 +46,18 @@ HEIGHT = 64
 # to stand on its own. The two held pages are named after what they put under
 # the fingers, the way ZXCV already was.
 LAYER_TITLES = ("TEXT", "BLUETOOTH", "AI", "NUMPAD", "FUNCTION", "GAME",
-                "1234567890-=", "ZXCV")
+                "1234567890-=", "ZXCV", "AI CMD")
 DEFAULT_OUTPUT = gen_svg.ROOT / "addons" / "oled" / "layers.h"
 
-# State byte, shared with layer_uart.c and render.c: layer in bits 0-2, then
-# one bit per modifier.  Bit 7 stays clear so the receiver can reject noise.
+# Preview suffix flags; the UART uses a three-byte state frame.
 STATE_SHIFT = 0x08
 STATE_CTRL = 0x10
 STATE_ALT = 0x20
 STATE_GUI = 0x40
 MOD_SUFFIX = ((STATE_SHIFT, "S"), (STATE_CTRL, "C"), (STATE_ALT, "A"), (STATE_GUI, "G"))
-# Label sets are keyed by layer, Shift and Ctrl only; Alt and GUI change the
-# title, not the keys.
-LABEL_STATES = 32
+# Label sets are keyed by layer, aggregate Shift, and left/right Ctrl and Alt.
+# GUI changes the title only.
+LABEL_STATES = len(LAYER_TITLES) * 32
 
 # 3x5 pixel font, five rows of three cells, '#' lit. Lowercase letters use the
 # same cell and scale, with a shorter body where the letter has no ascender.
@@ -117,6 +117,8 @@ PLAIN_KP = re.compile(r"&kp (?!KP_)[A-Z0-9_]+$")
 # gen_svg labels that do not fit a key box as they are.  Applied per line
 # after the label is split, longest key first so "Space" wins over "Sp".
 SHORT = {
+    "⇒": "TO",
+    "OLED-": "OL-", "OLED+": "OL+",
     "BkSp": "BS", "Space": "SPC", "Enter": "ENT", "Shift": "SFT", "Ctrl": "CTL",
     "Esc": "ESC", "Tab": "TAB", "Del": "DEL", "PrtSc": "PRT", "PgUp": "PGU", "PgDn": "PGD",
     "NumLk": "NUM", "GUI": "GUI", "Alt": "ALT", "R Ctrl": "RCT", "R Alt": "RAL",
@@ -152,6 +154,8 @@ def label_lines(binding: str, max_chars: int) -> list[str]:
     """Up to two lines of at most max_chars characters for one binding."""
     label, category = gen_svg.label(binding)
     if binding[1:] in gen_svg.MACRO_TEXT:
+        if not label.startswith("/"):
+            return [shorten(label.upper(), max_chars)]
         # A macro types a slash command: keep the command's first letters on
         # one line, and whatever gen_svg put on the second - the Enter mark,
         # back when the macros sent one - on the next.
@@ -244,7 +248,10 @@ LAYOUTS = {"12": layout_12, "18": layout_18, "3x3": layout_3x3}
 
 def title_text(layer: int, state: int) -> str:
     title = LAYER_TITLES[layer]
-    flags = "".join(letter for bit, letter in MOD_SUFFIX if state & bit)
+    choices = state // len(LAYER_TITLES)
+    flags = ("S" if choices & 1 else "")
+    if layer != 2:
+        flags += ("C" if choices & 6 else "") + ("A" if choices & 24 else "")
     return title + (" +" + flags if flags else "")
 
 
@@ -253,8 +260,8 @@ def draw_state(labels: list[list[str]], layer: int, state: int, keys: str) -> Im
     image = Image.new("1", (WIDTH, HEIGHT), 0)
     pixels = image.load()
     title = title_text(layer, state)
-    assert text_width(title, 2) <= WIDTH, f"title {title!r} does not fit"
-    draw_text(image, (WIDTH - text_width(title, 2)) // 2, 1, title, 2)
+    scale = 2 if text_width(title, 2) <= WIDTH else 1
+    draw_text(image, (WIDTH - text_width(title, scale)) // 2, 1, title, scale)
     # No rules anywhere: the title sits above a band of empty rows, and the
     # channel between the halves does the dividing. Lines next to the boxes
     # only added edges for the eye to trip over (2026-09-16).
@@ -285,13 +292,28 @@ def label_sets(layers: list, keys: str) -> tuple[list[list[list[str]]], list[int
     # this keymap ends up at the text-entry binding, so that is what the
     # display draws for it.
     base = layers[0][1]
+    ai_base = layers[2][1]
     sets: list[list[list[str]]] = []
     state_set = []
     for state in range(LABEL_STATES):
-        layer, shift, ctrl = state & 7, bool(state & STATE_SHIFT), bool(state & STATE_CTRL)
-        bindings = [base[position] if binding == "&trans" else binding for position, binding in enumerate(layers[layer][1])]
+        layer, choices = state % len(LAYER_TITLES), state // len(LAYER_TITLES)
+        shift, ctrl = bool(choices & 1), bool(choices & 6)
+        active = set()
+        if shift:
+            active.add("MOD_LSFT")
+        if layer != 2 and choices & 2:
+            active.add("MOD_LCTL")
+        if layer != 2 and choices & 4:
+            active.add("MOD_RCTL")
+        if layer != 2 and choices & 8:
+            active.add("MOD_LALT")
+        if layer != 2 and choices & 16:
+            active.add("MOD_RALT")
+        inherited = ai_base if layer == 8 else base
+        bindings = [inherited[position] if binding == "&trans" else binding for position, binding in enumerate(layers[layer][1])]
+        bindings = [gen_svg.resolve_morph(binding, active) for binding in bindings]
         letter_case = layers[layer][0] in gen_svg.LETTER_CASE_LAYERS
-        labels = [state_lines(bindings[position], shift, ctrl, max_chars,
+        labels = [state_lines(bindings[position], shift, ctrl and layer != 2, max_chars,
                               letter_case=letter_case) for position, _, _ in cells]
         if labels not in sets:
             sets.append(labels)
@@ -388,8 +410,8 @@ def write_header(output: Path, keys: str, sets: list[list[list[str]]], state_set
     lines.extend([
         "};",
         "",
-        "// Which label set a state shows. Index with (state & 0x1F): layer in bits",
-        "// 0-2, Shift in bit 3, Ctrl in bit 4. Alt and GUI only change the title.",
+        "// Index: layer + layer_count * (Shift + 2*LCtrl + 4*RCtrl +",
+        "// 8*LAlt + 16*RAlt). GUI changes the title only.",
         "static const uint8_t tiny18_state_set[TINY18_LABEL_STATES] = {",
         "    " + ", ".join(str(index) for index in state_set) + ",",
         "};",
@@ -415,12 +437,12 @@ def write_header(output: Path, keys: str, sets: list[list[list[str]]], state_set
 
 def write_preview(output: Path, layers: list, sets: list, state_set: list[int], keys: str, scale: int = 3) -> None:
     """Every layer as a row: plain, +Shift, +Ctrl, +Shift+Ctrl."""
-    columns = (0, STATE_SHIFT, STATE_CTRL, STATE_SHIFT | STATE_CTRL)
+    columns = (0, 1, 2, 8, 4, 16)
     gap = 2
-    sheet = Image.new("1", (WIDTH * len(columns) + gap * (len(columns) - 1), HEIGHT * 8 + gap * 7), 0)
-    for layer in range(8):
+    sheet = Image.new("1", (WIDTH * len(columns) + gap * (len(columns) - 1), HEIGHT * len(LAYER_TITLES) + gap * (len(LAYER_TITLES) - 1)), 0)
+    for layer in range(len(LAYER_TITLES)):
         for column, mods in enumerate(columns):
-            state = layer | mods
+            state = layer + len(LAYER_TITLES) * mods
             screen = draw_state(sets[state_set[state]], layer, state, keys)
             sheet.paste(screen, (column * (WIDTH + gap), layer * (HEIGHT + gap)))
     sheet.resize((sheet.width * scale, sheet.height * scale), Image.NEAREST).save(output)
@@ -436,12 +458,12 @@ def main() -> int:
     args = parser.parse_args()
 
     layers, _ = gen_svg.read_keymap()
-    assert len(layers) == 8, f"expected eight layers, got {len(layers)}"
+    assert len(layers) == len(LAYER_TITLES), f"expected {len(LAYER_TITLES)} layers, got {len(layers)}"
     sets, state_set = label_sets(layers, args.keys)
     # Drawing every state checks that each label fits its box before the
     # header is written, whether or not a preview is wanted.
     for state in range(LABEL_STATES):
-        draw_state(sets[state_set[state]], state & 7, state, args.keys)
+        draw_state(sets[state_set[state]], state % len(LAYER_TITLES), state, args.keys)
     write_header(args.out, args.keys, sets, state_set)
     print(f"wrote {args.out} ({args.keys} keys, {len(sets)} label sets for {LABEL_STATES} states)")
     if args.preview is not None:

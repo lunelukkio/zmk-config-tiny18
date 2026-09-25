@@ -18,6 +18,7 @@
 
 #include "render.h"
 #include "layers.h"
+#include "../../include/tiny18_oled_uart.h"
 
 #define WIDTH 128
 #define HEIGHT 64
@@ -64,29 +65,32 @@ static void draw_text(uint8_t *frame, unsigned x, unsigned y, const uint8_t *tex
     }
 }
 
-static void draw_title(uint8_t *frame, uint8_t state) {
+static void draw_title(uint8_t *frame, tiny18_display_state_t state) {
     uint8_t title[TITLE_MAX];
-    unsigned len = text_len(tiny18_titles[state & TINY18_STATE_LAYER], TINY18_TITLE_CHARS);
+    unsigned len = text_len(tiny18_titles[state.layer], TINY18_TITLE_CHARS);
     for (unsigned i = 0; i < len; i++) {
-        title[i] = tiny18_titles[state & TINY18_STATE_LAYER][i];
+        title[i] = tiny18_titles[state.layer][i];
     }
-    if (state & (TINY18_STATE_SHIFT | TINY18_STATE_CTRL | TINY18_STATE_ALT | TINY18_STATE_GUI)) {
+    const uint8_t mods = (state.left_mods | state.right_mods) &
+                         (state.layer == 2 ? (TINY18_MOD_SHIFT | TINY18_MOD_GUI) : 0xFF);
+    if (mods) {
         title[len++] = TINY18_GLYPH_SPACE;
         title[len++] = TINY18_GLYPH_PLUS;
-        if (state & TINY18_STATE_SHIFT) {
+        if (mods & TINY18_MOD_SHIFT) {
             title[len++] = TINY18_GLYPH_S;
         }
-        if (state & TINY18_STATE_CTRL) {
+        if (mods & TINY18_MOD_CTRL) {
             title[len++] = TINY18_GLYPH_C;
         }
-        if (state & TINY18_STATE_ALT) {
+        if (mods & TINY18_MOD_ALT) {
             title[len++] = TINY18_GLYPH_A;
         }
-        if (state & TINY18_STATE_GUI) {
+        if (mods & TINY18_MOD_GUI) {
             title[len++] = TINY18_GLYPH_G;
         }
     }
-    draw_text(frame, (WIDTH - text_width(len, 2)) / 2, 1, title, len, 2);
+    unsigned scale = text_width(len, 2) <= WIDTH ? 2 : 1;
+    draw_text(frame, (WIDTH - text_width(len, scale)) / 2, 1, title, len, scale);
 }
 
 static void draw_key(uint8_t *frame, unsigned x, unsigned y, const uint8_t lines[2][TINY18_LABEL_CHARS]) {
@@ -111,13 +115,18 @@ static void draw_key(uint8_t *frame, unsigned x, unsigned y, const uint8_t lines
     }
 }
 
-void tiny18_render(uint8_t *frame, uint8_t state) {
+void tiny18_render(uint8_t *frame, tiny18_display_state_t state) {
     for (unsigned i = 0; i < TINY18_FRAME_BYTES; i++) {
         frame[i] = 0;
     }
     draw_title(frame, state);
 
-    const uint8_t set = tiny18_state_set[state & (TINY18_STATE_LAYER | TINY18_STATE_SHIFT | TINY18_STATE_CTRL)];
+    unsigned flags = (((state.left_mods | state.right_mods) & TINY18_MOD_SHIFT) ? 1 : 0) |
+                     ((state.left_mods & TINY18_MOD_CTRL) ? 2 : 0) |
+                     ((state.right_mods & TINY18_MOD_CTRL) ? 4 : 0) |
+                     ((state.left_mods & TINY18_MOD_ALT) ? 8 : 0) |
+                     ((state.right_mods & TINY18_MOD_ALT) ? 16 : 0);
+    const uint8_t set = tiny18_state_set[state.layer + TINY18_LAYER_COUNT * flags];
     for (unsigned key = 0; key < TINY18_KEY_COUNT; key++) {
         draw_key(frame, tiny18_key_xy[key][0], tiny18_key_xy[key][1], tiny18_labels[set][key]);
     }

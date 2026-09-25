@@ -1,0 +1,22 @@
+/* Copyright (c) 2026 The Tiny18 contributors
+ * SPDX-License-Identifier: MIT
+ */
+#ifndef TINY18_OLED_UART_H
+#define TINY18_OLED_UART_H
+
+#define TINY18_OLED_ACTIVITY 0x80
+#define TINY18_OLED_DOWN 0x82
+#define TINY18_OLED_UP 0x83
+#define TINY18_OLED_BOOT 0x84
+
+#define TINY18_STATE_HEADER 0x90
+#define TINY18_STATE_LEFT 0xA0
+#define TINY18_STATE_RIGHT 0xB0
+#define TINY18_STATE_MAX_LAYER 8
+
+#define TINY18_MOD_CTRL 0x01
+#define TINY18_MOD_SHIFT 0x02
+#define TINY18_MOD_ALT 0x04
+#define TINY18_MOD_GUI 0x08
+
+#endif

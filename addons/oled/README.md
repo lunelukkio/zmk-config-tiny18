@@ -7,6 +7,9 @@ See the [Japanese parts, wiring and flashing guide](../../docs/oled-setup.md).
 ## Source and dependency
 
 - `tiny18_layer.c`: UART receiver, OLED SPI driver and idle/wake behavior.
+- `brightness.c`, `brightness.h`: twelve levels and wake/toggle rules.
+- `brightness_store.c`, `brightness_store.h`: delayed, two-page flash settings.
+- `reserve_flash.py`: keeps the last 128 bytes out of the application linker region.
 - `render.c`, `render.h`: labels and modifier indicators.
 - `layers.h`: generated from `config/tiny18.keymap`; do not edit by hand.
 - `funconfig.h`, `Makefile`: CH32V003 build configuration.
@@ -33,6 +36,11 @@ Set-Location ~\zmk-config-tiny18\addons\oled; make OS=Windows_NT PREFIX=riscv-no
 ```
 
 The result is `tiny18_layer.bin`. Plain `make` builds only; it never flashes.
+The display uses the existing D1-to-RX UART wire and GND. Bluetooth-mode U is
+disabled; I/O adjust brightness. No wiring or component changes are required.
+State updates are three-byte layer/left-modifier/right-modifier frames; OLED
+commands remain single bytes. Flash both keyboard halves and this receiver
+from the same firmware version.
 After connecting the board in bootloader mode, use `make flash` as described
 in the setup guide. The bootloader is selected explicitly as USB `1209:b803`.
 The pinned submodule includes the Windows `minichlink.exe` and companion DLLs;

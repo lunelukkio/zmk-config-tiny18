@@ -13,4 +13,136 @@ config TINY18_START_IN_AI
     help
       Activate Tiny18's AI layer after the ZMK keymap is initialized.
 
+config TINY18_LED_INDICATOR
+    bool "Use Tiny18's mode LED controller"
+    default n
+    depends on ZMK_SPLIT_ROLE_CENTRAL
+    select LED
+    select SETTINGS
+    help
+      Show Tiny18's active layer on the central half and allow the layer
+      indication mode to be changed from the keymap.
+
+config TINY18_LED_PULSE_MS
+    int "Duration of a Tiny18 mode LED pulse in milliseconds"
+    default 500
+    range 1 10000
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_SETTINGS_SAVE_DEBOUNCE_MS
+    int "Milliseconds to debounce Tiny18 LED setting saves"
+    default 1000
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_BATTERY_HIGH
+    int "Battery level considered high by the Tiny18 LED"
+    default 30
+    range 1 100
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_BATTERY_LOW
+    int "Battery level considered low by the Tiny18 LED"
+    default 20
+    range 1 100
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_BATTERY_CRITICAL
+    int "Critical battery level shown by the Tiny18 LED"
+    default 10
+    range 1 100
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_BATTERY_BLINK_MS
+    int "Duration of Tiny18 battery indications in milliseconds"
+    default 2000
+    range 1 10000
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_CONNECTION_BLINK_MS
+    int "Duration of Tiny18 connection indications in milliseconds"
+    default 1000
+    range 1 10000
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_INTERVAL_MS
+    int "Wait duration between Tiny18 LED indications in milliseconds"
+    default 500
+    range 1 10000
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_LAYER_0_COLOR
+    int "Color for layer 0"
+    default 2
+    range 0 7
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_LAYER_1_COLOR
+    int "Color for layer 1"
+    default 1
+    range 0 7
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_LAYER_2_COLOR
+    int "Color for layer 2"
+    default 4
+    range 0 7
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_LAYER_3_COLOR
+    int "Color for layer 3"
+    default 3
+    range 0 7
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_LAYER_4_COLOR
+    int "Color for layer 4"
+    default 5
+    range 0 7
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_LAYER_5_COLOR
+    int "Color for layer 5"
+    default 6
+    range 0 7
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_LAYER_6_COLOR
+    int "Color for layer 6"
+    default 7
+    range 0 7
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_LAYER_7_COLOR
+    int "Color for layer 7"
+    default 7
+    range 0 7
+    depends on TINY18_LED_INDICATOR
+
+config TINY18_LED_LAYER_8_COLOR
+    int "Color for layer 8"
+    default 7
+    range 0 7
+    depends on TINY18_LED_INDICATOR
+
+DT_COMPAT_TINY18_BEHAVIOR_LED_MODE := tiny18,behavior-led-mode
+
+config ZMK_BEHAVIOR_TINY18_LED_MODE
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_TINY18_BEHAVIOR_LED_MODE))
+    depends on TINY18_LED_INDICATOR
+
+DT_COMPAT_TINY18_BEHAVIOR_LED_BRIGHTNESS := tiny18,behavior-led-brightness
+
+DT_COMPAT_TINY18_BEHAVIOR_OLED_CONTROL := tiny18,behavior-oled-control
+
+config ZMK_BEHAVIOR_TINY18_OLED_CONTROL
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_TINY18_BEHAVIOR_OLED_CONTROL))
+    depends on TINY18_LAYER_UART
+
+config ZMK_BEHAVIOR_TINY18_LED_BRIGHTNESS
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_TINY18_BEHAVIOR_LED_BRIGHTNESS))
+    depends on TINY18_LED_INDICATOR
+
 endmenu

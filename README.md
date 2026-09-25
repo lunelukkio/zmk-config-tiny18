@@ -19,12 +19,14 @@ ZMK firmware for [Tiny18](https://github.com/k3peta/tiny18), an 18-key wireless 
 
 ## What differs from upstream
 
-- **Keymap.** Six modes and two held pages across eight layers, with 28 combos. The right hand rests on a trackball, so everything used daily fits on the left nine keys. The full layout, with diagrams and the reasoning, is at [lunelukkio.com/public/tiny18/keymap.html](https://lunelukkio.com/public/tiny18/keymap.html).
-- **One right-hand image.** `tiny18-right.uf2` has inverted-T arrows under both hands in AI mode. W sends Escape, or Tab with Shift; R sends BackSpace, or Delete with Shift. The right top row is period, up arrow and slash. Neighbouring right-hand pairs chord Ctrl+Z, Ctrl+Shift+Z, Ctrl+X and Ctrl+F. Holding Shift turns the period and slash into `/model` and `/status`; the four arrows stay plain arrows under Shift, so Shift+arrow selects with either hand.
-- **AI at startup.** Power-on, reset and wake from deep sleep all start in AI mode. The right-half RGB LED starts blue, and the text-entry combo remains available when typing is needed.
+- **Keymap.** Six modes and three held pages across nine layers, with 29 combos. AI Space opens a command page while held. The current chart is [included here](docs/keymap.html).
+- **One right-hand image.** `tiny18-right.uf2` has left/right Ctrl and Alt, arrows, @ and ! in AI mode. Two-key combos select shortcuts and mode switches. Holding Space opens nine slash commands. Held modifiers during command macros are outside the supported gesture.
+- **AI at startup.** Power-on, reset and wake from deep sleep all start in AI mode. The right-half RGB LED starts blue when brightness is at least 5%, and the text-entry combo remains available when typing is needed.
 - **Layer colours.** The right half's RGB LED shows the mode: green for text entry, blue for AI, yellow for the number keypad, cyan for game, magenta for function, red for Bluetooth, and white while a held page is open.
-- **Deep sleep.** Both halves sleep after 30 minutes idle (`CONFIG_ZMK_SLEEP=y`, `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=1800000`). Waking takes a key press on the right half, and that press is lost.
-- **Learning display.** [`src/layer_uart.c`](src/layer_uart.c) sends one byte over UART1 (D1, TX only, 9600 baud, 8N1) at boot, whenever the layer or a held modifier changes, and on every key press: the highest active layer in bits 0 to 2, then Shift, Ctrl, Alt and GUI in bits 3 to 6. A USB-powered CH32V003 board draws the current key labels on a transparent OLED; its firmware is included in [`addons/oled/`](addons/oled/). See the [Japanese parts, wiring and setup guide](docs/oled-setup.md) for the tested hardware and exact connections. The right half enables it with `CONFIG_TINY18_LAYER_UART=y`.
+- **Right RGB LED brightness.** In Bluetooth mode, the left top row has `LED` (steady/500 ms pulse), `LED-` (dimmer), and `LED+` (brighter). The 12 settings are 0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, and 100% PWM duty. At 0%, mode and battery/Bluetooth notices are dark; one `LED+` press restores 5%. Mode and brightness are saved separately, with 100% as the brightness default. This does not adjust the optional OLED display.
+- **Optional OLED brightness.** In Bluetooth mode, the right top row has a disabled key, `OLED-` (dimmer), and `OLED+` (brighter). Its 12 levels are saved in UIAPduino flash. At 100%, contrast is the former `0x7F`. At 0%, ordinary typing leaves it dark; power-on and wake from one-hour idle promote a saved 0% to 100%, while nonzero levels are restored. No hardware changes are needed.
+- **Deep sleep.** Both halves sleep after one hour idle (`CONFIG_ZMK_SLEEP=y`, `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=3600000`). Waking takes a key press on the right half, and that press is lost.
+- **Learning display.** [`src/layer_uart.c`](src/layer_uart.c) sends a three-byte state frame over UART1 (D1, TX only, 9600 baud, 8N1): layer, left modifiers and right modifiers. OLED controls remain one byte. Use keyboard and OLED firmware from the same version; the [wiring guide](docs/oled-setup.md) is unchanged.
 
 ## Keymap
 
@@ -34,22 +36,22 @@ The canonical keymap is [`config/tiny18.keymap`](config/tiny18.keymap); the comm
 
 | Mode | Layer | Switch | What it is for |
 | --- | --- | --- | --- |
-| AI | 2 | `S + F` | The mode at power-on; inverted-T arrows on both hands, Escape/Tab, BackSpace/Delete, `/model` and `/status` while Shift is held, punctuation on the right, copy and paste chords on the left, and undo/redo/cut/find chords on the right |
+| AI | 2 | `S + F` from another mode | Startup mode; direct left/right modifiers, arrows and @; Space holds the nine-command page |
 | Text entry | 0 | `W + R` | Letters |
 | Number keypad | 3 | `J + L` | Keypad digits, which pass through an IME as half width |
 | Game | 5 | `R + S` | WASD for VRChat, with R I O P and chat keys |
 | Function | 4 | `U + O` | F1 to F12 |
 | Bluetooth | 1 | `O + J` | Profile selection |
 
-Each mode is entered by one two-key combo; AI and game mode entry are disabled within game mode. The switching combos fire only after 150 ms without typing. Two more layers open only while a thumb is held: the digit and symbol page on BackSpace, the ZXCV page on Space or N. They are layers 6 and 7, the two highest, and open from modes that retain the text-entry thumbs.
+All modes use two-key switching combos. AI and game entry combos remain disabled in game mode. The digit and ZXCV pages retain their hold keys; AI Space opens the new command page.
 
 Keys are named by what they type in text entry:
 
 - In text entry, `A` taps A and holds Shift after 350 ms. A quick tap followed by holding it again keeps A held for the host's auto-repeat. `Enter` is a hold-tap there and in every mode and page: tap for Enter, hold for Shift. AI mode and the digit page give the `A` position that Enter / Shift role with the same 350 ms term; game mode keeps a plain Shift there.
-- `BackSpace` opens the digit page while held, `Space` and `N` open the ZXCV page, and `M` holds Ctrl. The two left thumbs retain those roles outside number and game modes.
-- `E + F` pressed together toggles the IME (Ctrl+Space) in text entry, once 150 ms have passed without typing. The two slash-command macros in AI mode send the HID `LANG2` key, which Windows takes as IME off and macOS as Eisu, so they arrive as ASCII whatever the IME was doing.
+- `BackSpace` opens the digit page while held. `Space` and `N` open the ZXCV page outside AI; AI Space opens the command page. In text entry, `M` holds Ctrl.
+- `E + F` pressed together toggles the IME (Ctrl+Space) in text entry, once 150 ms have passed without typing. Nine AI slash-command macros send `LANG2` before their text and do not send Enter.
 - Letters without a key of their own come from adjacent pairs: `Q T Y P G H` in text entry and `B` on the ZXCV page. `A` has both a key and a pair.
-- Alt is `R + F` and GUI is `U + J`, in text entry and AI mode.
+- In text entry, Alt is `R + F` and GUI is `U + J`. AI has direct left/right Alt keys and GUI on its held command page.
 
 ## Download
 
@@ -116,7 +118,7 @@ material. Publication is a separate manual step after review; see the
 
 [`build.yaml`](build.yaml) produces:
 
-- right half with RGB LED layer/battery widget, ZMK Studio over USB and the layer UART
+- right half with PWM RGB LED layer/battery indicator, ZMK Studio over USB and the layer UART
 - left half with RGB LED layer/battery widget
 - settings-reset image for recovery
 

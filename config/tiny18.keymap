@@ -6,9 +6,8 @@
 #include <dt-bindings/zmk/keys.h>
 
 /*
- * The right-hand image is tiny18-right.uf2. AI mode puts an inverted T of
- * arrows under each hand; two of the right hand's six keys, period and
- * slash, are also a Shift face for /model and /status.
+ * The right-hand image is tiny18-right.uf2. AI mode has direct modifiers,
+ * arrows and an @ key. Holding its Space opens the AI command page.
  *
  * Six modes, each entered by one pair of keys from any other mode:
  *   text entry  layer 0   green     0+2
@@ -22,16 +21,16 @@
  *
  * Layers held rather than switched into:
  *   6  digits and symbols    hold key 14 (BackSpace)
- *   7  editing and brackets  hold key 15 (Space) or 16 (N)
+ *   7  editing and brackets  hold key 15 (Space) or 16 (N) outside AI
+ *   8  AI commands           hold key 15 (Space) in AI
  * They carry the two highest numbers on purpose. ZMK resolves a key from the
  * highest active layer down, so a held page only shows through a mode with
  * a lower number; at 6 and 7 the pages open from every mode whose thumbs
  * still hold them, which is all of them but number and game mode.
  *
- * Modifiers without a key of their own are chords: Alt on 2+9 (R and F) in
- * text entry and AI mode, GUI on 3+10 (U and J) in those two and in game
- * mode, where the two keys are I and Z. The IME toggle is E and F, 1+9, in
- * text entry only.
+ * In text entry, Alt remains the 2+9 chord and GUI the 3+10 chord.
+ * AI has dedicated left/right Ctrl and Alt; its command page has GUI.
+ * The IME toggle is E and F, 1+9, in text entry only.
  *
  * Key positions (see tiny18.dtsi default_transform):
  *         0   1   2         3   4   5
@@ -43,10 +42,9 @@
  *
  * An unassigned key is &none, not &trans, so it does nothing rather than
  * falling through to the layer below. The one exception is the pair of left
- * thumbs, keys 14 and 15: everywhere but number and game mode they are
- * &trans, so they are the text-entry BackSpace and Space, digit page and
- * editing page on hold, whatever mode or page is open. Key 13 is the
- * text-entry Enter in every mode and page: tap for Enter, hold for Shift.
+ * thumbs, keys 14 and 15: most modes inherit BackSpace and Space from
+ * text entry. AI binds Space explicitly to its command page. Key 13 is
+ * Enter on tap and Shift on hold (right Shift in AI and its command page).
  * In text entry, AI mode and on the digit page, key 6 is a tap/hold key with
  * a longer term for the left little finger: A / Shift in text entry and
  * Enter / Shift elsewhere. Function mode holds Ctrl on key 6 instead, and
@@ -73,6 +71,24 @@
             tapping-term-ms = <200>;
             quick-tap-ms = <175>;
             bindings = <&kp>, <&kp>;
+        };
+
+        led_mode: led_mode_behavior {
+            compatible = "tiny18,behavior-led-mode";
+            #binding-cells = <0>;
+            display-name = "Toggle LED mode";
+        };
+
+        led_brightness: led_brightness_behavior {
+            compatible = "tiny18,behavior-led-brightness";
+            #binding-cells = <1>;
+            display-name = "Adjust LED brightness";
+        };
+
+        oled_control: oled_control_behavior {
+            compatible = "tiny18,behavior-oled-control";
+            #binding-cells = <1>;
+            display-name = "Control OLED";
         };
 
         /* The left little finger uses 350 ms for A / Shift in text entry and
@@ -123,19 +139,11 @@
             bindings = <&mo>, <&kp>;
         };
 
-        /* AI mode and the ZXCV page: Escape normally, plain Tab with Shift. */
+        /* The ZXCV page: Escape normally, plain Tab with Shift. */
         esc_tab: escape_tab {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
             bindings = <&m_esc>, <&kp TAB>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-        };
-
-        /* AI mode: BackSpace normally, plain Delete while Shift is held. */
-        bs_del: backspace_delete {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp BACKSPACE>, <&kp DELETE>;
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
@@ -146,11 +154,8 @@
          * the navigation block on the left, exactly where a full keyboard puts
          * it, and the locks and system keys on the right.
          *
-         * A mod-morph rather than another layer, for two reasons. ZMK sends
-         * the morph without the Shift that triggered it, so these arrive
-         * clean; and the display's state byte has three bits for the layer,
-         * so a ninth layer would mean rebuilding the protocol, while Shift is
-         * already part of the state it reports.
+         * A mod-morph rather than another layer keeps the second face tied
+         * to the Shift key. The display now carries nine layers separately.
          *
          * Only those twelve keys carry a morph, the ones the learning display
          * drew when this was written (2026-09-16). The thumbs, the left little
@@ -259,24 +264,6 @@
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
-        /* AI mode's period and slash are commands while Shift is held; the
-         * four arrows around them stay plain arrows under Shift too, so
-         * Shift+arrow selects with the right hand as well as the left. There
-         * is no ninth layer in the display's state byte. */
-        ai_model: ai_model {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp PERIOD>, <&m_model>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-        };
-
-        ai_status: ai_status {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp SLASH>, <&m_status>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-        };
-
         /*
          * Game mode's second face, the same mechanism as number mode's. Key 6
          * is a plain Shift there and is also the run key, so Shift is kept
@@ -344,36 +331,9 @@
         };
     };
 
-    /*
-     * AI mode's two typed commands sit on the right-hand top row's period and
-     * slash while Shift is held. The four arrows around them, and the rest of
-     * the six-key face, are plain arrows whether or not Shift is held, so
-     * Shift+arrow selects with the right hand as well as the left. Copy and
-     * paste are combos on the left hand, which is free while the right one is
-     * on the trackball; undo, redo, cut and find are combos on the right.
-     *
-     * Each command releases the triggering Shift, returns to macro tap mode,
-     * then sends LANG2. A macro is queued after the mod-morph's Shift mask
-     * ends, so the mask alone would turn /model into ?MODEL. Releasing Shift
-     * means a second command needs a fresh Shift press.
-     *
-     * The keyboard cannot tell whether the host's
-     * IME is in Japanese, and a command typed through a Japanese IME arrives
-     * as kana. LANG2 is the HID usage Windows maps to VK_IME_OFF and macOS to
-     * the JIS Eisu key, so it forces alphanumeric input whatever the state
-     * was, and the letters that follow arrive as typed. It leaves the host in
-     * alphanumeric mode; the E+F chord brings Japanese back.
-     *
-     * wait-ms and tap-ms are left at ZMK's defaults on purpose. Shortening
-     * them makes the macro finish sooner but risks a dropped character, and a
-     * command that arrives as "/statu" is worse than one that takes an extra
-     * moment.
-     *
-     * Neither sends Enter any more, as of 2026-09-16. The command lands
-     * in the prompt and waits: /model can take an argument, a command pressed
-     * by accident can be deleted rather than run, and the Enter key is right
-     * there under either little finger when it should go.
-     */
+    /* AI command macros type LANG2 followed by the literal slash command.
+     * They do not send Enter. Hold only Space while invoking them; held
+     * modifiers are outside the supported command gesture. */
     macros {
         /*
          * One Escape, pressed and released. esc_tab uses it so Escape cannot
@@ -388,13 +348,48 @@
         m_status: m_status {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_release &kp LSHFT>, <&macro_tap &kp LANG2 &kp SLASH &kp S &kp T &kp A &kp T &kp U &kp S>;
+            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp S &kp T &kp A &kp T &kp U &kp S>;
         };
 
         m_model: m_model {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_release &kp LSHFT>, <&macro_tap &kp LANG2 &kp SLASH &kp M &kp O &kp D &kp E &kp L>;
+            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp M &kp O &kp D &kp E &kp L>;
+        };
+        m_clear: m_clear {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp C &kp L &kp E &kp A &kp R>;
+        };
+        m_resume: m_resume {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp R &kp E &kp S &kp U &kp M &kp E>;
+        };
+        m_diff: m_diff {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp D &kp I &kp F &kp F>;
+        };
+        m_compact: m_compact {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp C &kp O &kp M &kp P &kp A &kp C &kp T>;
+        };
+        m_pr: m_pr {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp P &kp R>;
+        };
+        m_review: m_review {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp R &kp E &kp V &kp I &kp E &kp W>;
+        };
+        m_insights: m_insights {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp I &kp N &kp S &kp I &kp G &kp H &kp T &kp S>;
         };
     };
 
@@ -466,70 +461,45 @@
             layers = <7>;
         };
 
-        /*
-         * AI mode's copy and paste sit on the left hand's top row, because the
-         * right hand is on the trackball and reaching over costs the pointer.
-         * They use the two pairs the three keys leave free - 0+2 already
-         * switches to text entry. require-prior-idle-ms is what makes it
-         * safe: arrows and BackSpace here are worked in bursts, and a
-         * combo that only fires from a standstill cannot land in the middle
-         * of one.
-         */
-        nav_copy {
+        /* AI shortcuts use combos on layer 2. */
+        ai_copy {
             bindings = <&kp LC(C)>;
             key-positions = <0 1>;
             layers = <2>;
-            require-prior-idle-ms = <150>;
         };
-
-        nav_paste {
+        ai_paste {
             bindings = <&kp LC(V)>;
             key-positions = <1 2>;
             layers = <2>;
-            require-prior-idle-ms = <150>;
         };
-
-        /*
-         * AI mode's undo, redo, cut and find are neighbouring pairs on the
-         * right hand: period and up arrow for undo, up arrow and slash for
-         * redo, left and down for cut, down and right for find. Undo, redo and
-         * cut had top-row keys of their own until 2026-09-22, when those keys
-         * became the arrows; find is new. The same idle condition as copy and
-         * paste keeps them from firing in the middle of a run of arrows.
-         * AI mode only: text entry already has Y, P, H and the slash on these
-         * four pairs.
-         */
-        nav_undo {
+        ai_undo {
             bindings = <&kp LC(Z)>;
+            key-positions = <0 7>;
+            layers = <2>;
+        };
+        ai_newline {
+            bindings = <&kp LC(J)>;
+            key-positions = <2 9>;
+            layers = <2>;
+        };
+        ai_redo {
+            bindings = <&kp LC(LS(Z))>;
+            key-positions = <3 10>;
+            layers = <2>;
+        };
+        ai_cut {
+            bindings = <&kp LC(X)>;
             key-positions = <3 4>;
             layers = <2>;
-            require-prior-idle-ms = <150>;
         };
-
-        nav_redo {
-            bindings = <&kp LC(LS(Z))>;
-            key-positions = <4 5>;
-            layers = <2>;
-            require-prior-idle-ms = <150>;
-        };
-
-        nav_cut {
-            bindings = <&kp LC(X)>;
-            key-positions = <10 11>;
-            layers = <2>;
-            require-prior-idle-ms = <150>;
-        };
-
-        nav_find {
+        ai_find {
             bindings = <&kp LC(F)>;
-            key-positions = <11 12>;
+            key-positions = <5 12>;
             layers = <2>;
-            require-prior-idle-ms = <150>;
         };
-
         /*
          * Left Alt triggers voice input, so it gets one gesture that works the
-         * same in text entry and AI mode: the index finger's two keys, R above
+         * in text entry: the index finger's two keys, R above
          * F. It was F and Space until 2026-09-16, which had the same twin the
          * IME chord did - V is Space held and F tapped - so it moved off the
          * thumb.
@@ -543,21 +513,21 @@
         lalt {
             bindings = <&kp LEFT_ALT>;
             key-positions = <2 9>;
-            layers = <0 2>;
+            layers = <0>;
             require-prior-idle-ms = <150>;
         };
 
         /*
          * GUI gets the same treatment on the right hand: index finger on the
-         * top and home rows, U and J. Live in text entry and AI mode, and
-         * since 2026-09-17 in game mode, where the two keys are I and Z. There
+         * top and home rows, U and J. Live in text entry and game mode,
+         * where the two keys are I and Z. There
          * is no idle condition, so in game mode I and Z each wait out the
          * combo window when pressed alone.
          */
         lgui {
             bindings = <&kp LEFT_GUI>;
             key-positions = <3 10>;
-            layers = <0 2 5>;
+            layers = <0 5>;
         };
 
         /*
@@ -593,8 +563,7 @@
         };
 
         /*
-         * Mode switching. One gesture per mode, live in every mode, so any
-         * mode reaches any other directly.
+         * Mode switching uses the same combos in AI.
          *
          * require-prior-idle-ms is what makes this safe. In number mode the
          * switch positions carry digits - 0 and 2 are 7 and 9, 7 and 9 are 4
@@ -696,39 +665,25 @@
             >;
         };
 
-        /* Profile selection on the home row. Everything else is dead so a
-         * stray press cannot type, except the left thumbs, which are the
-         * text-entry BackSpace and Space here as in every mode but number
-         * and game mode. */
+        /* Profile selection stays on the home row. The left top row controls
+         * the right RGB LED; the right top row controls the optional OLED.
+         * RGB brightness 0% suppresses battery and connection notices.
+         * The left thumbs retain their text-entry bindings. */
         bluetooth_layer {
             bindings = <
-&none  &none  &none  &none  &none  &none  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &none  &none  &none  &trans  &trans  &none  &none
+&led_mode  &led_brightness 0  &led_brightness 1  &none  &oled_control 1  &oled_control 2  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &none  &none  &none  &trans  &trans  &none  &none
             >;
         };
 
         /*
-         * AI mode. The left hand has Escape/Tab, an inverted T of arrows and
-         * BackSpace/Delete on key 2. Key 0 sends Escape normally and plain Tab
-         * with Shift; key 2 sends BackSpace normally and plain Delete with
-         * Shift. The mod-morphs suppress the Shift that selects their second
-         * binding.
-         *
-         * The right hand has a second inverted T: period, up arrow and slash
-         * on the top row, left, down and right on the home row. Only the
-         * period and slash change under Shift, to /model and /status; the
-         * four arrows stay plain arrows, so Shift+arrow selection works with
-         * either hand. Undo, redo, cut and find are chords of neighbouring
-         * right-hand keys; copy and paste are on the left top row while the
-         * right hand is on the trackball.
-         *
-         * Keys 6 and 13 tap Enter and hold Shift, allowing Shift+arrow
-         * selection from either hand. The left thumbs are transparent and
-         * retain the text-entry BackSpace and Space with their held pages.
-         * The right thumbs retain comma and period, editing page and Ctrl.
+         * AI mode. Simultaneous key combos select shortcuts and mode changes.
+         * Plain arrows remain available. Key 6 holds left
+         * Shift and key 13 holds right Shift. Space opens layer 8 on hold,
+         * while BackSpace keeps its digit page. The right thumbs type ! and @.
          */
         nav_layer {
             bindings = <
-&esc_tab  &kp UP_ARROW  &bs_del  &ai_model  &kp UP_ARROW  &ai_status  &lmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &bmt LSHFT ENTER  &trans  &trans  &lt 7 COMMA  &bmt LCTRL PERIOD
+&kp LCTRL  &kp UP_ARROW  &kp LALT  &kp RALT  &kp UP_ARROW  &kp RCTRL  &lmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &bmt RSHFT ENTER  &trans  &slt 8 SPACE  &kp EXCLAMATION  &kp AT_SIGN
             >;
         };
 
@@ -815,15 +770,13 @@
          * whichever hand is free and a figure can be confirmed without
          * letting go of the page.
          *
-         * Keys 14 and 15 are &trans: 14 is the thumb holding this page open,
-         * so it can never be pressed here, and 15 is the text-entry Space, so
-         * a space can follow a number without letting go; holding it opens
-         * the editing page on top of this one. The right thumbs type comma
+         * Key 14 is transparent; 15 explicitly keeps the ZXCV hold target,
+         * including when this page opened from AI. The right thumbs type comma
          * and period, or parentheses when Shift is held. The top-row minus
          * and equals retain their underscore and plus Shift outputs. */
         digit_symbol_layer {
             bindings = <
-&kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &lmt LSHFT ENTER  &kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &bmt LSHFT ENTER  &trans  &trans  &dp_comma  &dp_period
+&kp N4  &kp N5  &kp N6  &kp N0  &kp MINUS  &kp EQUAL  &lmt LSHFT ENTER  &kp N1  &kp N2  &kp N3  &kp N7  &kp N8  &kp N9  &bmt LSHFT ENTER  &trans  &slt 7 SPACE  &dp_comma  &dp_period
             >;
         };
 
@@ -841,13 +794,19 @@
          * left home row - the same shape that already gives Ctrl+Z and
          * Ctrl+X.
          *
-         * Keys 14 and 15 are &trans, the text-entry thumbs. They used to
+         * Key 14 is transparent and 15 keeps the ZXCV hold target. They used to
          * carry the IME toggle and a question mark: the toggle is now the
          * E+F chord, and the question mark is Shift over the slash on
          * this page. */
         edit_bracket_layer {
             bindings = <
-&esc_tab  &kp GRAVE  &kp F10  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &trans  &trans  &kp COMMA  &kp PERIOD
+&esc_tab  &kp GRAVE  &kp F10  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &trans  &slt 7 SPACE  &kp COMMA  &kp PERIOD
+            >;
+        };
+
+        ai_command_layer {
+            bindings = <
+&kp ESCAPE  &kp TAB  &kp LGUI  &m_diff  &m_compact  &m_status  &lmt LSHFT ENTER  &m_clear  &m_resume  &m_model  &m_pr  &m_review  &m_insights  &bmt RSHFT ENTER  &kp BACKSPACE  &trans  &kp EXCLAMATION  &kp PERIOD
             >;
         };
     };

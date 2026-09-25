@@ -21,8 +21,8 @@ def validate_image(path):
             if (struct.unpack_from("<II", data, offset) != (0x0A324655, 0x9E5D5157)
                     or struct.unpack_from("<I", data, offset + 508)[0] != 0x0AB16F30):
                 raise ValueError(f"Invalid UF2 block: {path.name}")
-    elif not 0 < len(data) <= 16 * 1024:
-        raise ValueError("OLED firmware must fit in CH32V003 flash")
+    elif not 0 < len(data) <= 16 * 1024 - 128:
+        raise ValueError("OLED firmware must leave two CH32V003 flash pages for settings")
 
 
 def package(version, keyboard, oled, licenses, output_root, source_commit,

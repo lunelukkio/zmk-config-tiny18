@@ -76,11 +76,11 @@
 <p class="meta">作成日: 2026-09-06 ・ 全面改稿: 2026-09-11 / ZMK ファームウェア</p>
 
 <div class="sheet">
-<img src="./tiny18-keymap.png?v=17e6c2b4eeb9" width="526" height="5669"
+<img src="./tiny18-keymap.png?v=13195b49d0f9" width="526" height="5493"
      alt="Tiny18 の全モードと押しっぱなしの面を縦に並べたキー配置表">
 </div>
 <p class="sheet-note">全モードと押しっぱなしの面を 1 枚に並べた表。ここでは全体の形が見える大きさに置いてある。
-<a href="./tiny18-keymap.png?v=17e6c2b4eeb9" target="_blank" rel="noopener">画像だけを別タブで開く</a>と拡大して読める。</p>
+<a href="./tiny18-keymap.png?v=13195b49d0f9" target="_blank" rel="noopener">画像だけを別タブで開く</a>と拡大して読める。</p>
 
 <div class="takeaway">
 <strong>このノートの中心命題:</strong><br>
@@ -108,9 +108,9 @@ ZMK のファイルを読むときに要る position 番号は <a href="#s2">2 �
 <li><a href="#s5">5. 文字入力モード</a></li>
 <li><a href="#s6">6. 1 キー 2 役の仕組み</a></li>
 <li><a href="#s7">7. 26 文字の内訳</a></li>
-<li><a href="#s8">8. combo 全 28 個</a></li>
+<li><a href="#s8">8. combo 全 29 個</a></li>
 <li><a href="#s9">9. 他の 5 モードの配置</a></li>
-<li><a href="#s10">10. LED はモードだけを示す</a></li>
+<li><a href="#s10">10. LED の点灯方式・明るさとモード色</a></li>
 <li><a href="#s11">11. deep sleep と復帰</a></li>
 <li><a href="#src">出典</a></li>
 </ul></nav>
@@ -231,26 +231,26 @@ ZMK のキーマップ自体は position 番号の順に書くので、その番
 </div>
 
 <h2 id="s3">3. 6 つのモードの全体像</h2>
-<p>モードは 6 つある。<strong>LED の色がそのままモードを表す</strong>ので、今どこにいるかは光を見れば分かる（<a href="#s10">10 節</a>）。</p>
+<p>モードは 6 つある。明るさが 5% 以上なら、常時点灯で LED の色がモードを表す。一瞬点灯では、モードが変わったときだけ色が光る（<a href="#s10">10 節</a>）。</p>
 <table><tr><th style="width:8em;">モード</th><th style="width:4em;">LED</th><th style="width:7em;">入り方</th><th>中身</th></tr>
-<tr><td><strong>AI</strong></td><td><span class="led" style="background:#1e6fd9;"></span>青</td><td><code>S + F</code></td><td>起動時のモード。左右とも逆 T 字の矢印、Escape、BackSpace。Shift で Tab・Delete と 2 つのコマンド。元に戻す・やり直す・切り取り・検索は右手の combo</td></tr>
+<tr><td><strong>AI</strong></td><td><span class="led" style="background:#1e6fd9;"></span>青</td><td><code>S + F</code></td><td>起動時のモード。左右に矢印と修飾キー。Space 長押しで9種類のslash command面を開く</td></tr>
 <tr><td><strong>文字入力</strong></td><td><span class="led" style="background:#22aa44;"></span>緑</td><td><code>W + R</code></td><td>毎日の文字入力</td></tr>
 <tr><td><strong>数字キーパッド</strong></td><td><span class="led" style="background:#d4a017;"></span>黄</td><td><code>J + L</code></td><td>左手がテンキー、右手が四則演算。Shift 中は移動・ロック・システムキー</td></tr>
 <tr><td><strong>ゲーム</strong></td><td><span class="led" style="background:#17b8c4;"></span>シアン</td><td><code>R + S</code></td><td>VRChat。WASD、I O P、Z X C、Esc と V。Shift を押さえると Esc が Z、V が R、Z X C が G M K に変わる。親指は Ctrl・Space・Space・Alt</td></tr>
 <tr><td><strong>ファンクション</strong></td><td><span class="led" style="background:#b5389e;"></span>マゼンタ</td><td><code>U + O</code></td><td>F1 から F12。Ctrl は A と M の位置、Alt は N の位置</td></tr>
-<tr><td><strong>Bluetooth</strong></td><td><span class="led" style="background:#dd2222;"></span>赤</td><td><code>O + J</code></td><td>接続プロファイルの切り替え</td></tr>
+<tr><td><strong>Bluetooth</strong></td><td><span class="led" style="background:#dd2222;"></span>赤</td><td><code>O + J</code></td><td>左上の3キーでLED、右上の2キーでOLEDの明るさを調整し、BTキーで接続プロファイルを切り替える</td></tr>
 </table>
 <div class="info">
 <strong>「モード」と「押しっぱなし面」は別物として扱っている。</strong>
 ZMK の実装上はどちらもレイヤーだが、役割が違う。
 <strong>モード</strong>は <code>&amp;to</code> で切り替えて<strong>そこに留まる</strong>もの。
 <strong>押しっぱなし面</strong>は<strong>キーを押している間だけ</strong>開き、指を離せば消える。
-面は 2 つあり、<strong>数字の面</strong>（BackSpace を長押し）と<strong>ZXCV の面</strong>（Space か N を長押し）である。
-使う側が意識するのはモード 6 つだけでよい。全部で 8 レイヤーある。
+面は<strong>数字の面</strong>、<strong>ZXCV の面</strong>、AIモードでSpaceを長押しする<strong>AIコマンドの面</strong>である。
+全部で9レイヤーある。
 </div>
 
 <h2 id="s4">4. モードの切り替え方</h2>
-<p>6 つとも <strong>2 キーの combo ひとつ</strong>で切り替える。ゲームモードから AI モードへ行く場合を除き、<strong>どのモードからでも直接</strong>飛べる。
+<p>どのモードも2キーcomboで切り替える。ゲームモードから AI モードへ行く場合を除き、直接移動できる。
 行き先が固定なので、「今どこにいるか」を覚えていなくても目的のモードへ行ける。</p>
 <table><tr><th style="width:9em;">押すキー</th><th style="width:9em;">行き先</th><th style="width:11em;">数字キーパッドでは</th><th>ゲームモードでは</th></tr>
 <tr><td><code>S + F</code></td><td><span class="led" style="background:#1e6fd9;"></span>AI モード</td><td>4 と 6</td><td><strong>無効にしてある</strong></td></tr>
@@ -262,7 +262,7 @@ ZMK の実装上はどちらもレイヤーだが、役割が違う。
 </table>
 
 <h3>打鍵中は絶対にモードが変わらないようにしてある</h3>
-<p>切替 combo には 6 つとも <code>require-prior-idle-ms = &lt;150&gt;</code> を付けている。
+<p>切替 combo には <code>require-prior-idle-ms = &lt;150&gt;</code> を付けている。
 <strong>直前 150 ミリ秒以内にキーを打っていたら、その combo は発火しない</strong>という ZMK の機能である。</p>
 <div class="warn">
 <strong>これが無いと数字キーパッドモードが使い物にならない。</strong>
@@ -276,7 +276,7 @@ ZMK の実装上はどちらもレイヤーだが、役割が違う。
 <strong>それでも打ち間違いでモードが変わることはある。</strong>
 一拍おいてから <code>U + O</code> と転がすと、たとえば <code>out</code> の <code>ou</code> でファンクションモードに入ってしまう。
 その状態で <code>L</code> を叩くと <code>F9</code> が出る。
-<strong>意図しない F キーや記号が出たときは、まず LED の色を見ること。</strong>色が変わっていればモードが飛んでいる。
+<strong>意図しない F キーや記号が出たときは、明るさ 5% 以上の常時点灯なら LED の色を見ること。</strong>一瞬点灯では、直前のモード切替の色を知らせる。明るさ 0% では LED は光らない。
 </div>
 
 <h3>ゲームモードだけ <code>S + F</code> を外してある</h3>
@@ -375,8 +375,8 @@ Ctrl+Space は <code>M</code> を押さえて <code>Space</code> を叩く形に
 </div>
 
 <div class="note">
-<strong>Alt と GUI はキーを持たず combo にしてある。</strong>
-Alt が <code>R + F</code>、GUI が <code>U + J</code> で、どちらも<strong>文字入力モードと AI モードで同じ指使い</strong>である。
+<strong>文字入力モードのAltとGUIはcomboである。</strong>
+Alt が <code>R + F</code>、GUI が <code>U + J</code>。AIモードには専用の左右Altキーと、Space長押し面のGUIキーがある。
 GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z</code> の同時押しになる。
 </div>
 
@@ -418,9 +418,9 @@ GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z<
 <rect x="138" y="134" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
 <text x="162" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">BkSp</text>
 <text x="162" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">数字</text>
-<rect x="190" y="134" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
-<text x="214" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">Space</text>
-<text x="214" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">ZXCV</text>
+<rect x="190" y="134" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
+<text x="214" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Space</text>
+<text x="214" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">ZXCV</text>
 <rect x="294" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
 <text x="318" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">,</text>
 <rect x="346" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
@@ -466,9 +466,9 @@ GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z<
 <rect x="138" y="134" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
 <text x="162" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">BkSp</text>
 <text x="162" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">数字</text>
-<rect x="190" y="134" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
-<text x="214" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">Space</text>
-<text x="214" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">ZXCV</text>
+<rect x="190" y="134" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
+<text x="214" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Space</text>
+<text x="214" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">ZXCV</text>
 <rect x="294" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
 <text x="318" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">(</text>
 <rect x="346" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
@@ -514,9 +514,9 @@ GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z<
 <rect x="138" y="134" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
 <text x="162" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">BkSp</text>
 <text x="162" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">数字</text>
-<rect x="190" y="134" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
-<text x="214" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">Space</text>
-<text x="214" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">ZXCV</text>
+<rect x="190" y="134" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
+<text x="214" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Space</text>
+<text x="214" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">ZXCV</text>
 <rect x="294" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
 <text x="318" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">,</text>
 <rect x="346" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
@@ -561,9 +561,9 @@ GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z<
 <rect x="138" y="134" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
 <text x="162" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">BkSp</text>
 <text x="162" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">数字</text>
-<rect x="190" y="134" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
-<text x="214" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">Space</text>
-<text x="214" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">ZXCV</text>
+<rect x="190" y="134" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
+<text x="214" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Space</text>
+<text x="214" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">ZXCV</text>
 <rect x="294" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
 <text x="318" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">&lt;</text>
 <rect x="346" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
@@ -574,7 +574,7 @@ GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z<
 <p><code>W</code> の位置は<strong>Escape、Shift を押さえている間は Tab</strong>で、<code>R</code> の位置が <code>F10</code>、そのほかに括弧 3 種と <code>Z X C V</code> がここにある。
 <code>E</code> の位置はバッククォートで、Shift を足せばチルダになる。
 <code>J</code> と <code>K</code> の位置はセミコロンとアポストロフィで、Shift を足せば <code>:</code> と <code>&quot;</code> になる。
-右の親指は読点と句点で、<strong>文字入力モードで句読点が打てるのはこの面だけ</strong>である。AI モードでも右の親指のタップがそのまま句読点になる。
+右の親指は読点と句点で、<strong>文字入力モードで句読点が打てるのはこの面だけ</strong>である。AIモードの右親指は ! と句点。
 数字の面でも右の親指は読点と句点で、Shift を重ねると <code>(</code> <code>)</code> になる。
 </p>
 <div class="note">
@@ -582,13 +582,13 @@ GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z<
 代わりに<strong>この面と Ctrl を同時に押さえて、左手のホーム行を叩く</strong>。
 <code>N</code> と <code>M</code> を両方押さえたまま <code>C</code> でコピー、<code>V</code> で貼り付けになる。
 左の親指で開くなら <code>Space</code> と <code>M</code> の組でもよい。<br>
-指は 3 本要るが、<code>Ctrl+Z</code> と <code>Ctrl+X</code> も同じ形なので、4 つが 1 つの指使いに揃う。<br>この形が使えるのは<strong>文字入力モードと AI モード</strong>である。ファンクションモードも <code>M</code> の位置が Ctrl なので <code>Space</code> と <code>M</code> の組なら使える（<code>N</code> の位置は Alt）。ほかのモードは <code>M</code> の位置に Ctrl が無いので、この形では出ない。AI モードでは <code>Ctrl+Z</code> と <code>Ctrl+X</code> が右手の隣り合う 2 キーの combo でも出るが、そちらは AI モードでしか効かない別の指使いである。
+指は3本要るが、<code>Ctrl+Z</code> と <code>Ctrl+X</code> も同じ形で使える。文字入力モードでの操作であり、AIモードでは専用のmodifier先押し操作を使う。
 </div>
 <div class="warn">
 <strong>押さえた親指の位置は、その面では押せない。</strong>面を開く役目でふさがっているためである。
 この面は <code>Space</code> と <code>N</code> の 2 通りで開くので、どちらで開いたかで届く範囲が変わる。
 読点は <code>Space</code> で開いたときだけ、Space は <code>N</code> で開いたときだけ届く。<br>
-<strong>左の親指 2 つは、数字キーパッドモードとゲームモードを除いて、どの面でもどのモードでも文字入力モードと同じ</strong>である。図では薄い色で描いてある。
+<strong>AIモードのSpaceだけは長押し先がAIコマンドの面になる。</strong>数字キーパッドとゲームモードにも別の親指配置がある。
 数字の面を <code>BackSpace</code> で押さえたまま <code>Space</code> を叩けば空白、押さえればその上にZXCV の面が重なる。
 <code>;</code> と <code>'</code> は右手のホーム行にあるので、どちらの親指で開いても届く。
 </div>
@@ -637,7 +637,7 @@ ZMK 標準の layer-tap は <code>quick-tap-ms</code> が無効なので、
 <code>N</code> を押さえる。</p>
 <div class="note">
 <strong>Escape は通常時、Tab は Shift 中である。</strong>
-AI モードとZXCV の面の <code>W</code> の位置は通常時に Escape を1回だけ送り、Shiftを押さえている間は通常のTabを送る。
+ZXCV の面の <code>W</code> の位置は通常時に Escape を1回だけ送り、Shiftを押さえている間は通常のTabを送る。
 Escape側はmacroで押下と解放をまとめて送るため、押さえ続けてもEscapeが自動反復しない。2回目は指を離して押し直す。
 </div>
 <div class="note">
@@ -662,10 +662,10 @@ Escape側はmacroで押下と解放をまとめて送るため、押さえ続け
 <code>A</code> は <code>A</code> キーのタップと <code>S + D</code> の combo の<strong>両方</strong>で出せる。
 combo の側は、ホーム行の文字 combo の並びを崩さないために残してある。<br>
 押しっぱなし面の <code>Z X C V</code> は、<strong>Ctrl と組み合わせる場所</strong>でもある。
-ただし文字入力モードで Ctrl と重ねると 3 キーになる。コピーと貼り付けを 2 キーで済ませるなら、AI モードの combo を使う。
+ただし文字入力モードで Ctrl と重ねると3キーになる。AIモードでは左Ctrlと左↑を同時に押す。
 </div>
 
-<h2 id="s8">8. combo 全 28 個</h2>
+<h2 id="s8">8. combo 全 29 個</h2>
 <p>combo は<strong>最上位の有効レイヤーだけ</strong>で照合される。これがモードごとに combo を完全に独立させられる理由である。
 文字入力モードの文字 combo は、AI モードや数字キーパッドモードに入った瞬間すべて止まる。
 通常は<strong>50 ミリ秒以内に両方が押されたとき</strong>に発火し、外れればそれぞれのキーとして届く。</p>
@@ -695,15 +695,15 @@ ZXCV の面の <code>S D F</code> のキーは <code>X C V</code> だが、そ�
 <h3>③ 修飾キーとスラッシュと日英切替（4 個）</h3>
 <div class="combo-grid">
 <div class="combo-card"><div class="out">/</div><div class="keys">K + L</div><div class="desc">文字入力モードと ZXCV の両方で効く</div></div>
-<div class="combo-card"><div class="out">Alt</div><div class="keys">R + F</div><div class="desc">音声入力の起動用。人差し指の上段とホーム行。文字入力モードと AI モードで、打鍵後 150 ms おいてから</div></div>
-<div class="combo-card"><div class="out">GUI</div><div class="keys">U + J</div><div class="desc">Windows キー。文字入力モードと AI モードで同じ。ゲームモードでも効き、そこでは I と Z</div></div>
+<div class="combo-card"><div class="out">Alt</div><div class="keys">R + F</div><div class="desc">音声入力の起動用。文字入力モードで、打鍵後 150 ms おいてから</div></div>
+<div class="combo-card"><div class="out">GUI</div><div class="keys">U + J</div><div class="desc">Windows キー。文字入力モードとゲームモードで有効。ゲームモードでは I と Z</div></div>
 <div class="combo-card"><div class="out">Ctrl+Space<br><small>日英切替</small></div><div class="keys">E + F</div><div class="desc">日本語と英語の切替（Ctrl+Space）。上段の薬指とホーム行の人差し指。文字入力モードだけ、打鍵後 150 ms おいてから</div></div>
 </div>
 <p>左 Alt は音声入力ソフトの起動キーに割り当てている。よく使うので、
-<strong>文字入力モードと AI モードで同じ指使い</strong>にしてある。人差し指の上段とホーム行を一緒に落とす。
+<strong>文字入力モードだけ</strong>にある。人差し指の上段とホーム行を一緒に落とす。
 2026-09-16 までは <code>F + Space</code> だったが、これは <code>V</code>（Space を押さえて F）と同じ 2 キーだったので、親指から離した。
 そのかわり打鍵後 150 ミリ秒の条件が付いた。<code>perfect</code> や <code>surface</code> のように <code>rf</code> は単語の途中に現れるためで、一呼吸おけば効く。
-GUI も同じ考えで、どちらのモードでも人差し指 2 本である。<br>
+GUI も同じ考えで、文字入力モードでは人差し指2本である。<br>
 Alt の combo はゲームモードとファンクションモードには無く、どちらのモードも親指に Alt のキーがある。GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z</code> の同時押しになる。
 間合いの条件が無いので、ゲームモードの <code>I</code> と <code>Z</code> は単独で押すと combo の判定を待つ分（最大 50 ミリ秒）だけ遅れる。<br>
 日本語と英語の切替は <code>E + F</code>、中指を上段、人差し指をホーム行に置いて一緒に落とす。<strong>文字入力モードだけにある。</strong>
@@ -730,24 +730,23 @@ Alt の combo はゲームモードとファンクションモードには無く
 そこで<strong>1 と 2 を持つキーの組で 0</strong>、<strong>2 と 3 を持つキーの組で小数点</strong>を出すようにしてある。
 <strong>6 と / の組は Num Lock</strong>で、状態がずれたときだけ一拍おいて押す。</p>
 
-<h3>⑥ AI モードの編集操作（6 個）</h3>
+<h3>⑥ AI モードの編集操作</h3>
+<p>AI モードでは2キーを同時に押す。左Ctrl+左↑はコピー、左Alt+左↑は貼り付け、左Ctrl+左←は元に戻す、左Alt+左→はCtrl+J。
+右Alt+右←はやり直し、右Alt+右↑は切り取り、右Ctrl+右→は検索。モード切替も同じ2キーcomboを使う。comboに含まれる矢印は成立判定を待って送られる。</p>
 <div class="combo-grid">
-<div class="combo-card"><div class="out">Ctrl+C</div><div class="keys">W + E</div><div class="desc">AIモードでは Esc と ↑</div></div>
-<div class="combo-card"><div class="out">Ctrl+V</div><div class="keys">E + R</div><div class="desc">AIモードでは ↑ と BkSp</div></div>
-<div class="combo-card"><div class="out">Ctrl+Z</div><div class="keys">U + I</div><div class="desc">AIモードでは . と ↑</div></div>
-<div class="combo-card"><div class="out">Ctrl+Shift+Z</div><div class="keys">I + O</div><div class="desc">AIモードでは ↑ と /</div></div>
-<div class="combo-card"><div class="out">Ctrl+X</div><div class="keys">J + K</div><div class="desc">AIモードでは ← と ↓</div></div>
-<div class="combo-card"><div class="out">Ctrl+F</div><div class="keys">K + L</div><div class="desc">AIモードでは ↓ と →</div></div>
-</div>
-<p>AI モードのコピーと貼り付けは<strong>左手の上段</strong>にある。右手はトラックボールの上なので、
-ポインタを手放さずに押せる側へ置いた。
-上段 3 キーのうち両端の組は文字入力モードへの切替で埋まっているので、残る 2 通りを使っている。<br>
-元に戻す・やり直す・切り取り・検索は<strong>右手の隣り合う 2 キー</strong>で出す。
-上段の組が <code>Ctrl+Z</code> と <code>Ctrl+Shift+Z</code>、ホーム行の組が <code>Ctrl+X</code> と <code>Ctrl+F</code> である。</p>
-<div class="note">
-<strong>6 つとも間合い条件を付けてある。</strong>左手上段の <code>↑</code> と <code>BackSpace</code>、右手の矢印は続けて叩くキーなので、
-そのまま置くと操作の途中でコピーや切り取りが飛び出す。
-直前の打鍵から間が空いたときだけ効くようにしてあるので、連打の最中には発火しない。
+<div class="combo-card"><div class="out">Ctrl+C</div><div class="keys">Ctrl + 左↑</div><div class="desc">コピー</div></div>
+<div class="combo-card"><div class="out">Ctrl+V</div><div class="keys">左↑ + Alt</div><div class="desc">貼り付け</div></div>
+<div class="combo-card"><div class="out">Ctrl+Z</div><div class="keys">Ctrl + 左←</div><div class="desc">元に戻す</div></div>
+<div class="combo-card"><div class="out">Ctrl+J</div><div class="keys">Alt + 左→</div><div class="desc">改行</div></div>
+<div class="combo-card"><div class="out">Ctrl+Shift+Z</div><div class="keys">R Alt + 右←</div><div class="desc">やり直し</div></div>
+<div class="combo-card"><div class="out">Ctrl+X</div><div class="keys">R Alt + 右↑</div><div class="desc">切り取り</div></div>
+<div class="combo-card"><div class="out">Ctrl+F</div><div class="keys">R Ctrl + 右→</div><div class="desc">検索</div></div>
+<div class="combo-card"><div class="out">⇒ 0</div><div class="keys">Ctrl + Alt</div><div class="desc">文字入力モードへ</div></div>
+<div class="combo-card"><div class="out">⇒ 2</div><div class="keys">左← + 左→</div><div class="desc">AIモードへ</div></div>
+<div class="combo-card"><div class="out">⇒ 3</div><div class="keys">右← + 右→</div><div class="desc">数字モードへ</div></div>
+<div class="combo-card"><div class="out">⇒ 5</div><div class="keys">Alt + 左←</div><div class="desc">ゲームモードへ</div></div>
+<div class="combo-card"><div class="out">⇒ 4</div><div class="keys">R Alt + R Ctrl</div><div class="desc">ファンクションモードへ</div></div>
+<div class="combo-card"><div class="out">⇒ 1</div><div class="keys">R Ctrl + 右←</div><div class="desc">Bluetoothモードへ</div></div>
 </div>
 
 <h2 id="s9">9. 他の 5 モードの配置</h2>
@@ -757,18 +756,18 @@ Alt の combo はゲームモードとファンクションモードには無く
 <text x="123" y="20" text-anchor="middle" font-size="13" fill="#5a6a72" font-family="sans-serif">左手側</text>
 <text x="435" y="20" text-anchor="middle" font-size="13" fill="#5a6a72" font-family="sans-serif">右手側</text>
 <line x1="266" y1="8" x2="266" y2="184" stroke="#ccc" stroke-dasharray="5 5" stroke-width="1.5"/>
-<rect x="60" y="30" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
-<text x="84" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">Esc</text>
+<rect x="60" y="30" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
+<text x="84" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">Ctrl</text>
 <rect x="112" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
 <text x="136" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">↑</text>
-<rect x="164" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="188" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">BkSp</text>
-<rect x="372" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="396" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">.</text>
+<rect x="164" y="30" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
+<text x="188" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">Alt</text>
+<rect x="372" y="30" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
+<text x="396" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">R Alt</text>
 <rect x="424" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
 <text x="448" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">↑</text>
-<rect x="476" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="500" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">/</text>
+<rect x="476" y="30" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
+<text x="500" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">R Ctrl</text>
 <rect x="8" y="108" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
 <text x="32" y="131" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Enter</text>
 <text x="32" y="144" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Shift</text>
@@ -785,110 +784,129 @@ Alt の combo はゲームモードとファンクションモードには無く
 <rect x="476" y="82" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
 <text x="500" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">→</text>
 <rect x="528" y="108" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
-<text x="552" y="131" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Enter</text>
-<text x="552" y="144" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Shift</text>
+<text x="552" y="131" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Enter</text>
+<text x="552" y="144" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">R Shift</text>
 <rect x="138" y="134" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
 <text x="162" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">BkSp</text>
 <text x="162" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">数字</text>
-<rect x="190" y="134" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
-<text x="214" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">Space</text>
-<text x="214" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">ZXCV</text>
-<rect x="294" y="134" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
-<text x="318" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">,</text>
-<text x="318" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">ZXCV</text>
-<rect x="346" y="134" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
-<text x="370" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">.</text>
-<text x="370" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Ctrl</text>
+<rect x="190" y="134" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
+<text x="214" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Space</text>
+<text x="214" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">AI CMD</text>
+<rect x="294" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
+<text x="318" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">!</text>
+<rect x="346" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
+<text x="370" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">@</text>
 </svg>
-<div class="figure-caption">図 7. AI モード。矢印は左右とも逆 T 字。W の位置は Escape、Shift 中は Tab。R の位置は BackSpace、Shift 中は Delete。右手の上段は句点・↑・スラッシュ、ホーム行は ← ↓ → で、両端の . と / だけ Shift を押さえるとコマンドになる。A と Enter の位置はどちらもタップで Enter、押さえると Shift。親指 4 つの長押しは文字入力モードと同じ。</div>
+<div class="figure-caption">図 7. AI モード。左上段はCtrl・↑・Alt、右上段は右Alt・↑・右Ctrl。右親指は!と@。編集操作とモード切替は2キーのcombo。左右のEnterはタップでEnter、長押しで左右それぞれのShift。Space長押しでAIコマンドの面を開く。</div>
 <div class="legend"><span><i class="sw" style="background:#eef6ff;border-color:#1e6fd9;"></i>文字・数字・記号</span><span><i class="sw" style="background:#fdf2e9;border-color:#d35400;"></i>タップと長押しで二役</span><span><i class="sw" style="background:#eefaf3;border-color:#2a9d8f;"></i>修飾キー</span><span><i class="sw" style="background:#fff4e0;border-color:#b8860b;"></i>ショートカット</span><span><i class="sw" style="background:#f3ecfb;border-color:#7a4fb5;"></i>レイヤー操作</span><span><i class="sw" style="background:#f7f5ee;border-color:#c9c6b6;"></i>&mdash; 透過</span><span><i class="sw" style="background:#f1f1ea;"></i>&mdash; 無効</span></div>
-<p>矢印と Tab と BackSpace と Delete は左手だけで押せる。
-<strong><code>E</code> の位置が ↑、ホーム行が ← ↓ →</strong> の逆 T 字で、4 方向ともキーを 1 つ押すだけで出る。
-<code>W</code> の位置は<strong>Escape、Shift を押さえている間は Tab</strong>、<code>R</code> の位置は<strong>BackSpace、Shift を押さえている間は Delete</strong> である。
-<strong>この Escape は押さえ続けても 1 回しか出ない。</strong>2 回目は指を離して押し直す。<br>
-<strong><code>A</code> と <code>Enter</code> のキーは、どちらもタップで Enter、押さえると Shift</strong> で、
-文字入力モードの <code>Enter</code> のキーと同じ二役である。
-左手に矢印が 4 つともあるので、<code>A</code> の位置を小指で押さえれば
-<strong>Shift+矢印の範囲選択が左手だけで完結する</strong>。右手は右手の Enter で確定できる。</p>
-<div class="note">
-<strong>BackSpace は 2 つある。</strong><code>R</code> の位置と、文字入力モードと同じ左の親指である。
-<code>R</code> の位置は Shift と一緒なら Delete、左の親指は長押しで数字の面を開く。
-<code>R</code> の位置はそのまま押さえれば BackSpace が連打される。左の親指は 1 回叩いてから押さえ直すと BackSpace を連打できる（<a href="#s6">6 節</a>）。
-</div>
-<div class="info">
-<strong>親指 4 つの長押しは文字入力モードと同じ。</strong><code>BackSpace</code> を押さえれば数字の面、<code>Space</code> と <code>N</code> の位置を押さえればZXCV の面、<code>M</code> の位置を押さえれば Ctrl である。<br>
-<strong>右の親指のタップは読点と句点。</strong>プロンプトに要る句読点を、面を開かずに打てる。
-</div>
-<p>右手にも同じ形の矢印がある。<strong>上段の中央が ↑、ホーム行が ← ↓ →</strong> で、上段の両端は <code>.</code> と <code>/</code> である。
-<code>A</code> か <code>Enter</code> の位置で Shift を押さえると、<strong>両端の <code>.</code> と <code>/</code> だけ</strong>がコマンドになり、4 方向の矢印は変わらない。
-そのため<strong>Shift+矢印の範囲選択は左右どちらの手でもできる</strong>。</p>
-<svg viewBox="0 0 584 190" role="img" aria-label="nav_layer_shift">
+<svg viewBox="0 0 584 190" role="img" aria-label="nav_shift">
+<text x="123" y="20" text-anchor="middle" font-size="13" fill="#5a6a72" font-family="sans-serif">左手側</text>
+<text x="435" y="20" text-anchor="middle" font-size="13" fill="#5a6a72" font-family="sans-serif">右手側</text>
+<line x1="266" y1="8" x2="266" y2="184" stroke="#ccc" stroke-dasharray="5 5" stroke-width="1.5"/>
+<rect x="60" y="30" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
+<text x="84" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">Ctrl</text>
+<rect x="112" y="30" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
+<text x="136" y="59" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">Shift+↑</text>
+<rect x="164" y="30" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
+<text x="188" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">Alt</text>
+<rect x="372" y="30" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
+<text x="396" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">R Alt</text>
+<rect x="424" y="30" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
+<text x="448" y="59" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">Shift+↑</text>
+<rect x="476" y="30" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
+<text x="500" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">R Ctrl</text>
+<rect x="8" y="108" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
+<text x="32" y="131" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Enter</text>
+<text x="32" y="144" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Shift</text>
+<rect x="60" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
+<text x="84" y="111" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">Shift+←</text>
+<rect x="112" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
+<text x="136" y="111" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">Shift+↓</text>
+<rect x="164" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
+<text x="188" y="111" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">Shift+→</text>
+<rect x="372" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
+<text x="396" y="111" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">Shift+←</text>
+<rect x="424" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
+<text x="448" y="111" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">Shift+↓</text>
+<rect x="476" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
+<text x="500" y="111" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">Shift+→</text>
+<rect x="528" y="108" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
+<text x="552" y="131" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Enter</text>
+<text x="552" y="144" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">R Shift</text>
+<rect x="138" y="134" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
+<text x="162" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">BkSp</text>
+<text x="162" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">数字</text>
+<rect x="190" y="134" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
+<text x="214" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Space</text>
+<text x="214" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">AI CMD</text>
+<rect x="294" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
+<text x="318" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">!</text>
+<rect x="346" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
+<text x="370" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">@</text>
+</svg>
+<div class="figure-caption">図 8. AI モードで左右どちらかのEnterを長押しした状態。矢印はShift付きで送る。編集操作とモード切替のcomboは同じ位置。</div>
+<p>左上段は左Ctrl・↑・左Alt、右上段は右Alt・↑・右Ctrl。左ホーム行と右ホーム行に矢印がある。
+両手のEnterはタップでEnter、長押しでそれぞれ左Shift・右Shift。Shift+矢印で選択できる。
+左親指BackSpaceは長押しで数字の面。Spaceは最初の長押しでAIコマンドの面を開く。
+Spaceを短押ししてから175ミリ秒以内にもう一度押し続けると、Spaceを保持して繰り返す。
+右親指は <code>!</code> と <code>@</code>。</p>
+<p>左Ctrl+左Altは文字入力モード、左Alt+左←はゲームモード。
+右Ctrl+右Altはファンクションモード、右Ctrl+右←はBluetoothモード、
+右←+右→は数字キーパッドモードへ切り替える。2キーを同時に押す。</p>
+<div class="layer-head" style="background:#d35400;">AIコマンドの面（LED: 白）— AIモードでSpace長押し</div>
+<svg viewBox="0 0 584 190" role="img" aria-label="ai_command_layer">
 <text x="123" y="20" text-anchor="middle" font-size="13" fill="#5a6a72" font-family="sans-serif">左手側</text>
 <text x="435" y="20" text-anchor="middle" font-size="13" fill="#5a6a72" font-family="sans-serif">右手側</text>
 <line x1="266" y1="8" x2="266" y2="184" stroke="#ccc" stroke-dasharray="5 5" stroke-width="1.5"/>
 <rect x="60" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="84" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">Tab</text>
+<text x="84" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">Esc</text>
 <rect x="112" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="136" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">↑</text>
-<rect x="164" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="188" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">Del</text>
+<text x="136" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">Tab</text>
+<rect x="164" y="30" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
+<text x="188" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">GUI</text>
 <rect x="372" y="30" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
-<text x="396" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/model</text>
-<rect x="424" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="448" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">↑</text>
+<text x="396" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/diff</text>
+<rect x="424" y="30" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
+<text x="448" y="59" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/compact</text>
 <rect x="476" y="30" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
 <text x="500" y="59" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/status</text>
 <rect x="8" y="108" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
 <text x="32" y="131" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Enter</text>
 <text x="32" y="144" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Shift</text>
-<rect x="60" y="82" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="84" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">←</text>
-<rect x="112" y="82" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="136" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">↓</text>
-<rect x="164" y="82" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="188" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">→</text>
-<rect x="372" y="82" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="396" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">←</text>
-<rect x="424" y="82" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="448" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">↓</text>
-<rect x="476" y="82" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="500" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">→</text>
+<rect x="60" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
+<text x="84" y="111" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/clear</text>
+<rect x="112" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
+<text x="136" y="111" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/resume</text>
+<rect x="164" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
+<text x="188" y="111" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/model</text>
+<rect x="372" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
+<text x="396" y="111" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/pr</text>
+<rect x="424" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
+<text x="448" y="111" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/review</text>
+<rect x="476" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
+<text x="500" y="105" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/insi</text>
+<text x="500" y="118" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">ghts</text>
 <rect x="528" y="108" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
-<text x="552" y="131" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Enter</text>
-<text x="552" y="144" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Shift</text>
-<rect x="138" y="134" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
-<text x="162" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">BkSp</text>
-<text x="162" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">数字</text>
+<text x="552" y="131" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Enter</text>
+<text x="552" y="144" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">R Shift</text>
+<rect x="138" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
+<text x="162" y="163" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">BkSp</text>
 <rect x="190" y="134" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
 <text x="214" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">Space</text>
-<text x="214" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">ZXCV</text>
-<rect x="294" y="134" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
-<text x="318" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">,</text>
-<text x="318" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">ZXCV</text>
-<rect x="346" y="134" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
-<text x="370" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">.</text>
-<text x="370" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Ctrl</text>
+<text x="214" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">AI CMD</text>
+<rect x="294" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
+<text x="318" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">!</text>
+<rect x="346" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
+<text x="370" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">.</text>
 </svg>
-<div class="figure-caption">図 8. AI モードで A か Enter の位置を押さえている間。左上段の Escape と BackSpace は Tab と Delete になる。右手の上段は、両端の . と / だけが /model と /status に変わり、4 方向の矢印は変わらない。いずれも Shift を外して送るため、コマンドを送ると物理的に押した Shift も外れ、次のコマンドには Shift を押し直す。</div>
+<div class="figure-caption">図 9. AIモードのSpaceを長押ししている間だけ開く。上段とホーム行に9種類のslash command。commandは英数入力へ切り替えて文字だけを送り、Enterは送らない。左上はEscape・Tab・GUI。左親指BackSpaceは押し続けると繰り返す。</div>
 <div class="legend"><span><i class="sw" style="background:#eef6ff;border-color:#1e6fd9;"></i>文字・数字・記号</span><span><i class="sw" style="background:#fdf2e9;border-color:#d35400;"></i>タップと長押しで二役</span><span><i class="sw" style="background:#eefaf3;border-color:#2a9d8f;"></i>修飾キー</span><span><i class="sw" style="background:#fff4e0;border-color:#b8860b;"></i>ショートカット</span><span><i class="sw" style="background:#f3ecfb;border-color:#7a4fb5;"></i>レイヤー操作</span><span><i class="sw" style="background:#f7f5ee;border-color:#c9c6b6;"></i>&mdash; 透過</span><span><i class="sw" style="background:#f1f1ea;"></i>&mdash; 無効</span></div>
-<div class="note">
-<strong><code>/model</code> <code>/status</code> は macro である。</strong>
-Shift と、上段両端の <code>.</code> か <code>/</code> のキー 1 つで文字列をまとめて打ち込む。<strong>送信はしない。</strong>
-入力欄に文字が並ぶだけなので、<code>/model</code> に続けて引数を打てるし、間違って押しても消せばよい。送るときは <code>Enter</code> のキーを押す。<br>
-<strong>コマンドを送ると Shift が外れる。</strong>Shift を押さえたまま 2 つ目のコマンドは出ないので、次は押し直す。<br>
-送っているのは素のキーなので、日本語入力が入っていると仮名になる。そこで<strong>どの macro も入力を英数に固定する</strong>。
-キーボードは IME の状態を知れないが、USB の <code>LANG2</code> という usage は Windows では IME オフ、macOS では英数キーとして届く。
-状態に関係なく英数になるので、その後の文字はそのまま届く。日本語に戻すのは、文字入力モードへ戻ってから <code>E + F</code> の combo である。そもそも AI モードには文字キーが無いので、戻るのは日本語を打つときになる。
-</div>
-<p><strong>コピーと貼り付けは左手の combo にある。</strong>右手はトラックボールの上なので、
-右上段へ取りに行くとポインタを手放すことになる。そこで左手の上段へ移した。押す位置は <a href="#s8">8 節</a>に載せてある。</p>
-<p>この 2 つは<strong>直前の打鍵から間が空いたときだけ</strong>効く。
-<code>↑</code> と <code>BackSpace</code> は続けて叩くキーなので、そのまま置くと操作の途中でコピーや貼り付けが飛び出すためである。</p>
-<p><strong>元に戻す・やり直す・切り取り・検索は右手の combo にある。</strong>隣り合う 2 キーを一緒に押す。
-<code>.</code> と <code>↑</code> で <code>Ctrl+Z</code>、<code>↑</code> と <code>/</code> で <code>Ctrl+Shift+Z</code>、
-<code>←</code> と <code>↓</code> で <code>Ctrl+X</code>、<code>↓</code> と <code>→</code> で <code>Ctrl+F</code> になる。
-前の 3 つは右上段の単独キーだったもので、検索は新しく足した。
-コピーと貼り付けと同じく直前の打鍵から間が空いたときだけ効くので、矢印を続けて押している間には出ない。</p>
+<p>左上段はEscape・Tab・GUI。残る上段とホーム行のcommandキーで
+<code>/clear</code>、<code>/resume</code>、<code>/model</code>、
+<code>/diff</code>、<code>/compact</code>、<code>/status</code>、
+<code>/pr</code>、<code>/review</code>、<code>/insights</code>を入力する。
+macroは先に <code>LANG2</code> で英数入力に切り替え、Enterは送らない。
+修飾キーを保持したままのcommand入力は保証対象外。</p>
 
 <div class="layer-head" style="background:#d4a017;">数字キーパッドモード（LED: 黄）— combo <code>J + L</code></div>
 <svg viewBox="0 0 584 190" role="img" aria-label="number_layer">
@@ -933,7 +951,7 @@ Shift と、上段両端の <code>.</code> か <code>/</code> のキー 1 つで
 <rect x="346" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
 <text x="370" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">.</text>
 </svg>
-<div class="figure-caption">図 9. 数字キーパッドモード。数字と小数点はテンキーのコードを送る。左手がテンキー配列、右手が四則演算と =・バックスラッシュ。Enter の位置はタップで Enter、押さえると Shift。左の親指は 2 と 3、右の親指は 0 と小数点。</div>
+<div class="figure-caption">図 10. 数字キーパッドモード。数字と小数点はテンキーのコードを送る。左手がテンキー配列、右手が四則演算と =・バックスラッシュ。Enter の位置はタップで Enter、押さえると Shift。左の親指は 2 と 3、右の親指は 0 と小数点。</div>
 <div class="legend"><span><i class="sw" style="background:#eef6ff;border-color:#1e6fd9;"></i>文字・数字・記号</span><span><i class="sw" style="background:#fdf2e9;border-color:#d35400;"></i>タップと長押しで二役</span><span><i class="sw" style="background:#eefaf3;border-color:#2a9d8f;"></i>修飾キー</span><span><i class="sw" style="background:#fff4e0;border-color:#b8860b;"></i>ショートカット</span><span><i class="sw" style="background:#f3ecfb;border-color:#7a4fb5;"></i>レイヤー操作</span><span><i class="sw" style="background:#f7f5ee;border-color:#c9c6b6;"></i>&mdash; 透過</span><span><i class="sw" style="background:#f1f1ea;"></i>&mdash; 無効</span></div>
 <p><strong>左手がテンキー</strong>で、<code>7 8 9 / 4 5 6 / 1 2 3</code> が電卓と同じ並びに入っている。
 <strong>右手は演算キー</strong>で、上段が <code>+</code> <code>-</code> <code>=</code>、ホーム行が <code>÷</code> <code>×</code> とバックスラッシュである。
@@ -989,7 +1007,7 @@ Shift と、上段両端の <code>.</code> か <code>/</code> のキー 1 つで
 <rect x="346" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
 <text x="370" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">.</text>
 </svg>
-<div class="figure-caption">図 10. 数字キーパッドモードで Enter の位置を押さえている間。左手が移動ブロック、右手がロックとシステムのキーになる。押さえていない 6 キー（左の小指、親指 4 つ、Enter の位置）は変わらない。</div>
+<div class="figure-caption">図 11. 数字キーパッドモードで Enter の位置を押さえている間。左手が移動ブロック、右手がロックとシステムのキーになる。押さえていない 6 キー（左の小指、親指 4 つ、Enter の位置）は変わらない。</div>
 <div class="legend"><span><i class="sw" style="background:#eef6ff;border-color:#1e6fd9;"></i>文字・数字・記号</span><span><i class="sw" style="background:#fdf2e9;border-color:#d35400;"></i>タップと長押しで二役</span><span><i class="sw" style="background:#eefaf3;border-color:#2a9d8f;"></i>修飾キー</span><span><i class="sw" style="background:#fff4e0;border-color:#b8860b;"></i>ショートカット</span><span><i class="sw" style="background:#f3ecfb;border-color:#7a4fb5;"></i>レイヤー操作</span><span><i class="sw" style="background:#f7f5ee;border-color:#c9c6b6;"></i>&mdash; 透過</span><span><i class="sw" style="background:#f1f1ea;"></i>&mdash; 無効</span></div>
 <div class="note">
 <strong>レイヤーではなく、キーごとの切り替えである。</strong>ZMK の mod-morph という仕組みで、Shift を押していれば別のキーを送る。
@@ -1065,7 +1083,7 @@ ZMK は <code>CONFIG_ZMK_HID_INDICATORS</code> でホストの Num Lock 状態�
 <rect x="346" y="134" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
 <text x="370" y="163" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">Ctrl</text>
 </svg>
-<div class="figure-caption">図 11. ファンクションモード。F キーは数字の面で同じ数字がある位置。A と M の位置を押さえると Ctrl、N の位置を押さえると Alt。Enter の位置と薄い色の左の親指は文字入力モードと同じ。</div>
+<div class="figure-caption">図 12. ファンクションモード。F キーは数字の面で同じ数字がある位置。A と M の位置を押さえると Ctrl、N の位置を押さえると Alt。Enter の位置と薄い色の左の親指は文字入力モードと同じ。</div>
 <div class="legend"><span><i class="sw" style="background:#eef6ff;border-color:#1e6fd9;"></i>文字・数字・記号</span><span><i class="sw" style="background:#fdf2e9;border-color:#d35400;"></i>タップと長押しで二役</span><span><i class="sw" style="background:#eefaf3;border-color:#2a9d8f;"></i>修飾キー</span><span><i class="sw" style="background:#fff4e0;border-color:#b8860b;"></i>ショートカット</span><span><i class="sw" style="background:#f3ecfb;border-color:#7a4fb5;"></i>レイヤー操作</span><span><i class="sw" style="background:#f7f5ee;border-color:#c9c6b6;"></i>&mdash; 透過</span><span><i class="sw" style="background:#f1f1ea;"></i>&mdash; 無効</span></div>
 <p>F1 から F12 は、数字の面で同じ数字があるキーに並ぶ。F10 から F12 は <code>0</code>、<code>-</code>、<code>=</code> の位置に入る。
 <code>A</code> のキーを押さえると Ctrl、<code>Enter</code> のキーを押さえると Shift になるので、
@@ -1118,7 +1136,7 @@ Alt を <code>M</code> に置かなかったのは、その癖で <code>F4</code
 <rect x="346" y="134" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
 <text x="370" y="163" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">Alt</text>
 </svg>
-<div class="figure-caption">図 12. ゲームモード。W が S の真上に来て WASD のダイヤ型になる。W の位置が Escape、R の位置が V、右上段は I O P、右のホーム行は Z X C。親指 4 つは Ctrl・Space・Space・Alt で、左の親指も文字入力モードとは違う。Enter の位置は文字入力モードと同じ。</div>
+<div class="figure-caption">図 13. ゲームモード。W が S の真上に来て WASD のダイヤ型になる。W の位置が Escape、R の位置が V、右上段は I O P、右のホーム行は Z X C。親指 4 つは Ctrl・Space・Space・Alt で、左の親指も文字入力モードとは違う。Enter の位置は文字入力モードと同じ。</div>
 <div class="legend"><span><i class="sw" style="background:#eef6ff;border-color:#1e6fd9;"></i>文字・数字・記号</span><span><i class="sw" style="background:#fdf2e9;border-color:#d35400;"></i>タップと長押しで二役</span><span><i class="sw" style="background:#eefaf3;border-color:#2a9d8f;"></i>修飾キー</span><span><i class="sw" style="background:#fff4e0;border-color:#b8860b;"></i>ショートカット</span><span><i class="sw" style="background:#f3ecfb;border-color:#7a4fb5;"></i>レイヤー操作</span><span><i class="sw" style="background:#f7f5ee;border-color:#c9c6b6;"></i>&mdash; 透過</span><span><i class="sw" style="background:#f1f1ea;"></i>&mdash; 無効</span></div>
 <p>VRChat 向け。<code>E</code> のキーが W、<code>S D F</code> のキーが A S D で、W が S の真上に来るので
 <strong>通常の WASD のダイヤ型</strong>になる。<code>A</code> のキーが Shift（走る）。
@@ -1177,7 +1195,7 @@ W A S D、I O P、2 つの Space は変わらないので、<strong>走りなが
 <rect x="346" y="134" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
 <text x="370" y="163" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">R Alt</text>
 </svg>
-<div class="figure-caption">図 13. ゲームモードで A か Enter の位置を押さえている間。Esc が Z、V が R、Z が G、X が M、C が K、Ctrl が R Ctrl、Alt が R Alt になる。変わったキーは Shift を外して単独キーとして送る。ほかの 11 キー（W I O P Shift A S D Enter Space Space）は変わらないので、走りながら動いて跳べる。</div>
+<div class="figure-caption">図 14. ゲームモードで A か Enter の位置を押さえている間。Esc が Z、V が R、Z が G、X が M、C が K、Ctrl が R Ctrl、Alt が R Alt になる。変わったキーは Shift を外して単独キーとして送る。ほかの 11 キー（W I O P Shift A S D Enter Space Space）は変わらないので、走りながら動いて跳べる。</div>
 <div class="legend"><span><i class="sw" style="background:#eef6ff;border-color:#1e6fd9;"></i>文字・数字・記号</span><span><i class="sw" style="background:#fdf2e9;border-color:#d35400;"></i>タップと長押しで二役</span><span><i class="sw" style="background:#eefaf3;border-color:#2a9d8f;"></i>修飾キー</span><span><i class="sw" style="background:#fff4e0;border-color:#b8860b;"></i>ショートカット</span><span><i class="sw" style="background:#f3ecfb;border-color:#7a4fb5;"></i>レイヤー操作</span><span><i class="sw" style="background:#f7f5ee;border-color:#c9c6b6;"></i>&mdash; 透過</span><span><i class="sw" style="background:#f1f1ea;"></i>&mdash; 無効</span></div>
 <div class="note">
 数字キーパッドモードと同じ mod-morph で、変わったキーは Shift を外して単独キーとして送る。そのため Shift を押さえて <code>R</code> のキーを叩くと R のキー入力が届き、押している一瞬だけ走りが止まる。<br>
@@ -1193,18 +1211,18 @@ AI モード行きは移動キーの同時押しになり、ゲームモード�
 <text x="123" y="20" text-anchor="middle" font-size="13" fill="#5a6a72" font-family="sans-serif">左手側</text>
 <text x="435" y="20" text-anchor="middle" font-size="13" fill="#5a6a72" font-family="sans-serif">右手側</text>
 <line x1="266" y1="8" x2="266" y2="184" stroke="#ccc" stroke-dasharray="5 5" stroke-width="1.5"/>
-<rect x="60" y="30" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
-<text x="84" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
-<rect x="112" y="30" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
-<text x="136" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
-<rect x="164" y="30" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
-<text x="188" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
+<rect x="60" y="30" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
+<text x="84" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">LED</text>
+<rect x="112" y="30" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
+<text x="136" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">LED-</text>
+<rect x="164" y="30" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
+<text x="188" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">LED+</text>
 <rect x="372" y="30" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
 <text x="396" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
-<rect x="424" y="30" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
-<text x="448" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
-<rect x="476" y="30" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
-<text x="500" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
+<rect x="424" y="30" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
+<text x="448" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">OLED-</text>
+<rect x="476" y="30" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
+<text x="500" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">OLED+</text>
 <rect x="8" y="108" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
 <text x="32" y="137" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">BT 0</text>
 <rect x="60" y="82" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
@@ -1232,18 +1250,29 @@ AI モード行きは移動キーの同時押しになり、ゲームモード�
 <rect x="346" y="134" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
 <text x="370" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
 </svg>
-<div class="figure-caption">図 14. Bluetooth モード。プロファイル 5 つのうち BT 4 だけが右手にある。</div>
+<div class="figure-caption">図 15. Bluetooth モード。左上の LED は常時点灯と一瞬点灯の切替、LED- と LED+ はRGB LEDの明るさ。右上はOLED- と OLED+ が学習用OLEDの明るさを調整する。profile keyはBT 0から3が左手、BT 4が右手にある。</div>
 <div class="legend"><span><i class="sw" style="background:#eef6ff;border-color:#1e6fd9;"></i>文字・数字・記号</span><span><i class="sw" style="background:#fdf2e9;border-color:#d35400;"></i>タップと長押しで二役</span><span><i class="sw" style="background:#eefaf3;border-color:#2a9d8f;"></i>修飾キー</span><span><i class="sw" style="background:#fff4e0;border-color:#b8860b;"></i>ショートカット</span><span><i class="sw" style="background:#f3ecfb;border-color:#7a4fb5;"></i>レイヤー操作</span><span><i class="sw" style="background:#f7f5ee;border-color:#c9c6b6;"></i>&mdash; 透過</span><span><i class="sw" style="background:#f1f1ea;"></i>&mdash; 無効</span></div>
 <div class="note">
-<strong><code>BT 4</code> だけが右手にある。</strong>
+<strong>左上の <code>LED</code> キーで常時点灯と一瞬点灯を切り替え、隣の <code>LED-</code> / <code>LED+</code> で明るさを1段階ずつ変える。</strong>
+一瞬点灯は明るさが5%以上ならモードが変わるたび 500 ms 光って消える。明るさは 0、5、10、20、30、40、50、60、70、80、90、100% の12段階。
+0% は電池・BT接続通知も含む完全消灯で、<code>LED+</code> を1回押すと5%へ戻る。方式と明るさは右手に保存される。
+右上の <code>OLED-</code> / <code>OLED+</code> は外付け学習用OLEDを1段階ずつ暗く / 明るくする。表示器はキーボードとは別にUSB給電し、明るさをUIAPduinoに保存する。接続していないときもキーボードの操作は変わらない。
+キーはホストへ文字を送らない。
+</div>
+<div class="note">
+<strong>profile key は <code>BT 0</code> から <code>BT 3</code> が左手、<code>BT 4</code> が右手にある。</strong>
 <code>A S D F</code> は左手だが <code>J</code> は右手である（<a href="#s2">2 節の表</a>）。
 プロファイルは 5 つあり、左手のキーは外側 1 つとホーム 3 つで 4 つしか使えないので、
 5 番目が右手のホーム最内側に回っている。
 </div>
 
-<h2 id="s10">10. LED はモードだけを示す</h2>
-<p>右手側の XIAO に載っている RGB LED を、<code>caksoylar/zmk-rgbled-widget</code> でレイヤー表示に使っている。
-色の割り当ては<strong>モードと 1 対 1</strong>にしてある。</p>
+<h2 id="s10">10. LED の点灯方式・明るさとモード色</h2>
+<p>右手側の XIAO に載っている RGB LED は、6 つのモードと 3 つの押しっぱなし面を色で示す。
+Bluetooth モードの左上にある <code>LED</code> キーで、<strong>色を表示し続ける方式</strong>と
+<strong>モードが変わるたび 500 ms だけ表示する方式</strong>を切り替える。明るさ0%ではどちらの方式も消灯する。
+切替後の方式は電源を入れ直しても維持される。<code>LED-</code> / <code>LED+</code> は右手RGB LEDの明るさを変える物理キーで、OLED画面の輝度には作用しない。</p>
+<p>明るさは PWM の 0、5、10、20、30、40、50、60、70、80、90、100% から選ぶ。0% ではモード色も電池・BT接続通知も消え、<code>LED+</code> 1回で5%に戻る。上限・下限で循環しない。常時点灯では操作直後に反映し、一瞬点灯では明るさが5%以上なら操作時に500 ms表示する。方式と明るさは別々に保存され、設定がなければ明るさ100%で始まる。割合はPWMの点灯時間であり、見た目の明るさの割合ではない。</p>
+<p>外付け学習用OLEDも同じ12段階を選べるが、RGB LEDとは独立している。OLEDの100%は従来のcontrast設定 <code>0x7F</code> と同じ。0%は表示OFFで、通常キーでは0%を解除しない。電源投入・リセット・1時間の自動消灯からの復帰時に前回0%なら100%へ戻し、5%以上なら前回値を維持する。</p>
 <table><tr><th style="width:6em;">色</th><th>何を示すか</th></tr>
 <tr><td><span class="led" style="background:#1e6fd9;"></span>青</td><td>AI モード</td></tr>
 <tr><td><span class="led" style="background:#22aa44;"></span>緑</td><td>文字入力 モード</td></tr>
@@ -1251,26 +1280,27 @@ AI モード行きは移動キーの同時押しになり、ゲームモード�
 <tr><td><span class="led" style="background:#17b8c4;"></span>シアン</td><td>ゲーム モード</td></tr>
 <tr><td><span class="led" style="background:#b5389e;"></span>マゼンタ</td><td>ファンクション モード</td></tr>
 <tr><td><span class="led" style="background:#dd2222;"></span>赤</td><td>Bluetooth モード</td></tr>
-<tr><td><span class="led" style="background:#ffffff;border:1px solid #bbb;"></span>白</td><td>押しっぱなし面（数字の面、ZXCV の面）を開いている間。指を離せば元のモードの色に戻る</td></tr>
+<tr><td><span class="led" style="background:#ffffff;border:1px solid #bbb;"></span>白</td><td>押しっぱなし面（数字の面、ZXCV の面、AIコマンド）を開いている間。指を離せば元のモードの色に戻る</td></tr>
 </table>
 <div class="info">
 <strong>押しっぱなし面だけは白にしてある。</strong>
-数字の面もZXCV の面も、親指が別のキーになる数字キーパッドモードとゲームモード以外の<strong>どのモードからも開く</strong>ので、
-どちらかのモード色を割り当てると「色を見ればモードが分かる」という関係が崩れる。
+数字の面はBackSpace長押し、ZXCV の面はAI以外のSpaceかNの長押し、AIコマンド面はAIのSpace長押しで開く。
+同じ白は、どの押しっぱなし面を開いていても一時的な配置であることを示す。
 白は「どのモードでもない、面を開いている最中」を意味する。指を離せば元のモードの色に戻る。<br>
-この widget が機能するのは<strong>親機（右手側）だけ</strong>で、左手側は光らない。
+モード色を示すのは<strong>親機（右手側）だけ</strong>で、左手側はモードを知らない。
 </div>
 <div class="warn">
 <strong>色の設定はレイヤー番号で引く。</strong>
-<code>CONFIG_RGBLED_WIDGET_LAYER_N_COLOR</code> の <code>N</code> は実際のレイヤー番号である。
+<code>CONFIG_TINY18_LED_LAYER_N_COLOR</code> の <code>N</code> は実際のレイヤー番号である。
 押しっぱなし面 2 枚を数え落として番号を 1 つずつずらしていたため、
 2026-09-11 まで<strong>数字キーパッドモードがシアンに光っていた</strong>。シアンはゲームモードの色である。
 </div>
 
 <h2 id="s11">11. deep sleep と復帰</h2>
-<p>文字入力モードにも色を付けた結果 LED が常時点灯になるため、待機電力を抑える目的で
-<code>CONFIG_ZMK_SLEEP=y</code> を左右へ入れてある。<strong>30 分</strong>無操作で deep sleep に入る。
-既定は 15 分だが、待たされる回数のほうが気になったので <code>CONFIG_ZMK_IDLE_SLEEP_TIMEOUT</code> で倍にした。
+<p>明るさ5%以上の常時点灯では、待機中もモード色が点灯する。一瞬点灯では、モード変更後 500 ms で消える。明るさ0%では通知を含めて消灯する。
+deep sleep に入ると、どちらの方式でも LED を消す。<code>CONFIG_ZMK_SLEEP=y</code> は左右で有効にし、
+<strong>1 時間</strong>無操作で deep sleep に入る。
+既定は 15 分だが、待たされる回数のほうが気になったので <code>CONFIG_ZMK_IDLE_SLEEP_TIMEOUT</code> を 1 時間にした。
 <strong>この値は左右そろえること。</strong>短いほうが先に眠ると、どちらが落ちたかで挙動が変わる。
 ただし USB 給電中は仕様上眠らないので、確認は必ず電池のみで行う。</p>
 
@@ -1308,7 +1338,7 @@ Zephyr 3.5 の <code>Z_PM_DEVICE_FLAGS</code> は、この devicetree プロパ�
 実機でもそのとおりで、左手のキーでは戻らず、右手のキーを押して初めて復帰した。<br>
 右手はトラックボールの上にあるので、これは使い勝手としては不利である。
 親機を起こしっぱなしにすれば左手だけで復帰できるようになるが、
-そのぶん電池を食い続けることになるため、<strong>両側ともスリープを有効にしたまま、時間だけ 30 分へ延ばした</strong>。
+そのぶん電池を食い続けることになるため、<strong>両側ともスリープを有効にしたまま、時間だけ 1 時間へ延ばした</strong>。
 起こす回数を半分にする折衷であって、左手だけで復帰できるようになるわけではない。
 </div>
 
@@ -1338,9 +1368,9 @@ D6 は <code>S</code> のキー、D7 は <code>D</code> のキーにあたる。
 <p>いずれも上流の <a href="https://github.com/k3peta/zmk-config-tiny18">k3peta/zmk-config-tiny18</a> を fork した自分のリポジトリ内。</p>
 <ul class="tight">
 <li><code>config/tiny18.keymap</code> — このページの図はすべてこのファイルから生成している</li>
-<li><code>config/tiny18_l.conf</code> / <code>tiny18_r.conf</code> — LED の色、deep sleep</li>
+<li><code>config/tiny18_l.conf</code> / <code>tiny18_r.conf</code> — LED の色・PWM、deep sleep</li>
 <li><code>boards/shields/tiny18/tiny18.dtsi</code> — 物理配置、<code>default_transform</code>、<code>wakeup-source;</code></li>
-<li><code>boards/shields/tiny18/tiny18_l.overlay</code> / <code>tiny18_r.overlay</code> — UART 無効化、<code>col-offset</code></li>
+<li><code>boards/shields/tiny18/tiny18_l.overlay</code> / <code>tiny18_r.overlay</code> — UART・PWM、<code>col-offset</code></li>
 <li><code>boards/shields/tiny18/Kconfig.defconfig</code> — 親機の指定</li>
 </ul>
 

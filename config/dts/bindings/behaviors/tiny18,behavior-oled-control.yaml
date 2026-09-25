@@ -1,0 +1,5 @@
+description: Control the external Tiny18 OLED over UART
+
+compatible: "tiny18,behavior-oled-control"
+
+include: one_param.yaml

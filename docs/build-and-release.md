@@ -76,6 +76,8 @@ docker run --rm --env CMAKE_BUILD_PARALLEL_LEVEL=4 `
 
 ## 4. OLEDをビルドする（任意）
 
+OLEDの明るさ設定はUIAPduino内蔵Flashの末尾2ページ（128 bytes）に保存します。`addons/oled/reserve_flash.py`が生成linker scriptのアプリ上限を16,256 bytesにし、配布用BINのサイズ検査も同じ上限です。既存の配線は変更しません。
+
 [OLED開発手順](../addons/oled/README.md)のRISC-V compilerとGNU Makeを用意します。
 
 ```powershell

@@ -7,20 +7,18 @@
  *
  * SPI wiring follows docs/oled-setup.md. The input is a 9600 baud,
  * 8N1 UART byte on PD6:
- * Tiny18's right-half D1 sends the highest active layer in bits 0-2 and one
- * bit each for Shift, Ctrl, Alt and GUI in bits 3-6, at boot, whenever that
- * state changes and on every key press, so a display plugged in later
- * catches up on the first keystroke. Bit 7 is never set, so a byte with it
- * set is noise. The display stays USB powered; only D1->PD6 (through 1k ohm)
- * and GND are shared with the keyboard.
+ * Tiny18's right-half D1 sends a three-byte layer/left/right modifier frame
+ * (0x90/0xA0/0xB0) and one-byte activity/OLED controls (0x80-0x84).
+ * The display stays USB powered; only
+ * D1->PD6 (through 1k ohm) and GND are shared with the keyboard.
  *
- * render.c turns a state byte into the frame; the labels come from layers.h,
+ * render.c turns a decoded state into the frame; the labels come from layers.h,
  * generated from the keymap by docs/tools/make_oled_layers.py in the tiny18
  * repository.
  *
  * Power. The panel is the largest consumer, so it is switched off after
  * IDLE_BLANK_MS without a valid byte and back on by the next one, the same
- * 30 minutes the keyboard waits before its own deep sleep. The MCU runs from
+ * one hour the keyboard waits before its own deep sleep. The MCU runs from
  * the 24 MHz HSI divided to 8 MHz (funconfig.h and the top of main) and
  * sleeps in WFI between interrupts: the USART wakes it for a byte, SysTick
  * every TICK_MS to count idle time. Datasheet figures at 5 V: 48 MHz run
@@ -40,6 +38,9 @@
 #include "ssd1306_spi.h"
 #include "ssd1306.h"
 #include "render.h"
+#include "brightness.h"
+#include "brightness_store.h"
+#include "../../include/tiny18_oled_uart.h"
 
 #define LAYER_UART_BAUD 9600
 #define TINY18_INITIAL_STATE 2
@@ -50,8 +51,7 @@
 #define TICK_MS 10
 #define TICKS_PER_TICK Ticks_from_Ms(TICK_MS)
 
-// The keyboard sends a byte on every key press, so time without a valid byte
-// is idle time, counted the same way the keyboard counts it.
+// Time without a valid byte is idle time.
 #define IDLE_BLANK_MS (60 * 60 * 1000)
 #define IDLE_BLANK_TICKS (IDLE_BLANK_MS / TICK_MS)
 
@@ -66,16 +66,16 @@ static const uint8_t init_bytes[] = {
     0x20, 0x00,
     0xA1,
     0xC8,
-    0x81, 0x7F,
     0xA4,
     0xA6,
 };
 
 // Written by the interrupt handlers, read by main.
-static volatile uint8_t pending_state;
-static volatile uint8_t pending_valid;
+static volatile uint8_t rx_bytes[32];
+static volatile uint8_t rx_head;
+static volatile uint8_t rx_tail;
 static volatile uint32_t idle_ticks;
-
+static volatile uint32_t elapsed_ticks;
 static void uart_rx_init(void) {
     RCC->APB2PCENR |= RCC_APB2Periph_GPIOD | RCC_APB2Periph_USART1;
 
@@ -105,13 +105,12 @@ void USART1_IRQHandler(void) {
     if (status & (USART_FLAG_FE | USART_FLAG_NE | USART_FLAG_ORE)) {
         return;
     }
-    if (received & TINY18_STATE_INVALID) {
+    const uint8_t next = (rx_head + 1) & 31;
+    if (next == rx_tail) {
         return;
     }
-    // Only a byte that passed both checks counts as activity.
-    pending_state = received;
-    pending_valid = 1;
-    idle_ticks = 0;
+    rx_bytes[rx_head] = received;
+    rx_head = next;
 }
 
 static void tick_init(void) {
@@ -127,12 +126,13 @@ void SysTick_Handler(void) __attribute__((interrupt));
 void SysTick_Handler(void) {
     SysTick->CMP += TICKS_PER_TICK;
     SysTick->SR = 0;
+    elapsed_ticks++;
     if (idle_ticks < IDLE_BLANK_TICKS) {
         idle_ticks++;
     }
 }
 
-static void show_state(uint8_t state) {
+static void show_state(tiny18_display_state_t state) {
     tiny18_render(ssd1306_buffer, state);
     ssd1306_refresh();
 }
@@ -145,11 +145,19 @@ int main(void) {
     RCC->CFGR0 = (RCC->CFGR0 & ~RCC_HPRE) | RCC_HPRE_DIV3;
     Delay_Ms(100);
 
+    const uint8_t saved_level = oled_store_load();
+    oled_brightness_t brightness;
+    oled_brightness_init(&brightness, saved_level);
+    uint8_t persisted_level = saved_level;
+    uint32_t changed_at = 0;
+
     ssd1306_spi_init();
     ssd1306_init();
     for (unsigned index = 0; index < sizeof(init_bytes); index++) {
         ssd1306_cmd(init_bytes[index]);
     }
+    ssd1306_cmd(0x81);
+    ssd1306_cmd(oled_brightness_contrast(brightness.level));
 
     ssd1306_setbuf(1);
     ssd1306_refresh();
@@ -158,32 +166,91 @@ int main(void) {
 
     uart_rx_init();
     // Match Tiny18's startup mode even if this receiver misses the boot byte.
-    uint8_t displayed_state = TINY18_INITIAL_STATE;
-    uint8_t blanked = 0;
+    tiny18_display_state_t displayed_state = {.layer = TINY18_INITIAL_STATE};
+    uint8_t pending_layer = 0;
+    uint8_t pending_left = 0;
+    uint8_t pending_part = 0;
+    uint32_t pending_at = 0;
+    bool panel_on = true;
     show_state(displayed_state);
     tick_init();
 
     while (1) {
-        __WFI();
-        if (pending_valid) {
-            // Clear the flag before taking the state: a byte that arrives in
-            // between is then seen again on the next pass instead of lost.
-            pending_valid = 0;
-            const uint8_t state = pending_state;
-            if (blanked) {
-                // The panel keeps its GDDRAM while off, so DISPLAYON alone
-                // brings back the last frame.
-                ssd1306_cmd(SSD1306_DISPLAYON);
-                blanked = 0;
+        while (rx_tail != rx_head) {
+            const uint8_t received = rx_bytes[rx_tail];
+            rx_tail = (rx_tail + 1) & 31;
+            const uint8_t old_level = brightness.level;
+            if ((received & 0xF0) == TINY18_STATE_HEADER &&
+                (received & 0x0F) <= TINY18_STATE_MAX_LAYER) {
+                pending_layer = received & 0x0F;
+                pending_part = 1;
+                pending_at = elapsed_ticks;
+                continue;
             }
-            if (state != displayed_state) {
-                displayed_state = state;
-                show_state(state);
+            if (pending_part == 1 && (received & 0xF0) == TINY18_STATE_LEFT) {
+                pending_left = received & 0x0F;
+                pending_part = 2;
+                continue;
+            }
+            if (pending_part == 2 && (received & 0xF0) == TINY18_STATE_RIGHT) {
+                pending_part = 0;
+                tiny18_display_state_t next = {
+                    .layer = pending_layer,
+                    .left_mods = pending_left,
+                    .right_mods = received & 0x0F,
+                };
+                idle_ticks = 0;
+                oled_brightness_wake(&brightness);
+                if (next.layer != displayed_state.layer ||
+                    next.left_mods != displayed_state.left_mods ||
+                    next.right_mods != displayed_state.right_mods) {
+                    displayed_state = next;
+                    show_state(next);
+                }
+            } else if (received == TINY18_OLED_ACTIVITY ||
+                       received == TINY18_OLED_DOWN ||
+                       received == TINY18_OLED_UP ||
+                       received == TINY18_OLED_BOOT) {
+                pending_part = 0;
+                idle_ticks = 0;
+                oled_brightness_command(&brightness, received);
+            } else {
+                pending_part = 0;
+                continue;
+            }
+            if (brightness.level != old_level) {
+                changed_at = elapsed_ticks;
+                if (brightness.level != 0) {
+                    ssd1306_cmd(0x81);
+                    ssd1306_cmd(oled_brightness_contrast(brightness.level));
+                }
+            }
+            const bool visible = oled_brightness_visible(&brightness);
+            if (visible != panel_on) {
+                ssd1306_cmd(visible ? SSD1306_DISPLAYON : SSD1306_DISPLAYOFF);
+                panel_on = visible;
             }
         }
-        if (!blanked && idle_ticks >= IDLE_BLANK_TICKS) {
-            ssd1306_cmd(SSD1306_DISPLAYOFF);
-            blanked = 1;
+        if (pending_part != 0 && (uint32_t)(elapsed_ticks - pending_at) >= 2) {
+            pending_part = 0;
+        }
+        if (!brightness.idle_off && idle_ticks >= IDLE_BLANK_TICKS) {
+            oled_brightness_idle(&brightness);
+            if (panel_on) {
+                ssd1306_cmd(SSD1306_DISPLAYOFF);
+                panel_on = false;
+            }
+        }
+        if (brightness.level != persisted_level &&
+            (uint32_t)(elapsed_ticks - changed_at) >= 100) {
+            const uint8_t saving = brightness.level;
+            if (oled_store_save(saving)) {
+                persisted_level = saving;
+            }
+            changed_at = elapsed_ticks;
+        }
+        if (rx_tail == rx_head) {
+            __WFI();
         }
     }
 }

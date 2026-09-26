@@ -10,6 +10,7 @@ config TINY18_LAYER_UART
 config TINY18_START_IN_AI
     bool "Start Tiny18 in AI mode"
     default n
+    depends on TINY18_LAYER_UART
     help
       Activate Tiny18's AI layer after the ZMK keymap is initialized.
 

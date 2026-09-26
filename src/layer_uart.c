@@ -83,9 +83,13 @@ static struct oled_record current_state(void) {
     };
 }
 
-static void send_state(struct k_work *work) {
+void tiny18_oled_send_current_state(void) {
     const struct oled_record state = current_state();
     k_msgq_put(&oled_tx_queue, &state, K_NO_WAIT);
+}
+
+static void send_state(struct k_work *work) {
+    tiny18_oled_send_current_state();
 }
 
 K_WORK_DEFINE(send_state_work, send_state);

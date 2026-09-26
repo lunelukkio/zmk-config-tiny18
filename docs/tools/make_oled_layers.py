@@ -121,7 +121,7 @@ SHORT = {
     "OLED-": "OL-", "OLED+": "OL+",
     "BkSp": "BS", "Space": "SPC", "Enter": "ENT", "Shift": "SFT", "Ctrl": "CTL",
     "Esc": "ESC", "Tab": "TAB", "Del": "DEL", "PrtSc": "PRT", "PgUp": "PGU", "PgDn": "PGD",
-    "NumLk": "NUM", "GUI": "GUI", "Alt": "ALT", "R Ctrl": "RCT", "R Alt": "RAL",
+    "NumLk": "NUM", "GUI": "GUI", "Alt": "ALT", "R Ctrl": "CTL", "R Alt": "ALT",
     "CapsLk": "CAP", "ScrLk": "SCR", "Pause": "PSE", "Menu": "MNU",
     "数字": "NUM", "を開く": "HLD", "BT ": "BT",
 }

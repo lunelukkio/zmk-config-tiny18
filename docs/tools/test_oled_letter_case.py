@@ -51,6 +51,12 @@ class LetterCaseTests(unittest.TestCase):
         self.assertEqual(self.labels(8)[3], ["/DIF"])
         self.assertEqual(self.labels(5)[1], ["W"])
 
+    def test_ai_modifiers_use_shared_oled_labels(self):
+        self.assertEqual(self.labels(2)[3], ["ALT"])
+        self.assertEqual(self.labels(2)[5], ["CTL"])
+        self.assertEqual(self.labels(8)[14], ["DEL"])
+        self.assertEqual(self.labels(8)[16], ["/"])
+
     def test_shared_formatter_changes_only_letter_taps(self):
         self.assertEqual(gen_svg.format_letter_label("A\nShift", "lower"), "a\nShift")
         self.assertEqual(gen_svg.format_letter_label("N\nZXCV", "pair"), "n/N\nZXCV")

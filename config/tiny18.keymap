@@ -562,6 +562,20 @@
             require-prior-idle-ms = <150>;
         };
 
+        /* Direct IME selection chords, limited to text entry. */
+        ime_japanese {
+            bindings = <&kp LANG1>;
+            key-positions = <1 8>;
+            layers = <0>;
+            require-prior-idle-ms = <150>;
+        };
+        ime_english {
+            bindings = <&kp LANG2>;
+            key-positions = <0 7>;
+            layers = <0>;
+            require-prior-idle-ms = <150>;
+        };
+
         /*
          * Mode switching uses the same combos in AI.
          *
@@ -806,7 +820,7 @@
 
         ai_command_layer {
             bindings = <
-&kp ESCAPE  &kp TAB  &kp LGUI  &m_diff  &m_compact  &m_status  &lmt LSHFT ENTER  &m_clear  &m_resume  &m_model  &m_pr  &m_review  &m_insights  &bmt RSHFT ENTER  &kp BACKSPACE  &trans  &kp EXCLAMATION  &kp PERIOD
+&kp ESCAPE  &kp TAB  &kp LGUI  &m_diff  &m_compact  &m_status  &lmt LSHFT ENTER  &m_clear  &m_resume  &m_model  &m_pr  &m_review  &m_insights  &bmt RSHFT ENTER  &kp DELETE  &trans  &kp SLASH  &kp PERIOD
             >;
         };
     };

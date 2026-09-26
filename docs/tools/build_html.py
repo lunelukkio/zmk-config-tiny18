@@ -93,7 +93,7 @@ CAPTION = {
     "edit_bracket_layer": "%s を長押ししている間だけ。Escape・括弧・Z X C V・句読点。Shift 中はEscapeがTabになり、通常のShift記号が出る。%s の位置はタップで Enter、押さえると Shift。薄い色の左の親指は文字入力モードのまま。" % (" か ".join(HOLDERS[7]), NAMES[13]),
     "nav_layer": "AI モード。左上段はCtrl・↑・Alt、右上段は右Alt・↑・右Ctrl。右親指は!と@。編集操作とモード切替は2キーのcombo。左右のEnterはタップでEnter、長押しで左右それぞれのShift。Space長押しでAIコマンドの面を開く。",
     "nav_shift": "AI モードで左右どちらかのEnterを長押しした状態。矢印はShift付きで送る。編集操作とモード切替のcomboは同じ位置。",
-    "ai_command_layer": "AIモードのSpaceを長押ししている間だけ開く。上段とホーム行に9種類のslash command。commandは英数入力へ切り替えて文字だけを送り、Enterは送らない。左上はEscape・Tab・GUI。左親指BackSpaceは押し続けると繰り返す。",
+    "ai_command_layer": "AIモードのSpaceを長押ししている間だけ開く。上段とホーム行に9種類のslash command。commandは英数入力へ切り替えて文字だけを送り、Enterは送らない。左上はEscape・Tab・GUI。左親指はDelete、右親指は/。",
     "number_layer": "数字キーパッドモード。数字と小数点はテンキーのコードを送る。左手がテンキー配列、右手が四則演算と =・バックスラッシュ。%s の位置はタップで Enter、押さえると Shift。左の親指は 2 と 3、右の親指は 0 と小数点。" % NAMES[13],
     "game_layer": "ゲームモード。W が S の真上に来て WASD のダイヤ型になる。%s の位置が Escape、%s の位置が V、右上段は I O P、右のホーム行は Z X C。親指 4 つは Ctrl・Space・Space・Alt で、左の親指も文字入力モードとは違う。%s の位置は文字入力モードと同じ。" % (NAMES[0], NAMES[2], NAMES[13]),
     "fn_layer": "ファンクションモード。F キーは数字の面で同じ数字がある位置。%s の位置を押さえると Ctrl、%s の位置を押さえると Alt。%s の位置と薄い色の左の親指は文字入力モードと同じ。" % (mod_keys("fn_layer", "Ctrl"), mod_keys("fn_layer", "Alt"), NAMES[13]),
@@ -213,7 +213,7 @@ def letter_table():
 
 
 # What a combo's output is for, where the key name alone does not say it.
-COMBO_NOTE = {"Ctrl+Space": "日英切替"}
+COMBO_NOTE = {"Ctrl+Space": "日英切替", "LANG1": "日本語へ", "LANG2": "英語へ"}
 
 
 def combo_group(pairs, layer=None):
@@ -290,6 +290,8 @@ SUBS = {
         ("lgui", "Windows キー。文字入力モードとゲームモードで有効。ゲームモードでは %s"
          % " と ".join(tap("game_layer", p) for p in CD["lgui"]["pos"])),
         ("ime", "日本語と英語の切替（Ctrl+Space）。上段の薬指とホーム行の人差し指。文字入力モードだけ、打鍵後 150 ms おいてから"),
+        ("ime_japanese", "日本語入力へ直接切替。文字入力モードだけ、打鍵後 150 ms おいてから"),
+        ("ime_english", "英語入力へ直接切替。文字入力モードだけ、打鍵後 150 ms おいてから"),
     ]),
     "COMBO_MODE": combo_group([
         ("mode_text", "文字入力モードへ"), ("mode_ai", "AI モードへ。ゲームモードでは無効"),

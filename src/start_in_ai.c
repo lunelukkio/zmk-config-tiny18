@@ -9,12 +9,19 @@
 #include <zephyr/init.h>
 
 #include <zmk/keymap.h>
+#include "tiny18_oled_uart.h"
 
 #define TINY18_AI_LAYER 2
 
 /* ZMK initializes the keymap at the default application priority (90). */
 #define TINY18_START_LAYER_INIT_PRIORITY 91
 
-static int tiny18_start_in_ai(void) { return zmk_keymap_layer_to(TINY18_AI_LAYER); }
+static int tiny18_start_in_ai(void) {
+    const int status = zmk_keymap_layer_to(TINY18_AI_LAYER);
+    if (status == 0) {
+        tiny18_oled_send_current_state();
+    }
+    return status;
+}
 
 SYS_INIT(tiny18_start_in_ai, APPLICATION, TINY18_START_LAYER_INIT_PRIORITY);

@@ -79,7 +79,16 @@ class ChartModelTests(unittest.TestCase):
         self.assertEqual(ai[4], "&kp UP_ARROW")
         self.assertEqual(ai[17], "&kp AT_SIGN")
         self.assertEqual(ai[15], "&slt 8 SPACE")
-        self.assertEqual(bindings["ai_command_layer"][14], "&kp BACKSPACE")
+        self.assertEqual(bindings["ai_command_layer"][14], "&kp DELETE")
+        self.assertEqual(bindings["ai_command_layer"][16], "&kp SLASH")
+        self.assertEqual(
+            {combo["name"]: (tuple(combo["pos"]), combo["binding"], tuple(combo["layers"]))
+             for combo in combos if combo["name"].startswith("ime_")},
+            {
+                "ime_japanese": ((1, 8), "&kp LANG1", (0,)),
+                "ime_english": ((0, 7), "&kp LANG2", (0,)),
+            },
+        )
         self.assertEqual(sum(2 in combo["layers"] for combo in combos), 13)
 
     def test_held_shift_faces_show_every_alternative_hold_position(self):
@@ -118,8 +127,9 @@ class HtmlOutputTests(unittest.TestCase):
         self.assertNotIn("右手上段の combo", page)
         self.assertNotIn("右手はフルキーボードの右側にあたる", page)
         self.assertIn("橙色の 6 つ", page)
-        self.assertEqual(page.count('class="combo-card"'), 35)
+        self.assertEqual(page.count('class="combo-card"'), 37)
         self.assertIn('aria-label="ai_command_layer"', page)
+        self.assertIn("スラッシュと日英切替（6 個）", page)
         self.assertIn('<div class="out">NumLk</div>', page)
         self.assertLess(
             page.index("<td><strong>AI</strong></td>"),

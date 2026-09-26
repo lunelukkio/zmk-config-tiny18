@@ -19,4 +19,6 @@
 #define TINY18_MOD_ALT 0x04
 #define TINY18_MOD_GUI 0x08
 
+void tiny18_oled_send_current_state(void);
+
 #endif

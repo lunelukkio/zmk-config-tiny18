@@ -239,7 +239,8 @@ def chart_model(layers, combos):
         ChartSection("ai_command_layer", "AI コマンドの面",
                      "AI モードで Space を長押ししている間", HELD, None, (15,)),
         ChartSection("default_layer", "文字入力モード",
-                     f"{entry[0]} で入る", MODE[0][1], "ここから下は文字と記号"),
+                     f"{entry[0]} で入る / M は文字優先・Ctrl は400ms",
+                     MODE[0][1], "ここから下は文字と記号"),
         ChartSection("digit_symbol_layer", PAGE_NAME[6],
                      held_page_subtitle(6), HELD, None,
                      tuple(holder_positions[6])),
@@ -502,7 +503,7 @@ def main():
         top = y + head
         draw_keys(top, B[name], base=B["nav_layer"] if name == "ai_command_layer" else None)
         y = top + KEYS_H + gap_h
-        if name == "nav_shift":
+        if name == "ai_command_layer":
             group = combo_card_groups(model, combos)[0]
             d.text((MARGIN, y), group.heading + "（13 件）", font=f_sec, fill=group.colour)
             y += 48

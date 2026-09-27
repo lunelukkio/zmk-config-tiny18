@@ -88,7 +88,7 @@ MODES = [
 
 FIGNO = [1]
 CAPTION = {
-    "default_layer": "文字入力モード。英字は入力結果の大小ではなくキー名として大文字で表す。左の親指 2 つがタップで BackSpace と Space、長押しで%sと%sを開く。" % (PAGE_LONG[6], PAGE_LONG[7]),
+    "default_layer": "文字入力モード。英字は入力結果の大小ではなくキー名として大文字で表す。M は文字優先で、400ミリ秒の長押しでCtrlになる。左の親指 2 つがタップで BackSpace と Space、長押しで%sと%sを開く。" % (PAGE_LONG[6], PAGE_LONG[7]),
     "digit_symbol_layer": "%s を長押ししている間だけ。左手に 1 から 6、右手に 7 8 9 0 - =、右の親指に読点と句点。両端はタップで Enter、押さえると Shift。右の親指は Shift で ( ) になる。薄い色の左の親指は文字入力モードのまま。" % " か ".join(HOLDERS[6]),
     "edit_bracket_layer": "%s を長押ししている間だけ。Escape・括弧・Z X C V・句読点。Shift 中はEscapeがTabになり、通常のShift記号が出る。%s の位置はタップで Enter、押さえると Shift。薄い色の左の親指は文字入力モードのまま。" % (" か ".join(HOLDERS[7]), NAMES[13]),
     "nav_layer": "AI モード。左上段はCtrl・↑・Alt、右上段は右Alt・↑・右Ctrl。右親指は!と@。編集操作とモード切替は2キーのcombo。左右のEnterはタップでEnter、長押しで左右それぞれのShift。Space長押しでAIコマンドの面を開く。",

@@ -168,10 +168,11 @@ AI モードと{{PAGE3}}では、左の <code>A</code> の位置も Enter / Shif
 <tr><td><code>BackSpace</code></td><td><strong>BackSpace</strong></td><td>{{PAGE3}}</td></tr>
 <tr><td><code>Space</code></td><td><strong>Space</strong></td><td>{{PAGE4}}</td></tr>
 <tr><td><code>N</code></td><td><strong>N</strong></td><td>{{PAGE4}}（Space と同じ面）</td></tr>
-<tr><td><code>M</code></td><td><strong>M</strong></td><td>Ctrl</td></tr>
+<tr><td><code>M</code></td><td><strong>M</strong>（文字優先）</td><td>Ctrl（400ミリ秒）</td></tr>
 </table>
 
-<p><code>M</code> の長押しが Ctrl なのが効いている。Ctrl+A も Ctrl+S も Ctrl+C も、すべて 2 キーで済む。</p>
+<p><code>M</code> を 400 ミリ秒押さえると Ctrl になる。Ctrl+A や Ctrl+S は、M を長押ししてから相手のキーを叩く。
+この判定はすべての相手キーに共通で、M を 400 ミリ秒未満で離せば、途中で別のキーを押して離しても M の文字入力を優先する。</p>
 <div class="note">
 <strong>日本語入力の切り替えだけは、この形をやめた。</strong>
 Ctrl+Space は <code>M</code> を押さえて <code>Space</code> を叩く形になるが、これが 2 通りに失敗する。
@@ -205,15 +206,14 @@ GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z<
 <p><code>W</code> の位置は<strong>Escape、Shift を押さえている間は Tab</strong>で、<code>R</code> の位置が <code>F10</code>、そのほかに括弧 3 種と <code>Z X C V</code> がここにある。
 <code>E</code> の位置はバッククォートで、Shift を足せばチルダになる。
 <code>J</code> と <code>K</code> の位置はセミコロンとアポストロフィで、Shift を足せば <code>:</code> と <code>&quot;</code> になる。
-右の親指は読点と句点で、<strong>文字入力モードで句読点が打てるのはこの面だけ</strong>である。AIモードの右親指は ! と句点。
+右の親指は読点と句点である。AIモードの右親指は ! と @。
 {{PAGE3}}でも右の親指は読点と句点で、Shift を重ねると <code>(</code> <code>)</code> になる。
 </p>
 <div class="note">
 <strong>コピーと貼り付けは専用キーをやめた。</strong>右の親指を句読点に譲ったためである。
-代わりに<strong>この面と Ctrl を同時に押さえて、左手のホーム行を叩く</strong>。
-<code>N</code> と <code>M</code> を両方押さえたまま <code>C</code> でコピー、<code>V</code> で貼り付けになる。
-左の親指で開くなら <code>Space</code> と <code>M</code> の組でもよい。<br>
-指は3本要るが、<code>Ctrl+Z</code> と <code>Ctrl+X</code> も同じ形で使える。文字入力モードでの操作であり、AIモードでは専用のmodifier先押し操作を使う。
+まず <code>M</code> を 400 ミリ秒長押しして Ctrl にし、押さえたまま <code>N</code> か <code>Space</code> を長押ししてこの面を開く。
+そのまま左手のホーム行の <code>C</code> でコピー、<code>V</code> で貼り付けになる。<br>
+指は3本要るが、<code>Ctrl+Z</code> と <code>Ctrl+X</code> も同じ形で使える。文字入力モードでの操作であり、AIモードでは専用の2キーcomboを使う。
 </div>
 <div class="warn">
 <strong>押さえた親指の位置は、その面では押せない。</strong>面を開く役目でふさがっているためである。
@@ -241,16 +241,19 @@ GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z<
 
 <h2 id="s6">6. 1 キー 2 役の仕組み</h2>
 <p>ZMK ではこれを hold-tap と呼ぶ。<strong>押している時間</strong>で意味が分かれる。
-通常は 200 ミリ秒で、それより短く離せばタップ、長く押さえれば長押しになる。文字入力モードの <code>A</code> と、AI モード・{{PAGE3}}の左 Enter は、左小指で押しやすくするため 350 ミリ秒である。</p>
+通常の時間設定は 200 ミリ秒。文字入力モードの <code>A</code> と、AI モード・{{PAGE3}}の左 Enter は 350 ミリ秒、
+文字入力モードの <code>M</code> / Ctrl は <strong>400 ミリ秒</strong>である。別のキーとの重なりは、次の判定方式で扱う。</p>
 
-<h3>判定方式を balanced にしてある理由</h3>
-<p>問題は、Enter や M から次のキーへ指を<strong>転がした</strong>ときである。ZMK の既定である hold-preferred は、
-押している最中に別のキーが押されたら即座に「長押し」と決めてしまう。
-それだと Enter や M を含む操作で、意図しない Shift や Ctrl になりやすい。</p>
-<p><strong>balanced</strong> は「次のキーが<strong>先に離された</strong>ときだけ長押し」と判定する。
-指を転がすと自分の方を先に離すので、素直にタップとして出る。
-一方 Shift や Ctrl を意図して押すときは、もう一方のキーを先に離すので、ちゃんと修飾キーになる。
-ホームロー修飾キーで定番の設定である。</p>
+<h3><code>M</code> / Ctrl は文字優先・400ミリ秒</h3>
+<p><code>M</code> は <strong>tap-preferred</strong> を使う。M を 400 ミリ秒未満で離せば文字入力になり、
+相手のキーを先に離しても Ctrl へ早期確定しない。「ま・み・む・め・も」のような M に続くすべての入力に適用される。</p>
+<p>Ctrl を使うときは M を 400 ミリ秒押さえてから相手のキーを叩く。400 ミリ秒以上 M が押された場合は Ctrl になる。
+AI モードの左右 Ctrl、ファンクション・ゲームモードの Ctrl は文字との兼用ではない専用キーなので、この長押し判定を持たない。</p>
+
+<h3>Shift との兼用キーは balanced</h3>
+<p>Enter / Shift と A / Shift は <strong>balanced</strong> を使う。設定時間が過ぎるか、
+押している間に別のキーが押されて先に離されると Shift に確定する。
+設定時間内に兼用キーの方を先に離すと、Enter や A のタップになる。</p>
 <div class="note">
 <code>quick-tap-ms</code> も 175 ミリ秒で入れてある。
 タップした直後にもう一度同じキーを押したときは長押し判定をせず、続けてタップとして扱う。
@@ -327,11 +330,6 @@ Alt の combo はゲームモードとファンクションモードには無く
 そこで<strong>1 と 2 を持つキーの組で 0</strong>、<strong>2 と 3 を持つキーの組で小数点</strong>を出すようにしてある。
 <strong>6 と / の組は Num Lock</strong>で、状態がずれたときだけ一拍おいて押す。</p>
 
-<h3>⑥ AI モードの編集操作</h3>
-<p>AI モードでは2キーを同時に押す。左Ctrl+左↑はコピー、左Alt+左↑は貼り付け、左Ctrl+左←は元に戻す、左Alt+左→はCtrl+J。
-右Alt+右←はやり直し、右Alt+右↑は切り取り、右Ctrl+右→は検索。モード切替も同じ2キーcomboを使う。comboに含まれる矢印は成立判定を待って送られる。</p>
-{{COMBO_NAV}}
-
 <h2 id="s9">9. 他の 5 モードの配置</h2>
 
 <div class="layer-head" style="background:#1e6fd9;">AI モード（LED: 青）— combo <code>{{SW_ai}}</code></div>
@@ -356,6 +354,11 @@ Spaceを短押ししてから175ミリ秒以内にもう一度押し続けると
 <code>/pr</code>、<code>/review</code>、<code>/insights</code>を入力する。
 macroは先に <code>LANG2</code> で英数入力に切り替え、Enterは送らない。
 修飾キーを保持したままのcommand入力は保証対象外。</p>
+
+<h3>AI モードの編集操作</h3>
+<p>AI モードでは2キーを同時に押す。左Ctrl+左↑はコピー、左Alt+左↑は貼り付け、左Ctrl+左←は元に戻す、左Alt+左→はCtrl+J。
+右Alt+右←はやり直し、右Alt+右↑は切り取り、右Ctrl+右→は検索。モード切替も同じ2キーcomboを使う。comboに含まれる矢印は成立判定を待って送られる。</p>
+{{COMBO_NAV}}
 
 <div class="layer-head" style="background:#d4a017;">数字キーパッドモード（LED: 黄）— combo <code>{{SW_num}}</code></div>
 {{FIG_number_layer}}

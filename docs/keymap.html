@@ -76,11 +76,11 @@
 <p class="meta">作成日: 2026-09-06 ・ 全面改稿: 2026-09-11 / ZMK ファームウェア</p>
 
 <div class="sheet">
-<img src="./tiny18-keymap.png?v=4abc558e5faa" width="526" height="5630"
+<img src="./tiny18-keymap.png?v=bd7490c14ae2" width="526" height="5630"
      alt="Tiny18 の全モードと押しっぱなしの面を縦に並べたキー配置表">
 </div>
 <p class="sheet-note">全モードと押しっぱなしの面を 1 枚に並べた表。ここでは全体の形が見える大きさに置いてある。
-<a href="./tiny18-keymap.png?v=4abc558e5faa" target="_blank" rel="noopener">画像だけを別タブで開く</a>と拡大して読める。</p>
+<a href="./tiny18-keymap.png?v=bd7490c14ae2" target="_blank" rel="noopener">画像だけを別タブで開く</a>と拡大して読める。</p>
 
 <div class="takeaway">
 <strong>このノートの中心命題:</strong><br>
@@ -335,7 +335,7 @@ ZMK の実装上はどちらもレイヤーだが、役割が違う。
 <text x="370" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">M</text>
 <text x="370" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Ctrl</text>
 </svg>
-<div class="figure-caption">図 2. 文字入力モード。英字は入力結果の大小ではなくキー名として大文字で表す。左の親指 2 つがタップで BackSpace と Space、長押しで数字の面とZXCV の面を開く。</div>
+<div class="figure-caption">図 2. 文字入力モード。英字は入力結果の大小ではなくキー名として大文字で表す。M は文字優先で、400ミリ秒の長押しでCtrlになる。左の親指 2 つがタップで BackSpace と Space、長押しで数字の面とZXCV の面を開く。</div>
 <div class="legend"><span><i class="sw" style="background:#eef6ff;border-color:#1e6fd9;"></i>文字・数字・記号</span><span><i class="sw" style="background:#fdf2e9;border-color:#d35400;"></i>タップと長押しで二役</span><span><i class="sw" style="background:#eefaf3;border-color:#2a9d8f;"></i>修飾キー</span><span><i class="sw" style="background:#fff4e0;border-color:#b8860b;"></i>ショートカット</span><span><i class="sw" style="background:#f3ecfb;border-color:#7a4fb5;"></i>レイヤー操作</span><span><i class="sw" style="background:#f7f5ee;border-color:#c9c6b6;"></i>&mdash; 透過</span><span><i class="sw" style="background:#f1f1ea;"></i>&mdash; 無効</span></div>
 
 <div class="note">
@@ -359,10 +359,11 @@ AI モードと数字の面では、左の <code>A</code> の位置も Enter / S
 <tr><td><code>BackSpace</code></td><td><strong>BackSpace</strong></td><td>数字の面</td></tr>
 <tr><td><code>Space</code></td><td><strong>Space</strong></td><td>ZXCV の面</td></tr>
 <tr><td><code>N</code></td><td><strong>N</strong></td><td>ZXCV の面（Space と同じ面）</td></tr>
-<tr><td><code>M</code></td><td><strong>M</strong></td><td>Ctrl</td></tr>
+<tr><td><code>M</code></td><td><strong>M</strong>（文字優先）</td><td>Ctrl（400ミリ秒）</td></tr>
 </table>
 
-<p><code>M</code> の長押しが Ctrl なのが効いている。Ctrl+A も Ctrl+S も Ctrl+C も、すべて 2 キーで済む。</p>
+<p><code>M</code> を 400 ミリ秒押さえると Ctrl になる。Ctrl+A や Ctrl+S は、M を長押ししてから相手のキーを叩く。
+この判定はすべての相手キーに共通で、M を 400 ミリ秒未満で離せば、途中で別のキーを押して離しても M の文字入力を優先する。</p>
 <div class="note">
 <strong>日本語入力の切り替えだけは、この形をやめた。</strong>
 Ctrl+Space は <code>M</code> を押さえて <code>Space</code> を叩く形になるが、これが 2 通りに失敗する。
@@ -574,15 +575,14 @@ GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z<
 <p><code>W</code> の位置は<strong>Escape、Shift を押さえている間は Tab</strong>で、<code>R</code> の位置が <code>F10</code>、そのほかに括弧 3 種と <code>Z X C V</code> がここにある。
 <code>E</code> の位置はバッククォートで、Shift を足せばチルダになる。
 <code>J</code> と <code>K</code> の位置はセミコロンとアポストロフィで、Shift を足せば <code>:</code> と <code>&quot;</code> になる。
-右の親指は読点と句点で、<strong>文字入力モードで句読点が打てるのはこの面だけ</strong>である。AIモードの右親指は ! と句点。
+右の親指は読点と句点である。AIモードの右親指は ! と @。
 数字の面でも右の親指は読点と句点で、Shift を重ねると <code>(</code> <code>)</code> になる。
 </p>
 <div class="note">
 <strong>コピーと貼り付けは専用キーをやめた。</strong>右の親指を句読点に譲ったためである。
-代わりに<strong>この面と Ctrl を同時に押さえて、左手のホーム行を叩く</strong>。
-<code>N</code> と <code>M</code> を両方押さえたまま <code>C</code> でコピー、<code>V</code> で貼り付けになる。
-左の親指で開くなら <code>Space</code> と <code>M</code> の組でもよい。<br>
-指は3本要るが、<code>Ctrl+Z</code> と <code>Ctrl+X</code> も同じ形で使える。文字入力モードでの操作であり、AIモードでは専用のmodifier先押し操作を使う。
+まず <code>M</code> を 400 ミリ秒長押しして Ctrl にし、押さえたまま <code>N</code> か <code>Space</code> を長押ししてこの面を開く。
+そのまま左手のホーム行の <code>C</code> でコピー、<code>V</code> で貼り付けになる。<br>
+指は3本要るが、<code>Ctrl+Z</code> と <code>Ctrl+X</code> も同じ形で使える。文字入力モードでの操作であり、AIモードでは専用の2キーcomboを使う。
 </div>
 <div class="warn">
 <strong>押さえた親指の位置は、その面では押せない。</strong>面を開く役目でふさがっているためである。
@@ -610,16 +610,19 @@ GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z<
 
 <h2 id="s6">6. 1 キー 2 役の仕組み</h2>
 <p>ZMK ではこれを hold-tap と呼ぶ。<strong>押している時間</strong>で意味が分かれる。
-通常は 200 ミリ秒で、それより短く離せばタップ、長く押さえれば長押しになる。文字入力モードの <code>A</code> と、AI モード・数字の面の左 Enter は、左小指で押しやすくするため 350 ミリ秒である。</p>
+通常の時間設定は 200 ミリ秒。文字入力モードの <code>A</code> と、AI モード・数字の面の左 Enter は 350 ミリ秒、
+文字入力モードの <code>M</code> / Ctrl は <strong>400 ミリ秒</strong>である。別のキーとの重なりは、次の判定方式で扱う。</p>
 
-<h3>判定方式を balanced にしてある理由</h3>
-<p>問題は、Enter や M から次のキーへ指を<strong>転がした</strong>ときである。ZMK の既定である hold-preferred は、
-押している最中に別のキーが押されたら即座に「長押し」と決めてしまう。
-それだと Enter や M を含む操作で、意図しない Shift や Ctrl になりやすい。</p>
-<p><strong>balanced</strong> は「次のキーが<strong>先に離された</strong>ときだけ長押し」と判定する。
-指を転がすと自分の方を先に離すので、素直にタップとして出る。
-一方 Shift や Ctrl を意図して押すときは、もう一方のキーを先に離すので、ちゃんと修飾キーになる。
-ホームロー修飾キーで定番の設定である。</p>
+<h3><code>M</code> / Ctrl は文字優先・400ミリ秒</h3>
+<p><code>M</code> は <strong>tap-preferred</strong> を使う。M を 400 ミリ秒未満で離せば文字入力になり、
+相手のキーを先に離しても Ctrl へ早期確定しない。「ま・み・む・め・も」のような M に続くすべての入力に適用される。</p>
+<p>Ctrl を使うときは M を 400 ミリ秒押さえてから相手のキーを叩く。400 ミリ秒以上 M が押された場合は Ctrl になる。
+AI モードの左右 Ctrl、ファンクション・ゲームモードの Ctrl は文字との兼用ではない専用キーなので、この長押し判定を持たない。</p>
+
+<h3>Shift との兼用キーは balanced</h3>
+<p>Enter / Shift と A / Shift は <strong>balanced</strong> を使う。設定時間が過ぎるか、
+押している間に別のキーが押されて先に離されると Shift に確定する。
+設定時間内に兼用キーの方を先に離すと、Enter や A のタップになる。</p>
 <div class="note">
 <code>quick-tap-ms</code> も 175 ミリ秒で入れてある。
 タップした直後にもう一度同じキーを押したときは長押し判定をせず、続けてタップとして扱う。
@@ -731,25 +734,6 @@ Alt の combo はゲームモードとファンクションモードには無く
 <p>数字キーパッドモードの左手はテンキーだが、<code>0</code> と小数点を置く場所が足りない。
 そこで<strong>1 と 2 を持つキーの組で 0</strong>、<strong>2 と 3 を持つキーの組で小数点</strong>を出すようにしてある。
 <strong>6 と / の組は Num Lock</strong>で、状態がずれたときだけ一拍おいて押す。</p>
-
-<h3>⑥ AI モードの編集操作</h3>
-<p>AI モードでは2キーを同時に押す。左Ctrl+左↑はコピー、左Alt+左↑は貼り付け、左Ctrl+左←は元に戻す、左Alt+左→はCtrl+J。
-右Alt+右←はやり直し、右Alt+右↑は切り取り、右Ctrl+右→は検索。モード切替も同じ2キーcomboを使う。comboに含まれる矢印は成立判定を待って送られる。</p>
-<div class="combo-grid">
-<div class="combo-card"><div class="out">Ctrl+C</div><div class="keys">Ctrl + 左↑</div><div class="desc">コピー</div></div>
-<div class="combo-card"><div class="out">Ctrl+V</div><div class="keys">左↑ + Alt</div><div class="desc">貼り付け</div></div>
-<div class="combo-card"><div class="out">Ctrl+Z</div><div class="keys">Ctrl + 左←</div><div class="desc">元に戻す</div></div>
-<div class="combo-card"><div class="out">Ctrl+J</div><div class="keys">Alt + 左→</div><div class="desc">改行</div></div>
-<div class="combo-card"><div class="out">Ctrl+Shift+Z</div><div class="keys">R Alt + 右←</div><div class="desc">やり直し</div></div>
-<div class="combo-card"><div class="out">Ctrl+X</div><div class="keys">R Alt + 右↑</div><div class="desc">切り取り</div></div>
-<div class="combo-card"><div class="out">Ctrl+F</div><div class="keys">R Ctrl + 右→</div><div class="desc">検索</div></div>
-<div class="combo-card"><div class="out">⇒ 0</div><div class="keys">Ctrl + Alt</div><div class="desc">文字入力モードへ</div></div>
-<div class="combo-card"><div class="out">⇒ 2</div><div class="keys">左← + 左→</div><div class="desc">AIモードへ</div></div>
-<div class="combo-card"><div class="out">⇒ 3</div><div class="keys">右← + 右→</div><div class="desc">数字モードへ</div></div>
-<div class="combo-card"><div class="out">⇒ 5</div><div class="keys">Alt + 左←</div><div class="desc">ゲームモードへ</div></div>
-<div class="combo-card"><div class="out">⇒ 4</div><div class="keys">R Alt + R Ctrl</div><div class="desc">ファンクションモードへ</div></div>
-<div class="combo-card"><div class="out">⇒ 1</div><div class="keys">R Ctrl + 右←</div><div class="desc">Bluetoothモードへ</div></div>
-</div>
 
 <h2 id="s9">9. 他の 5 モードの配置</h2>
 
@@ -910,6 +894,25 @@ Spaceを短押ししてから175ミリ秒以内にもう一度押し続けると
 <code>/pr</code>、<code>/review</code>、<code>/insights</code>を入力する。
 macroは先に <code>LANG2</code> で英数入力に切り替え、Enterは送らない。
 修飾キーを保持したままのcommand入力は保証対象外。</p>
+
+<h3>AI モードの編集操作</h3>
+<p>AI モードでは2キーを同時に押す。左Ctrl+左↑はコピー、左Alt+左↑は貼り付け、左Ctrl+左←は元に戻す、左Alt+左→はCtrl+J。
+右Alt+右←はやり直し、右Alt+右↑は切り取り、右Ctrl+右→は検索。モード切替も同じ2キーcomboを使う。comboに含まれる矢印は成立判定を待って送られる。</p>
+<div class="combo-grid">
+<div class="combo-card"><div class="out">Ctrl+C</div><div class="keys">Ctrl + 左↑</div><div class="desc">コピー</div></div>
+<div class="combo-card"><div class="out">Ctrl+V</div><div class="keys">左↑ + Alt</div><div class="desc">貼り付け</div></div>
+<div class="combo-card"><div class="out">Ctrl+Z</div><div class="keys">Ctrl + 左←</div><div class="desc">元に戻す</div></div>
+<div class="combo-card"><div class="out">Ctrl+J</div><div class="keys">Alt + 左→</div><div class="desc">改行</div></div>
+<div class="combo-card"><div class="out">Ctrl+Shift+Z</div><div class="keys">R Alt + 右←</div><div class="desc">やり直し</div></div>
+<div class="combo-card"><div class="out">Ctrl+X</div><div class="keys">R Alt + 右↑</div><div class="desc">切り取り</div></div>
+<div class="combo-card"><div class="out">Ctrl+F</div><div class="keys">R Ctrl + 右→</div><div class="desc">検索</div></div>
+<div class="combo-card"><div class="out">⇒ 0</div><div class="keys">Ctrl + Alt</div><div class="desc">文字入力モードへ</div></div>
+<div class="combo-card"><div class="out">⇒ 2</div><div class="keys">左← + 左→</div><div class="desc">AIモードへ</div></div>
+<div class="combo-card"><div class="out">⇒ 3</div><div class="keys">右← + 右→</div><div class="desc">数字モードへ</div></div>
+<div class="combo-card"><div class="out">⇒ 5</div><div class="keys">Alt + 左←</div><div class="desc">ゲームモードへ</div></div>
+<div class="combo-card"><div class="out">⇒ 4</div><div class="keys">R Alt + R Ctrl</div><div class="desc">ファンクションモードへ</div></div>
+<div class="combo-card"><div class="out">⇒ 1</div><div class="keys">R Ctrl + 右←</div><div class="desc">Bluetoothモードへ</div></div>
+</div>
 
 <div class="layer-head" style="background:#d4a017;">数字キーパッドモード（LED: 黄）— combo <code>J + L</code></div>
 <svg viewBox="0 0 584 190" role="img" aria-label="number_layer">

@@ -73,6 +73,18 @@
             bindings = <&kp>, <&kp>;
         };
 
+        /* Ctrl dual-role keys prefer text for 400 ms, regardless of another
+         * key's release order. This protects every M-to-letter roll, including
+         * M then O released before M. Hold for 400 ms to use Ctrl. */
+        cmt: ctrl_mod_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <400>;
+            quick-tap-ms = <175>;
+            bindings = <&kp>, <&kp>;
+        };
+
         led_mode: led_mode_behavior {
             compatible = "tiny18,behavior-led-mode";
             #binding-cells = <0>;
@@ -675,7 +687,7 @@
 
         default_layer {
             bindings = <
-&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &lmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &bmt LSHFT ENTER  &blt 6 BACKSPACE  &slt 7 SPACE  &lt 7 N  &bmt LCTRL M
+&kp W  &kp E  &kp R  &kp U  &kp I  &kp O  &lmt LSHFT A  &kp S  &kp D  &kp F  &kp J  &kp K  &kp L  &bmt LSHFT ENTER  &blt 6 BACKSPACE  &slt 7 SPACE  &lt 7 N  &cmt LCTRL M
             >;
         };
 

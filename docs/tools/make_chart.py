@@ -308,7 +308,8 @@ def combo_card_groups(model, combos):
         if combo["name"].startswith("mode_"):
             card = ComboCard(
                 combo["name"], tuple(combo["pos"]), target(combo),
-                notes(idle_note(combo), "ゲームモードでは無効" if 5 not in combo["layers"] else ""),
+                notes(idle_note(combo), "Bluetoothモードでは無効",
+                      "ゲームモードでは無効" if 5 not in combo["layers"] else ""),
             )
             switch.append(card)
             if 2 in combo["layers"]:

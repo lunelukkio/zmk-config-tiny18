@@ -299,6 +299,8 @@ def label(tok):
     if m:
         # A page with no tap of its own: name the page, not the layer number.
         return PAGE_NAME.get(int(m.group(1)), m.group(1)) + "\nを開く", "layer"
+    if tok == "&to 2":
+        return "AI", "layer"
     m = re.match(r"&to (\d+)", tok)
     if m:
         return "\u21d2 " + m.group(1), "layer"

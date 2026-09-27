@@ -9,7 +9,7 @@
  * The right-hand image is tiny18-right.uf2. AI mode has direct modifiers,
  * arrows and an @ key. Holding its Space opens the AI command page.
  *
- * Six modes, each entered by one pair of keys from any other mode:
+ * Six modes, entered by one pair of keys from supported non-Bluetooth modes:
  *   text entry  layer 0   green     0+2
  *   AI          layer 2   blue      7+9
  *   number      layer 3   yellow    10+12
@@ -18,6 +18,8 @@
  *   bluetooth   layer 1   red       5+10
  * 7+9 is left out of game mode, where those two keys are A and D, and so is
  * 2+7: from game mode it would only re-enter game mode and eat a V+A.
+ * In Bluetooth mode, key 6 alone returns to AI. Mode-switch combos are
+ * disabled there so profile selection cannot be confused with a mode change.
  *
  * Layers held rather than switched into:
  *   6  digits and symbols    hold key 14 (BackSpace)
@@ -50,9 +52,8 @@
  * Enter / Shift elsewhere. Function mode holds Ctrl on key 6 instead, and
  * game mode keeps a plain Shift there.
  *
- * Every layer is still escapable: the held layers end on key release, and the
- * mode layers are left by combo, which ZMK matches independently of what the
- * keys are bound to.
+ * Held layers end on key release. Bluetooth leaves through key 6; the other
+ * mode layers are left by combo.
  */
 
 / {
@@ -589,7 +590,8 @@
         };
 
         /*
-         * Mode switching uses the same combos in AI.
+         * Mode switching uses the same combos in AI. Bluetooth mode uses a
+         * dedicated key to leave, so none of these combos is active there.
          *
          * require-prior-idle-ms is what makes this safe. In number mode the
          * switch positions carry digits - 0 and 2 are 7 and 9, 7 and 9 are 4
@@ -603,7 +605,7 @@
         mode_text {
             bindings = <&to 0>;
             key-positions = <0 2>;
-            layers = <0 1 2 3 4 5>;
+            layers = <0 2 3 4 5>;
             require-prior-idle-ms = <150>;
         };
 
@@ -615,14 +617,14 @@
         mode_ai {
             bindings = <&to 2>;
             key-positions = <7 9>;
-            layers = <0 1 2 3 4>;
+            layers = <0 2 3 4>;
             require-prior-idle-ms = <150>;
         };
 
         mode_num {
             bindings = <&to 3>;
             key-positions = <10 12>;
-            layers = <0 1 2 3 4 5>;
+            layers = <0 2 3 4 5>;
             require-prior-idle-ms = <150>;
         };
 
@@ -632,21 +634,21 @@
         mode_game {
             bindings = <&to 5>;
             key-positions = <2 7>;
-            layers = <0 1 2 3 4>;
+            layers = <0 2 3 4>;
             require-prior-idle-ms = <150>;
         };
 
         mode_fn {
             bindings = <&to 4>;
             key-positions = <3 5>;
-            layers = <0 1 2 3 4 5>;
+            layers = <0 2 3 4 5>;
             require-prior-idle-ms = <150>;
         };
 
         mode_bt {
             bindings = <&to 1>;
             key-positions = <5 10>;
-            layers = <0 1 2 3 4 5>;
+            layers = <0 2 3 4 5>;
             require-prior-idle-ms = <150>;
         };
 
@@ -691,13 +693,13 @@
             >;
         };
 
-        /* Profile selection stays on the home row. The left top row controls
-         * the right RGB LED; the right top row controls the optional OLED.
-         * RGB brightness 0% suppresses battery and connection notices.
-         * The left thumbs retain their text-entry bindings. */
+        /* Profile selection is on the four thumbs and right pinky. Key 6
+         * returns directly to AI. Mode-switch combos have no Bluetooth scope.
+         * The top rows control the right RGB LED and optional OLED.
+         * RGB brightness 0% suppresses battery and connection notices. */
         bluetooth_layer {
             bindings = <
-&led_mode  &led_brightness 0  &led_brightness 1  &none  &oled_control 1  &oled_control 2  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &none  &none  &none  &trans  &trans  &none  &none
+&led_mode  &led_brightness 0  &led_brightness 1  &none  &oled_control 1  &oled_control 2  &to 2  &none  &none  &none  &none  &none  &none  &bt BT_SEL 4  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3
             >;
         };
 

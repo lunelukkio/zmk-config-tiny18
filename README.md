@@ -19,8 +19,8 @@ ZMK firmware for [Tiny18](https://github.com/k3peta/tiny18), an 18-key wireless 
 
 ## What differs from upstream
 
-- **Keymap.** Six modes and three held pages across nine layers, with 29 combos. AI Space opens a command page while held. The current chart is [included here](docs/keymap.html).
-- **One right-hand image.** `tiny18-right.uf2` has left/right Ctrl and Alt, arrows, @ and ! in AI mode. Two-key combos select shortcuts and mode switches. Holding Space opens nine slash commands. Held modifiers during command macros are outside the supported gesture.
+- **Keymap.** Six modes and three held pages across nine layers, with 31 combos. AI Space opens a command page while held. The current chart is [included here](docs/keymap.html).
+- **One right-hand image.** `tiny18-right.uf2` has left/right Ctrl and Alt, arrows, @ and ! in AI mode. Two-key combos select shortcuts and mode switches outside Bluetooth mode. Bluetooth uses key 6 to return to AI. Holding Space opens nine slash commands. Held modifiers during command macros are outside the supported gesture.
 - **AI at startup.** Power-on, reset and wake from deep sleep all start in AI mode. The right-half RGB LED starts blue when brightness is at least 1%, and the text-entry combo remains available when typing is needed.
 - **Layer colours.** The right half's RGB LED shows the mode: green for text entry, blue for AI, yellow for the number keypad, cyan for game, magenta for function, red for Bluetooth, and white while a held page is open.
 - **Right RGB LED brightness.** In Bluetooth mode, the left top row has `LED` (steady/500 ms pulse), `LED-` (dimmer), and `LED+` (brighter). The seven settings are 0, 1, 5, 10, 25, 50, and 100% PWM duty. At 0%, mode and battery/Bluetooth notices are dark; one `LED+` press restores 1%. Mode and brightness are saved separately, with 100% as the brightness default. This does not adjust the optional OLED display.
@@ -32,22 +32,22 @@ ZMK firmware for [Tiny18](https://github.com/k3peta/tiny18), an 18-key wireless 
 
 The canonical keymap is [`config/tiny18.keymap`](config/tiny18.keymap); the comments in it explain each decision. [`build.yaml`](build.yaml) builds one image per half. GitHub Actions redraws [`keymap-drawer/tiny18.svg`](keymap-drawer/tiny18.svg) whenever a push touches the firmware files.
 
-![Tiny18 keymap](keymap-drawer/tiny18.svg)
+![Tiny18 keymap](docs/tiny18-keymap.png)
 
 | Mode | Layer | Switch | What it is for |
 | --- | --- | --- | --- |
-| AI | 2 | `S + F` from another mode | Startup mode; direct left/right modifiers, arrows and @; Space holds the nine-command page |
+| AI | 2 | `S + F` outside Bluetooth; key 6 from Bluetooth | Startup mode; direct left/right modifiers, arrows and @; Space holds the nine-command page |
 | Text entry | 0 | `W + R` | Letters |
 | Number keypad | 3 | `J + L` | Keypad digits, which pass through an IME as half width |
 | Game | 5 | `R + S` | WASD for VRChat, with R I O P and chat keys |
 | Function | 4 | `U + O` | F1 to F12 |
 | Bluetooth | 1 | `O + J` | Profile selection |
 
-All modes use two-key switching combos. AI and game entry combos remain disabled in game mode. The digit and ZXCV pages retain their hold keys; AI Space opens the new command page.
+Outside Bluetooth, modes use two-key switching combos. Bluetooth has no mode-switch combo: key 6 alone returns to AI. Keys 14, 15, 16, 17 and 13 select BT profiles 0, 1, 2, 3 and 4. AI and game entry combos remain disabled in game mode. The digit and ZXCV pages retain their hold keys outside Bluetooth; AI Space opens the new command page.
 
 Keys are named by what they type in text entry:
 
-- In text entry, `A` taps A and holds Shift after 350 ms. A quick tap followed by holding it again keeps A held for the host's auto-repeat. `Enter` is a hold-tap there and in every mode and page: tap for Enter, hold for Shift. AI mode and the digit page give the `A` position that Enter / Shift role with the same 350 ms term; game mode keeps a plain Shift there.
+- In text entry, `A` taps A and holds Shift after 350 ms. A quick tap followed by holding it again keeps A held for the host's auto-repeat. `Enter` is a hold-tap outside Bluetooth mode: tap for Enter, hold for Shift. AI mode and the digit page give the `A` position that Enter / Shift role with the same 350 ms term; game mode keeps a plain Shift there.
 - `BackSpace` opens the digit page while held. `Space` and `N` open the ZXCV page outside AI; AI Space opens the command page. In text entry, `M` holds Ctrl.
 - `E + F` pressed together toggles the IME (Ctrl+Space) in text entry, once 150 ms have passed without typing. Nine AI slash-command macros send `LANG2` before their text and do not send Enter.
 - Letters without a key of their own come from adjacent pairs: `Q T Y P G H` in text entry and `B` on the ZXCV page. `A` has both a key and a pair.

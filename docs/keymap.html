@@ -76,18 +76,18 @@
 <p class="meta">作成日: 2026-09-06 ・ 全面改稿: 2026-09-11 / ZMK ファームウェア</p>
 
 <div class="sheet">
-<img src="./tiny18-keymap.png?v=fc38095642e6" width="526" height="5649"
+<img src="./tiny18-keymap.png?v=41f57980a089" width="526" height="5649"
      alt="Tiny18 の全モードと押しっぱなしの面を縦に並べたキー配置表">
 </div>
 <p class="sheet-note">全モードと押しっぱなしの面を 1 枚に並べた表。ここでは全体の形が見える大きさに置いてある。
-<a href="./tiny18-keymap.png?v=fc38095642e6" target="_blank" rel="noopener">画像だけを別タブで開く</a>と拡大して読める。</p>
+<a href="./tiny18-keymap.png?v=41f57980a089" target="_blank" rel="noopener">画像だけを別タブで開く</a>と拡大して読める。</p>
 
 <div class="takeaway">
 <strong>このノートの中心命題:</strong><br>
 Tiny18 は物理キーが 18 しかない。そのうえ<strong>右手はトラックボールの上に置いたまま</strong>なので、
 日常的に使う操作は<strong>左手 9 キーだけ</strong>で完結させる必要がある。<br>
 答えは 2 つの仕掛けの組み合わせになった。ひとつは<strong>モード制</strong>で、用途ごとに独立した 6 つのモードを
-<strong>どのモードからでも 2 キーの combo ひとつで</strong>行き来する。もうひとつは<strong>1 キー 2 役</strong>で、
+<strong>Bluetooth モード以外では 2 キーの combo ひとつで</strong>モードを切り替える。Bluetooth モードからは左小指の AI キーで戻る。もうひとつは<strong>1 キー 2 役</strong>で、
 親指と左小指が<strong>軽く叩けば文字、押さえれば別の面</strong>という二重の役目を持つ。
 この 2 つで、18 キーに A から Z の 26 文字と 6 モード分の機能が収まっている。
 </div>
@@ -250,8 +250,8 @@ ZMK の実装上はどちらもレイヤーだが、役割が違う。
 </div>
 
 <h2 id="s4">4. モードの切り替え方</h2>
-<p>どのモードも2キーcomboで切り替える。ゲームモードから AI モードへ行く場合を除き、直接移動できる。
-行き先が固定なので、「今どこにいるか」を覚えていなくても目的のモードへ行ける。</p>
+<p>Bluetooth モード以外では2キーcomboで切り替える。ゲームモードから AI モードへ行く場合を除き、直接移動できる。
+Bluetooth モードでは移動comboがすべて無効で、左小指の <code>AI</code> キーだけが出口となる。AI に戻ってから別のモードへ切り替える。</p>
 <table><tr><th style="width:9em;">押すキー</th><th style="width:9em;">行き先</th><th style="width:11em;">数字キーパッドでは</th><th>ゲームモードでは</th></tr>
 <tr><td><code>S + F</code></td><td><span class="led" style="background:#1e6fd9;"></span>AI モード</td><td>4 と 6</td><td><strong>無効にしてある</strong></td></tr>
 <tr><td><code>W + R</code></td><td><span class="led" style="background:#22aa44;"></span>文字入力 モード</td><td>7 と 9</td><td>Esc と V</td></tr>
@@ -716,9 +716,10 @@ Alt の combo はゲームモードとファンクションモードには無く
 打鍵後 150 ミリ秒おかないと効かないので、単語の途中では候補にすら入らない。ローマ字に <code>ef</code> という並びは無く、英語でも <code>effort</code> の系統だけである。</p>
 
 <h3>④ モード切替（6 個）</h3>
+<p>Bluetooth モード以外で使う。Bluetooth モードでは左小指の <code>AI</code> キーで戻る。</p>
 <div class="combo-grid">
 <div class="combo-card"><div class="out">⇒ 0</div><div class="keys">W + R</div><div class="desc">文字入力モードへ</div></div>
-<div class="combo-card"><div class="out">⇒ 2</div><div class="keys">S + F</div><div class="desc">AI モードへ。ゲームモードでは無効</div></div>
+<div class="combo-card"><div class="out">AI</div><div class="keys">S + F</div><div class="desc">AI モードへ。ゲームモードでは無効</div></div>
 <div class="combo-card"><div class="out">⇒ 3</div><div class="keys">J + L</div><div class="desc">数字モードへ</div></div>
 <div class="combo-card"><div class="out">⇒ 5</div><div class="keys">R + S</div><div class="desc">ゲームモードへ。ゲームモードでは無効</div></div>
 <div class="combo-card"><div class="out">⇒ 4</div><div class="keys">U + O</div><div class="desc">ファンクションモードへ</div></div>
@@ -907,7 +908,7 @@ macroは先に <code>LANG2</code> で英数入力に切り替え、Enterは送�
 <div class="combo-card"><div class="out">Ctrl+X</div><div class="keys">R Alt + 右↑</div><div class="desc">切り取り</div></div>
 <div class="combo-card"><div class="out">Ctrl+F</div><div class="keys">R Ctrl + 右→</div><div class="desc">検索</div></div>
 <div class="combo-card"><div class="out">⇒ 0</div><div class="keys">Ctrl + Alt</div><div class="desc">文字入力モードへ</div></div>
-<div class="combo-card"><div class="out">⇒ 2</div><div class="keys">左← + 左→</div><div class="desc">AIモードへ</div></div>
+<div class="combo-card"><div class="out">AI</div><div class="keys">左← + 左→</div><div class="desc">AIモードへ</div></div>
 <div class="combo-card"><div class="out">⇒ 3</div><div class="keys">右← + 右→</div><div class="desc">数字モードへ</div></div>
 <div class="combo-card"><div class="out">⇒ 5</div><div class="keys">Alt + 左←</div><div class="desc">ゲームモードへ</div></div>
 <div class="combo-card"><div class="out">⇒ 4</div><div class="keys">R Alt + R Ctrl</div><div class="desc">ファンクションモードへ</div></div>
@@ -1229,34 +1230,32 @@ AI モード行きは移動キーの同時押しになり、ゲームモード�
 <text x="448" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">OLED-</text>
 <rect x="476" y="30" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
 <text x="500" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">OLED+</text>
-<rect x="8" y="108" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
-<text x="32" y="137" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">BT 0</text>
-<rect x="60" y="82" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
-<text x="84" y="111" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">BT 1</text>
-<rect x="112" y="82" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
-<text x="136" y="111" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">BT 2</text>
-<rect x="164" y="82" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
-<text x="188" y="111" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">BT 3</text>
-<rect x="372" y="82" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
-<text x="396" y="111" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">BT 4</text>
+<rect x="8" y="108" width="48" height="48" rx="6" fill="#f3ecfb" stroke="#7a4fb5" stroke-width="2"/>
+<text x="32" y="137" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#432a66" font-family="sans-serif">AI</text>
+<rect x="60" y="82" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
+<text x="84" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
+<rect x="112" y="82" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
+<text x="136" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
+<rect x="164" y="82" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
+<text x="188" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
+<rect x="372" y="82" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
+<text x="396" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
 <rect x="424" y="82" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
 <text x="448" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
 <rect x="476" y="82" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
 <text x="500" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
-<rect x="528" y="108" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
-<text x="552" y="137" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
-<rect x="138" y="134" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
-<text x="162" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">BkSp</text>
-<text x="162" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">数字</text>
-<rect x="190" y="134" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
-<text x="214" y="157" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">Space</text>
-<text x="214" y="170" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">ZXCV</text>
-<rect x="294" y="134" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
-<text x="318" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
-<rect x="346" y="134" width="48" height="48" rx="6" fill="#f1f1ea" stroke="#d5d5cc" stroke-width="1"/>
-<text x="370" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#9a9a8e" font-family="sans-serif">—</text>
+<rect x="528" y="108" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
+<text x="552" y="137" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">BT 4</text>
+<rect x="138" y="134" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
+<text x="162" y="163" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">BT 0</text>
+<rect x="190" y="134" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
+<text x="214" y="163" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">BT 1</text>
+<rect x="294" y="134" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
+<text x="318" y="163" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">BT 2</text>
+<rect x="346" y="134" width="48" height="48" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="2"/>
+<text x="370" y="163" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#8c2318" font-family="sans-serif">BT 3</text>
 </svg>
-<div class="figure-caption">図 15. Bluetooth モード。左上の LED は常時点灯と一瞬点灯の切替、LED- と LED+ はRGB LEDの明るさ。右上はOLED- と OLED+ が学習用OLEDの明るさを調整する。profile keyはBT 0から3が左手、BT 4が右手にある。</div>
+<div class="figure-caption">図 15. Bluetooth モード。左上はRGB LED、右上はOLEDの明るさを調整する。左小指のAIキーで戻る。左親指がBT 0・1、右親指がBT 2・3、右小指がBT 4。移動comboはこのモードでは無効。</div>
 <div class="legend"><span><i class="sw" style="background:#eef6ff;border-color:#1e6fd9;"></i>文字・数字・記号</span><span><i class="sw" style="background:#fdf2e9;border-color:#d35400;"></i>タップと長押しで二役</span><span><i class="sw" style="background:#eefaf3;border-color:#2a9d8f;"></i>修飾キー</span><span><i class="sw" style="background:#fff4e0;border-color:#b8860b;"></i>ショートカット</span><span><i class="sw" style="background:#f3ecfb;border-color:#7a4fb5;"></i>レイヤー操作</span><span><i class="sw" style="background:#f7f5ee;border-color:#c9c6b6;"></i>&mdash; 透過</span><span><i class="sw" style="background:#f1f1ea;"></i>&mdash; 無効</span></div>
 <div class="note">
 <strong>左上の <code>LED</code> キーで常時点灯と一瞬点灯を切り替え、隣の <code>LED-</code> / <code>LED+</code> で明るさを1段階ずつ変える。</strong>
@@ -1266,10 +1265,8 @@ AI モード行きは移動キーの同時押しになり、ゲームモード�
 キーはホストへ文字を送らない。
 </div>
 <div class="note">
-<strong>profile key は <code>BT 0</code> から <code>BT 3</code> が左手、<code>BT 4</code> が右手にある。</strong>
-<code>A S D F</code> は左手だが <code>J</code> は右手である（<a href="#s2">2 節の表</a>）。
-プロファイルは 5 つあり、左手のキーは外側 1 つとホーム 3 つで 4 つしか使えないので、
-5 番目が右手のホーム最内側に回っている。
+<strong>接続先は左親指の <code>BT 0</code>・<code>BT 1</code>、右親指の <code>BT 2</code>・<code>BT 3</code>、右小指の <code>BT 4</code> で選ぶ。</strong>
+左小指の <code>AI</code> キーを単独で押すと AI モードへ戻る。Bluetooth モード中はモード切替comboが無効なので、接続先キーと重ならない。
 </div>
 
 <h2 id="s10">10. LED の点灯方式・明るさとモード色</h2>

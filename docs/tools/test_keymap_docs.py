@@ -11,6 +11,25 @@ from gen_svg import read_keymap
 
 
 class ChartModelTests(unittest.TestCase):
+    def test_bluetooth_profile_keys_and_only_exit(self):
+        layers, combos = read_keymap()
+        bt = dict(layers)["bluetooth_layer"]
+        self.assertEqual(bt[6], "&to 2")
+        self.assertEqual(gen_svg.label(bt[6]), ("AI", "layer"))
+        self.assertEqual(
+            {position: bt[position] for position in (14, 15, 16, 17, 13)},
+            {14: "&bt BT_SEL 0", 15: "&bt BT_SEL 1",
+             16: "&bt BT_SEL 2", 17: "&bt BT_SEL 3",
+             13: "&bt BT_SEL 4"},
+        )
+        self.assertEqual(
+            [position for position, binding in enumerate(bt) if binding.startswith("&to ")],
+            [6],
+        )
+        self.assertNotIn("&trans", bt)
+        self.assertFalse(any(1 in combo["layers"] for combo in combos))
+        self.assertIn(2, next(c for c in combos if c["name"] == "mode_bt")["layers"])
+
     def test_bluetooth_layer_has_a_labeled_led_mode_key(self):
         layers, _ = read_keymap()
         bindings = dict(layers)["bluetooth_layer"]
@@ -116,6 +135,8 @@ class HtmlOutputTests(unittest.TestCase):
         self.assertIn('aria-label="edit_bracket_layer_shift"', page)
         self.assertIn("500 ms だけ表示する方式", page)
         self.assertIn("<code>LED</code>", page)
+        self.assertIn("Bluetooth モードでは左小指の <code>AI</code> キーで戻る", page)
+        self.assertIn("BT 2</code>・<code>BT 3", page)
         self.assertIn("1 時間</strong>無操作", page)
         self.assertNotIn('aria-label="default_layer_shift"', page)
         self.assertNotIn("組み合わせて出す記号", page)

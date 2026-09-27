@@ -20,31 +20,31 @@ layers:
   - {t: N, h: edit_bracket}
   - {t: M, h: LCTRL}
   bluetooth:
+  - '&led_mode'
+  - '&led_brightness'
+  - '&led_brightness 1'
+  - ''
+  - '&oled_control 1'
+  - '&oled_control 2'
+  - {t: nav, h: toggle}
   - ''
   - ''
   - ''
   - ''
   - ''
   - ''
+  - {t: BT, h: '4'}
   - {t: BT, h: '0'}
   - {t: BT, h: '1'}
   - {t: BT, h: '2'}
   - {t: BT, h: '3'}
-  - {t: BT, h: '4'}
-  - ''
-  - ''
-  - ''
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - ''
-  - ''
   nav:
-  - {t: '&m_esc', s: TAB}
+  - LCTRL
   - UP ARROW
-  - {t: BACKSPACE, s: DELETE}
-  - {t: ., s: '&m_model'}
+  - LALT
+  - RALT
   - UP ARROW
-  - {t: /, s: '&m_status'}
+  - RCTRL
   - {t: ENTER, h: LSHFT}
   - LEFT ARROW
   - DOWN ARROW
@@ -52,11 +52,11 @@ layers:
   - LEFT ARROW
   - DOWN ARROW
   - RIGHT ARROW
-  - {t: ENTER, h: LSHFT}
+  - {t: ENTER, h: RSHFT}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ',', h: edit_bracket}
-  - {t: ., h: LCTRL}
+  - {t: SPACE, h: ai_command}
+  - '!'
+  - '@'
   number:
   - {t: KP 7, s: INSERT}
   - {t: KP 8, s: HOME}
@@ -130,7 +130,7 @@ layers:
   - '9'
   - {t: ENTER, h: LSHFT}
   - {type: held}
-  - {t: ▽, type: trans}
+  - {t: SPACE, h: edit_bracket}
   - {t: ',', s: (}
   - {t: ., s: )}
   edit_bracket:
@@ -149,8 +149,27 @@ layers:
   - /
   - {t: ENTER, h: LSHFT}
   - {t: ▽, type: trans}
-  - {type: held}
+  - {t: SPACE, h: edit_bracket, type: held}
   - ','
+  - .
+  ai_command:
+  - ESCAPE
+  - TAB
+  - LGUI
+  - '&m_diff'
+  - '&m_compact'
+  - '&m_status'
+  - {t: ENTER, h: LSHFT}
+  - '&m_clear'
+  - '&m_resume'
+  - '&m_model'
+  - '&m_pr'
+  - '&m_review'
+  - '&m_insights'
+  - {t: ENTER, h: RSHFT}
+  - DELETE
+  - {type: held}
+  - /
   - .
 combos:
 - p: [0, 1]
@@ -189,45 +208,54 @@ combos:
 - p: [1, 2]
   k: Ctl+V
   l: [nav]
-- p: [3, 4]
+- p: [0, 7]
   k: Ctl+Z
   l: [nav]
-- p: [4, 5]
+- p: [2, 9]
+  k: Ctl+J
+  l: [nav]
+- p: [3, 10]
   k: Ctl+Sft+Z
   l: [nav]
-- p: [10, 11]
+- p: [3, 4]
   k: Ctl+X
   l: [nav]
-- p: [11, 12]
+- p: [5, 12]
   k: Ctl+F
   l: [nav]
 - p: [2, 9]
   k: LEFT ALT
-  l: [default, nav]
+  l: [default]
 - p: [3, 10]
   k: LEFT GUI
-  l: [default, nav, game]
+  l: [default, game]
 - p: [1, 9]
   k: Ctl+SPACE
   l: [default]
+- p: [1, 8]
+  k: LANG1
+  l: [default]
+- p: [0, 7]
+  k: LANG2
+  l: [default]
 - p: [0, 2]
   k: {t: default, h: toggle}
-  l: [default, bluetooth, nav, number, fn, game]
+  l: [default, nav, number, fn, game]
 - p: [7, 9]
   k: {t: nav, h: toggle}
-  l: [default, bluetooth, nav, number, fn]
+  l: [default, nav, number, fn]
 - p: [10, 12]
   k: {t: number, h: toggle}
-  l: [default, bluetooth, nav, number, fn, game]
+  l: [default, nav, number, fn, game]
 - p: [2, 7]
   k: {t: game, h: toggle}
-  l: [default, bluetooth, nav, number, fn]
+  l: [default, nav, number, fn]
 - p: [3, 5]
   k: {t: fn, h: toggle}
-  l: [default, bluetooth, nav, number, fn, game]
+  l: [default, nav, number, fn, game]
 - p: [5, 10]
   k: {t: bluetooth, h: toggle}
-  l: [default, bluetooth, nav, number, fn, game]
+  l: [default, nav, number, fn, game]
 - p: [6, 14]
   k: KP 0
   l: [number]

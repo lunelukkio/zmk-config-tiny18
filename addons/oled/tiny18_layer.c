@@ -148,7 +148,8 @@ int main(void) {
     const uint8_t saved_level = oled_store_load();
     oled_brightness_t brightness;
     oled_brightness_init(&brightness, saved_level);
-    uint8_t persisted_level = saved_level;
+    // A saved 0% wakes at full brightness without writing flash on startup.
+    uint8_t persisted_level = brightness.level;
     uint32_t changed_at = 0;
     bool save_failed = false;
 

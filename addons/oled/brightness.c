@@ -4,12 +4,17 @@
 #include "brightness.h"
 
 static const uint8_t contrast[] = {
-    0x00, 0x01, 0x06, 0x0d, 0x20, 0x40, 0x7f,
+    0x00, 0x01, 0x40, 0x7f,
 };
 
-uint8_t oled_brightness_from_legacy(uint8_t level) {
-    static const uint8_t legacy_to_new[] = {0, 2, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6};
-    return level < sizeof(legacy_to_new) ? legacy_to_new[level] : OLED_MAX_LEVEL;
+uint8_t oled_brightness_from_twelve(uint8_t level) {
+    static const uint8_t old_to_new[] = {0, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3};
+    return level < sizeof(old_to_new) ? old_to_new[level] : OLED_MAX_LEVEL;
+}
+
+uint8_t oled_brightness_from_seven(uint8_t level) {
+    static const uint8_t old_to_new[] = {0, 1, 1, 1, 1, 2, 3};
+    return level < sizeof(old_to_new) ? old_to_new[level] : OLED_MAX_LEVEL;
 }
 
 uint8_t oled_brightness_contrast(uint8_t level) {

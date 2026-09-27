@@ -7,16 +7,22 @@
 
 #define STORE_FIRST 0x08003F80UL
 #define STORE_SECOND 0x08003FC0UL
-#define STORE_MAGIC 0x184C4450UL
-#define STORE_LEGACY_MAGIC 0x184C444FUL
+#define STORE_MAGIC 0x184C4451UL
+#define STORE_SEVEN_MAGIC 0x184C4450UL
+#define STORE_TWELVE_MAGIC 0x184C444FUL
 #define STORE_FLASH_TIMEOUT_TICKS 100000UL
 
 static uint32_t sequence;
 static uint32_t active_address;
 
 static bool valid(const uint32_t *page) {
-    return (page[0] == STORE_MAGIC || page[0] == STORE_LEGACY_MAGIC) &&
-           page[2] <= (page[0] == STORE_MAGIC ? OLED_MAX_LEVEL : 11) &&
+    if (page[0] != STORE_MAGIC && page[0] != STORE_SEVEN_MAGIC &&
+        page[0] != STORE_TWELVE_MAGIC) {
+        return false;
+    }
+    const uint32_t max_level = page[0] == STORE_MAGIC ? OLED_MAX_LEVEL :
+                               page[0] == STORE_SEVEN_MAGIC ? 6 : 11;
+    return page[2] <= max_level &&
            page[3] == (page[0] ^ page[1] ^ page[2] ^ 0xFFFFFFFFUL);
 }
 
@@ -34,9 +40,13 @@ uint8_t oled_store_load(void) {
                          ? STORE_SECOND : STORE_FIRST;
     const uint32_t *selected = (const uint32_t *)active_address;
     sequence = selected[1];
-    return selected[0] == STORE_LEGACY_MAGIC
-               ? oled_brightness_from_legacy((uint8_t)selected[2])
-               : (uint8_t)selected[2];
+    if (selected[0] == STORE_TWELVE_MAGIC) {
+        return oled_brightness_from_twelve((uint8_t)selected[2]);
+    }
+    if (selected[0] == STORE_SEVEN_MAGIC) {
+        return oled_brightness_from_seven((uint8_t)selected[2]);
+    }
+    return (uint8_t)selected[2];
 }
 
 /* Flash reads stall while a page is busy. Run the transaction from RAM. */

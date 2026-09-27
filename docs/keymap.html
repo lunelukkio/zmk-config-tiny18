@@ -76,11 +76,11 @@
 <p class="meta">作成日: 2026-09-06 ・ 全面改稿: 2026-09-11 / ZMK ファームウェア</p>
 
 <div class="sheet">
-<img src="./tiny18-keymap.png?v=0ebec3c891ef" width="526" height="5630"
+<img src="./tiny18-keymap.png?v=fc38095642e6" width="526" height="5649"
      alt="Tiny18 の全モードと押しっぱなしの面を縦に並べたキー配置表">
 </div>
 <p class="sheet-note">全モードと押しっぱなしの面を 1 枚に並べた表。ここでは全体の形が見える大きさに置いてある。
-<a href="./tiny18-keymap.png?v=0ebec3c891ef" target="_blank" rel="noopener">画像だけを別タブで開く</a>と拡大して読める。</p>
+<a href="./tiny18-keymap.png?v=fc38095642e6" target="_blank" rel="noopener">画像だけを別タブで開く</a>と拡大して読める。</p>
 
 <div class="takeaway">
 <strong>このノートの中心命題:</strong><br>
@@ -231,7 +231,7 @@ ZMK のキーマップ自体は position 番号の順に書くので、その番
 </div>
 
 <h2 id="s3">3. 6 つのモードの全体像</h2>
-<p>モードは 6 つある。明るさが 5% 以上なら、常時点灯で LED の色がモードを表す。一瞬点灯では、モードが変わったときだけ色が光る（<a href="#s10">10 節</a>）。</p>
+<p>モードは 6 つある。明るさが 1% 以上なら、常時点灯で LED の色がモードを表す。一瞬点灯では、モードが変わったときだけ色が光る（<a href="#s10">10 節</a>）。</p>
 <table><tr><th style="width:8em;">モード</th><th style="width:4em;">LED</th><th style="width:7em;">入り方</th><th>中身</th></tr>
 <tr><td><strong>AI</strong></td><td><span class="led" style="background:#1e6fd9;"></span>青</td><td><code>S + F</code></td><td>起動時のモード。左右に矢印と修飾キー。Space 長押しで9種類のslash command面を開く</td></tr>
 <tr><td><strong>文字入力</strong></td><td><span class="led" style="background:#22aa44;"></span>緑</td><td><code>W + R</code></td><td>毎日の文字入力</td></tr>
@@ -276,7 +276,7 @@ ZMK の実装上はどちらもレイヤーだが、役割が違う。
 <strong>それでも打ち間違いでモードが変わることはある。</strong>
 一拍おいてから <code>U + O</code> と転がすと、たとえば <code>out</code> の <code>ou</code> でファンクションモードに入ってしまう。
 その状態で <code>L</code> を叩くと <code>F9</code> が出る。
-<strong>意図しない F キーや記号が出たときは、明るさ 5% 以上の常時点灯なら LED の色を見ること。</strong>一瞬点灯では、直前のモード切替の色を知らせる。明るさ 0% では LED は光らない。
+<strong>意図しない F キーや記号が出たときは、明るさ 1% 以上の常時点灯なら LED の色を見ること。</strong>一瞬点灯では、直前のモード切替の色を知らせる。明るさ 0% では LED は光らない。
 </div>
 
 <h3>ゲームモードだけ <code>S + F</code> を外してある</h3>
@@ -1278,7 +1278,7 @@ Bluetooth モードの左上にある <code>LED</code> キーで、<strong>色�
 <strong>モードが変わるたび 500 ms だけ表示する方式</strong>を切り替える。明るさ0%ではどちらの方式も消灯する。
 切替後の方式は電源を入れ直しても維持される。<code>LED-</code> / <code>LED+</code> は右手RGB LEDの明るさを変える物理キーで、OLED画面の輝度には作用しない。</p>
 <p>右手RGB LEDの明るさは PWM の 0、1、5、10、25、50、100% から選ぶ。0% ではモード色も電池・BT接続通知も消え、<code>LED+</code> 1回で1%に戻る。上限・下限で循環しない。常時点灯では操作直後に反映し、一瞬点灯では明るさが1%以上なら操作時に500 ms表示する。方式と明るさは別々に保存され、設定がなければ明るさ100%で始まる。割合はPWMの点灯時間であり、見た目の明るさの割合ではない。</p>
-<p>外付け学習用OLEDも0、1、5、10、25、50、100%の7段階を選べる。OLEDの100%は従来のcontrast設定 <code>0x7F</code> と同じ。1%はcontrast <code>0x01</code> で、表示上の明るさは実機で確認する。0%は表示OFFで、通常キーでは0%を解除しない。電源投入・リセット・1時間の自動消灯からの復帰時に前回0%なら100%へ戻し、1%以上なら前回値を維持する。</p>
+<p>外付け学習用OLEDは0、1、50、100%の4段階を選べる。OLEDの100%は従来のcontrast設定 <code>0x7F</code> と同じで、1%はcontrast <code>0x01</code> である。0%は表示OFFで、通常キーでは0%を解除しない。電源投入・リセット・1時間の自動消灯からの復帰時に前回0%なら100%へ戻し、1%以上なら前回値を維持する。明るさはUIAPduino内に保存する。</p>
 <table><tr><th style="width:6em;">色</th><th>何を示すか</th></tr>
 <tr><td><span class="led" style="background:#1e6fd9;"></span>青</td><td>AI モード</td></tr>
 <tr><td><span class="led" style="background:#22aa44;"></span>緑</td><td>文字入力 モード</td></tr>

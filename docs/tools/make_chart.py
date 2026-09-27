@@ -264,7 +264,7 @@ def chart_model(layers, combos):
         ChartSection("game_shift", "ゲームモード（Shift）",
                      f"{game_shifts} を押さえている間", MODE[5][1], None),
         ChartSection("bluetooth_layer", "Bluetooth モード",
-                     f"{entry[1]} で入る / RGB・OLED 0/1/5/10/25/50/100%",
+                     f"{entry[1]} で入る / RGB 0/1/5/10/25/50/100%・OLED 0/1/50/100%",
                      MODE[1][1], None),
     )
     return ChartModel(bindings, layer_names, key_names, entry, holders, sections)
@@ -489,8 +489,12 @@ def main():
         d.rectangle([MARGIN, y, MARGIN + 10, y + 34], fill=col)
         d.text((MARGIN + 24, y - 2), title, font=f_sec, fill=(26, 58, 92))
         tw = d.textlength(title, font=f_sec)
-        d.text((MARGIN + 24 + tw + 20, y + 8), sub, font=f_sub, fill=(120, 120, 120))
-        head = sec_h
+        if name == "bluetooth_layer":
+            d.text((MARGIN + 24, y + 38), sub, font=f_sub, fill=(120, 120, 120))
+            head = sec_h + 36
+        else:
+            d.text((MARGIN + 24 + tw + 20, y + 8), sub, font=f_sub, fill=(120, 120, 120))
+            head = sec_h
         if section.pressed_positions:
             # Show every alternative held position. The subtitle distinguishes
             # alternatives ("か") from keys that must be held together ("と").

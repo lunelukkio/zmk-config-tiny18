@@ -264,7 +264,7 @@ def chart_model(layers, combos):
         ChartSection("game_shift", "ゲームモード（Shift）",
                      f"{game_shifts} を押さえている間", MODE[5][1], None),
         ChartSection("bluetooth_layer", "Bluetooth モード",
-                     f"{entry[1]} で入る / RGB 0/5/10/25/50/100%・OLED 12段階",
+                     f"{entry[1]} で入る / RGB・OLED 0/1/5/10/25/50/100%",
                      MODE[1][1], None),
     )
     return ChartModel(bindings, layer_names, key_names, entry, holders, sections)

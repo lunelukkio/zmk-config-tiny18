@@ -83,8 +83,8 @@ static void test_mode_setting_validation(void) {
     assert(!tiny18_led_mode_from_value(2, &mode));
 }
 
-static void test_six_brightness_steps_and_saved_values(void) {
-    static const uint8_t levels[] = {0, 5, 10, 25, 50, 100};
+static void test_seven_brightness_steps_and_saved_values(void) {
+    static const uint8_t levels[] = {0, 1, 5, 10, 25, 50, 100};
 
     for (size_t i = 0; i < sizeof(levels) / sizeof(levels[0]); i++) {
         assert(tiny18_led_brightness_valid(levels[i]));
@@ -109,7 +109,7 @@ int main(void) {
     test_sleep_suppresses_all_output();
     test_pulse_deadline_starts_from_latest_change();
     test_mode_setting_validation();
-    test_six_brightness_steps_and_saved_values();
+    test_seven_brightness_steps_and_saved_values();
     puts("LED indicator state tests passed");
     return 0;
 }

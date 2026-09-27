@@ -7,7 +7,7 @@
 #include <stdint.h>
 
 enum { OLED_ACTIVITY = 0x80, OLED_DOWN = 0x82, OLED_UP, OLED_BOOT };
-enum { OLED_MAX_LEVEL = 11 };
+enum { OLED_MAX_LEVEL = 6 };
 
 typedef struct {
     uint8_t level;
@@ -20,5 +20,6 @@ void oled_brightness_idle(oled_brightness_t *state);
 void oled_brightness_wake(oled_brightness_t *state);
 bool oled_brightness_visible(const oled_brightness_t *state);
 uint8_t oled_brightness_contrast(uint8_t level);
+uint8_t oled_brightness_from_legacy(uint8_t level);
 
 #endif

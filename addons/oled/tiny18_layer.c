@@ -150,6 +150,7 @@ int main(void) {
     oled_brightness_init(&brightness, saved_level);
     uint8_t persisted_level = saved_level;
     uint32_t changed_at = 0;
+    bool save_failed = false;
 
     ssd1306_spi_init();
     ssd1306_init();
@@ -220,6 +221,7 @@ int main(void) {
             }
             if (brightness.level != old_level) {
                 changed_at = elapsed_ticks;
+                save_failed = false;
                 if (brightness.level != 0) {
                     ssd1306_cmd(0x81);
                     ssd1306_cmd(oled_brightness_contrast(brightness.level));
@@ -241,11 +243,13 @@ int main(void) {
                 panel_on = false;
             }
         }
-        if (brightness.level != persisted_level &&
+        if (!save_failed && brightness.level != persisted_level &&
             (uint32_t)(elapsed_ticks - changed_at) >= 100) {
             const uint8_t saving = brightness.level;
             if (oled_store_save(saving)) {
                 persisted_level = saving;
+            } else {
+                save_failed = true;
             }
             changed_at = elapsed_ticks;
         }

@@ -239,7 +239,7 @@ def chart_model(layers, combos):
         ChartSection("ai_command_layer", "AI コマンドの面",
                      "AI モードで Space を長押ししている間", HELD, None, (15,)),
         ChartSection("default_layer", "文字入力モード",
-                     f"{entry[0]} で入る / M は文字優先・Ctrl は400ms",
+                     f"{entry[0]} で入る / M・Ctrlは400ms、専用Ctrlは即時",
                      MODE[0][1], "ここから下は文字と記号"),
         ChartSection("digit_symbol_layer", PAGE_NAME[6],
                      held_page_subtitle(6), HELD, None,
@@ -264,7 +264,8 @@ def chart_model(layers, combos):
         ChartSection("game_shift", "ゲームモード（Shift）",
                      f"{game_shifts} を押さえている間", MODE[5][1], None),
         ChartSection("bluetooth_layer", "Bluetooth モード",
-                     f"{entry[1]} で入る", MODE[1][1], None),
+                     f"{entry[1]} で入る / RGB 0/5/10/25/50/100%・OLED 12段階",
+                     MODE[1][1], None),
     )
     return ChartModel(bindings, layer_names, key_names, entry, holders, sections)
 

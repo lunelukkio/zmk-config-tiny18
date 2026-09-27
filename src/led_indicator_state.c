@@ -6,7 +6,7 @@
 
 #include "led_indicator_state.h"
 
-static const uint8_t brightness_levels[] = {0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+static const uint8_t brightness_levels[] = {0, 5, 10, 25, 50, 100};
 
 uint8_t tiny18_led_evaluate(const struct tiny18_led_state *state, int64_t now_ms) {
     if (state->sleeping) {

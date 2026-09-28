@@ -64,10 +64,12 @@ license資料がなく、UF2とchecksumだけのものがあります。これ�
 | `settings-reset.uf2` | 保存された Bluetooth・左右接続情報の消去 |
 | `tiny18_layer.bin` | 任意のUIAPduino OLED受信機 |
 | `VERSION.txt` | 共通バージョン、ソースの版、ビルド日時、Actions実行ID |
-| `LICENSES/` | 依存ソフトウェアのライセンス本文・帰属表示 |
+| `LICENSE.txt` | ソフトウェアのライセンス本文・帰属表示 |
+| `README.md` | 日英の導入案内と不具合報告先 |
+| `OLED-SOURCE/` | 表示器の編集用ソース、キーマップ、生成ツール、ビルド手順 |
 | `SHA256SUMS` | バンドル内の全ファイルのSHA-256チェックサム |
 
-新しい統合版は`tiny18-vX.Y.Z.zip`として配布します。展開し、`LICENSES/`を
+新しい統合版は`tiny18-vX.Y.Z.zip`として配布します。展開し、`LICENSE.txt`を
 ファームウェアと一緒に保持してください。OLEDを使う場合は、3台分が揃った統合版を
 選んでください。
 
@@ -131,7 +133,7 @@ OLED用toolchainは不要です。`v0.3.1`のようなtagをpushすると、統�
 
 ## 問い合わせ
 
-不具合、導入手順についての質問、改善案は [GitHub Issues](https://github.com/lunelukkio/zmk-config-tiny18/issues) へ投稿してください。公開用のメールアドレスは設けず、通常の連絡窓口を Issues にまとめます。
+不具合は [X の @dendrite_lune](https://x.com/dendrite_lune) へお知らせください。
 
 ## ハードウェア
 

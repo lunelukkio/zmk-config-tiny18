@@ -41,6 +41,12 @@ These rules apply only to this repository, not to global agent settings.
 - Release automation creates drafts. Review licensing, checksums and hardware
   behavior before the separately authorized publication step.
 
+Every Tiny18 distribution ZIP must include `OLED-SOURCE/` with the editable
+learning-display source, the matching keymap, its label-generation tooling,
+and build instructions. Include a bilingual `README.md` at the ZIP root.
+Do not create a source-less companion ZIP. Include all bundled source files in
+`SHA256SUMS`. Large external build dependencies may be fetched at a pinnedrevision during setup to keep the ZIP small.
+
 ## Commands and checks
 
 - User-facing terminal commands use PowerShell 5.1: start with `Set-Location`,

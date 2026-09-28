@@ -45,23 +45,19 @@ Apache-2.0 も改変・再配布を認めています。配布時にはライセ
 詳細は [Apache License 2.0 の第4条](https://www.apache.org/licenses/LICENSE-2.0#redistribution)
 が正本です。
 
-配布用パッケージには、この fork の LICENSE と、実際に組み込む依存ソフトウェアの
-ライセンス本文・必要な帰属表示を同梱します。README にリンクだけを置くことを
-同梱の代わりにはしません。統合版の[配布用workflow](../.github/workflows/release.yml)は、
-実際のbuildに使ったwest workspaceからライセンス本文とC/Rust sourceの帰属コメントを
-収集し、ch32funとSDK runtimeのライセンスもZIPの`LICENSES/`へ同梱します。
-Git projectの依存commitは`LICENSES/inventory.json`と`resolved-west.yml`に記録します。
-SDK runtimeは、使用した版、公式配布元、同梱したlicense file一覧を
-`inventory.json`に記録します。
+配布用パッケージには、実際に組み込む依存ソフトウェアのライセンス本文と必要な
+帰属表示を`LICENSE.txt`にまとめて同梱します。リンクだけで本文の同梱に代えることは
+しません。v0.8.0の本文は[`firmware/LICENSE-v0.8.0.txt`](../firmware/LICENSE-v0.8.0.txt)
+です。元のTiny18ファームウェアが[神沼三平太氏の案内](https://note.com/3peta/n/n44d2c364cadc)
+に由来することも記載しています。ZIPには`OLED-SOURCE/`として編集用ソースも入ります。
+ビルド依存のch32funは固定commitから別途取得します。`VERSION.txt`は対応するsource
+commitを示します。
 
-この収集処理は、未使用のmodule・fileも含む保守的な資料作成です。
-バイナリへlinkされた全コードのライセンスを自動判定したり、再配布条件への適合を
-保証したりするものではありません。v0.3.1のlocal review buildでは、OLEDの最終mapに
-ch32funの`misc/libgcc.a`から`muldi3.o`の`__mulsi3`だけが22 bytes残り、`div.o`は
-discardされています。対応する`misc/LIBGCC_LICENSE`はch32funの資料として同梱します。
-compilerやsourceが変わればlink結果も変わり得るため、SDK runtimeとファイル固有の条件を
-毎回buildのmapと照合し、レビューを通してからRelease下書きを公開します。
-旧ReleaseのUF2へ、この統合版の収集結果をそのまま流用しないでください。
+v0.8.0では、左右・resetのcompile commandsとlink map、OLEDのlink mapを照合しました。
+この確認に基づき、未使用のwest module一式は同梱しません。ヘッダーやSDKの静的
+ライブラリの条件はbuild環境の更新で変わり得ます。新しい版の作成時は、対象の
+buildと照合してその版の`LICENSE-v<version>.txt`を用意し、Release下書きの公開前に
+本文をレビューしてください。既存版のライセンスを別のbuildへ流用しないでください。
 
 ## 旧形式のbinaryとActions artifact
 
@@ -70,7 +66,7 @@ Releaseには、個別のUF2とchecksumだけで、対応する第三者license�
 あります。通常の`build.yml`と`oled.yml`が作る期限付きActions artifactも、binaryだけで
 完全なlicense bundleを含みません。これらは履歴確認・個人の動作確認用であり、binaryを
 単独で再配布するための完全なpackageとしては扱いません。再配布する場合は、対象sourceと
-依存に対応する`LICENSES/`を含む統合ZIPを作り直してください。この文書の更新だけでは、
+依存に対応する`LICENSE.txt`を含む統合ZIPを作り直してください。この文書の更新だけでは、
 既存Releaseのasset追加・取り下げやActions artifactの構成変更は行いません。
 
 ## 再配布禁止のハードウェアデータ

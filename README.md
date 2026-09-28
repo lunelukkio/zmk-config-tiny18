@@ -56,7 +56,7 @@ Keys are named by what they type in text entry:
 ## Download
 
 For installation or redistribution, use a versioned integrated ZIP that includes
-`LICENSES/`. Earlier [Releases](https://github.com/lunelukkio/zmk-config-tiny18/releases)
+`LICENSE.txt`. Earlier [Releases](https://github.com/lunelukkio/zmk-config-tiny18/releases)
 may contain only UF2 files and checksums without the corresponding third-party
 license material; keep those as historical recovery images and do not redistribute
 the binaries by themselves. `main` may be ahead of the latest release. The
@@ -70,12 +70,16 @@ has current test images and expires, but it also lacks the complete license bund
 | `settings-reset.uf2` | Clears stored Bluetooth and split settings |
 | `tiny18_layer.bin` | Optional UIAPduino OLED receiver |
 | `VERSION.txt` | Shared version, source revisions, build date and Actions run |
-| `LICENSES/` | Dependency license texts and attribution inventory |
+| `LICENSE.txt` | Software licenses and attribution notices |
+| `README.md` | English and Japanese installation and support notes |
+| `OLED-SOURCE/` | Editable OLED sources, label generator and build guide |
 | `SHA256SUMS` | SHA-256 checksums for all bundle files |
 
 New integrated releases contain one `tiny18-vX.Y.Z.zip`; extract it and keep
-`LICENSES/` with the firmware. OLED users must use a bundle containing all three
-device images.
+`LICENSE.txt` with the firmware. OLED users must use a bundle containing all three
+device images. `OLED-SOURCE/README.md` explains how to edit and rebuild the
+display labels; the pinned ch32fun dependency is fetched during setup to keep
+the download small.
 
 The right and left files are not interchangeable. If the wrong image is flashed, enter the bootloader again and flash the correct image. Only the right half interprets the keymap. Flash the right and left images from the same build together.
 
@@ -143,7 +147,7 @@ material. Publication is a separate manual step after review; see the
 
 ## Support
 
-Please use [GitHub Issues](https://github.com/lunelukkio/zmk-config-tiny18/issues) for bug reports, setup questions, and suggestions. This project does not publish a contact email address; Issues are the normal contact channel.
+Report bugs at [@dendrite_lune on X](https://x.com/dendrite_lune).
 
 ## Hardware
 

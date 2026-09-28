@@ -31,26 +31,44 @@ class BundleTests(unittest.TestCase):
             (self.images / name).write_bytes(block)
         self.oled = self.images / "tiny18_layer.bin"
         self.oled.write_bytes(b"receiver")
-        self.licenses = self.root / "licenses"
-        self.licenses.mkdir()
-        for name in ("Tiny18-MIT.txt", "inventory.json", "resolved-west.yml", "README.txt"):
-            (self.licenses / name).write_text("fixture", encoding="utf-8")
+        self.licenses = self.root / "LICENSE.txt"
+        self.oled_source = self.root / "OLED-SOURCE"
+        for name in (
+                "README.md", "build_oled.py", "include/tiny18_oled_uart.h",
+                "config/tiny18.keymap", "docs/tools/gen_svg.py",
+                "docs/tools/make_oled_layers.py", "addons/oled/Makefile",
+                "addons/oled/layers.h", "addons/oled/tiny18_layer.c",
+                "addons/oled/render.c", "addons/oled/render.h"):
+            path = self.oled_source / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("source", encoding="utf-8")
         self.output = self.root / "firmware"
 
     def bundle(self, version="v0.3.1"):
+        self.licenses.write_text(
+            f"Tiny18 firmware {version}: distribution licenses\n神沼三平太\n",
+            encoding="utf-8",
+        )
         return package_tool.package(version, self.images, self.oled, self.licenses,
-                                    self.output, "a" * 40, "local-review-worktree", "not run")
+                                    self.output, "a" * 40, "local-review-worktree", "not run",
+                                    self.oled_source)
 
     def test_complete_bundle_has_checksums_and_only_intended_images(self):
         (self.images / "private.stl").write_bytes(b"must not be copied")
         target, archive = self.bundle()
         entries = (target / "SHA256SUMS").read_text().splitlines()
-        self.assertEqual(len(entries), 9)
+        self.assertEqual(len(entries), sum(1 for p in target.rglob("*") if p.is_file()) - 1)
         for line in entries:
             digest, name = line.split("  ", 1)
             self.assertEqual(hashlib.sha256((target / name).read_bytes()).hexdigest(), digest)
         with zipfile.ZipFile(archive) as result:
-            self.assertIn("v0.3.1/LICENSES/Tiny18-MIT.txt", result.namelist())
+            self.assertIn("v0.3.1/LICENSE.txt", result.namelist())
+            self.assertIn("v0.3.1/README.md", result.namelist())
+            self.assertIn("v0.3.1/OLED-SOURCE/docs/tools/make_oled_layers.py",
+                          result.namelist())
+            self.assertIn("v0.3.1/OLED-SOURCE/include/tiny18_oled_uart.h",
+                          result.namelist())
+            self.assertFalse(any("LICENSES/" in name for name in result.namelist()))
             self.assertFalse(any(name.endswith(".stl") for name in result.namelist()))
         self.assertIn("local-review-worktree", (target / "VERSION.txt").read_text())
 
@@ -68,22 +86,21 @@ class BundleTests(unittest.TestCase):
         self.assertFalse(self.output.exists())
 
     def test_missing_licenses_leaves_no_version_folder(self):
-        (self.licenses / "inventory.json").unlink()
         with self.assertRaises(ValueError):
-            self.bundle()
+            package_tool.package("v0.3.1", self.images, self.oled, self.licenses,
+                                 self.output, "a" * 40, "local-review-worktree", "not run",
+                                 self.oled_source)
         self.assertFalse(self.output.exists())
 
-    def test_unreadable_license_leaves_no_version_folder(self):
-        (self.licenses / "unreadable.txt").write_text("terms", encoding="utf-8")
-        original = Path.is_file
-
-        def check(path):
-            if path.name == "unreadable.txt":
-                raise OSError("Linux link unavailable on Windows")
-            return original(path)
-
-        with patch.object(Path, "is_file", check), self.assertRaisesRegex(ValueError, "cp -RL"):
-            self.bundle()
+    def test_wrong_version_license_leaves_no_version_folder(self):
+        self.licenses.write_text(
+            "Tiny18 firmware v0.8.0: distribution licenses\n神沼三平太\n",
+            encoding="utf-8",
+        )
+        with self.assertRaisesRegex(ValueError, "another version"):
+            package_tool.package("v0.3.1", self.images, self.oled, self.licenses,
+                                 self.output, "a" * 40, "local-review-worktree", "not run",
+                                 self.oled_source)
         self.assertFalse(self.output.exists())
 
     def test_bad_uf2_and_oversize_oled_are_rejected(self):

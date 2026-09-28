@@ -26,31 +26,11 @@ jobs:
       - name: Build the three keyboard images
         shell: bash
         run: bash tools/build-keyboard.sh "$RUNNER_TEMP/tiny18-build"
-      - name: Preserve licenses from the actual build workspace
-        shell: bash
-        run: |
-          set -euo pipefail
-          shopt -s nullglob
-          sdk_licenses=(/opt/zephyr-sdk-*/arm-zephyr-eabi/share/licenses)
-          test "${#sdk_licenses[@]}" -eq 1
-          sdk_root="${sdk_licenses[0]%/arm-zephyr-eabi/share/licenses}"
-          sdk_version="${sdk_root##*/zephyr-sdk-}"
-          test -n "$sdk_version"
-          uv run --no-project --with pyyaml python tools/export_licenses.py \
-            --workspace "$RUNNER_TEMP/tiny18-build" \
-            --sdk-licenses "${sdk_licenses[0]}" --sdk-version "$sdk_version" \
-            --output build/LICENSES
       - uses: actions/upload-artifact@v4
         with:
           name: keyboard-release
           path: ${{ runner.temp }}/tiny18-build/firmware/*.uf2
           if-no-files-found: error
-      - uses: actions/upload-artifact@v4
-        with:
-          name: licenses
-          path: build/LICENSES/
-          if-no-files-found: error
-          include-hidden-files: true
 
   draft:
     needs: [keyboard, oled]
@@ -70,18 +50,17 @@ jobs:
         with:
           name: oled
           path: build/images
-      - uses: actions/download-artifact@v4
-        with:
-          name: licenses
-          path: build/LICENSES
-
+      - name: Prepare the editable OLED source package
+        run: uv run --no-project python tools/export_oled_source.py --output build/OLED-SOURCE
       - name: Assemble a versioned bundle
         env:
           RELEASE_VERSION: ${{ github.ref_name }}
         run: |
           uv run --no-project python tools/package_firmware.py \
             --version "$RELEASE_VERSION" --keyboard build/images \
-            --oled build/images/tiny18_layer.bin --licenses build/LICENSES \
+            --oled build/images/tiny18_layer.bin \
+            --licenses "firmware/LICENSE-${RELEASE_VERSION}.txt" \
+            --oled-source build/OLED-SOURCE \
             --source-commit "$(git rev-parse HEAD)" --source-state clean-tag \
             --actions-run "$GITHUB_RUN_ID"
 

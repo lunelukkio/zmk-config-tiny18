@@ -80,7 +80,7 @@ MODES = [
     ("AI", "nav_layer", "青", "#1e6fd9", "mode_ai", "起動時のモード。左右に矢印と修飾キー。Space 長押しで9種類のslash command面を開く"),
     ("文字入力", "default_layer", "緑", "#22aa44", "mode_text", "毎日の文字入力"),
     ("数字キーパッド", "number_layer", "黄", "#d4a017", "mode_num", "左手がテンキー、右手が四則演算。Shift 中は移動・ロック・システムキー"),
-    ("ゲーム", "game_layer", "シアン", "#17b8c4", "mode_game", "VRChat。WASD、I O P、Z X C、Esc と V。Shift を押さえると Esc が Z、V が R、Z X C が G M K に変わる。親指は Ctrl・Space・Space・Alt"),
+    ("ゲーム", "game_layer", "シアン", "#17b8c4", "mode_game", "VRChat。WASD、GUI U Y、Z X C、Esc と V。Shift を押さえると Esc が Z、V が R、Z X C が G M K に変わる。親指は Ctrl・Space・Space・Alt"),
     ("ファンクション", "fn_layer", "マゼンタ", "#b5389e", "mode_fn", "F1 から F12。Ctrl は %s の位置、Alt は %s の位置"
      % (mod_keys("fn_layer", "Ctrl"), mod_keys("fn_layer", "Alt"))),
     ("Bluetooth", "bluetooth_layer", "赤", "#dd2222", "mode_bt", "左上の3キーでLED、右上の2キーでOLEDの明るさを調整し、BTキーで接続プロファイルを切り替える"),
@@ -95,7 +95,7 @@ CAPTION = {
     "nav_shift": "AI モードで左右どちらかのEnterを長押しした状態。矢印はShift付きで送る。編集操作とモード切替のcomboは同じ位置。",
     "ai_command_layer": "AIモードのSpaceを長押ししている間だけ開く。上段とホーム行に9種類のslash command。commandは英数入力へ切り替えて文字だけを送り、Enterは送らない。左上はEscape・Tab・GUI。左親指はDelete、右親指は/。",
     "number_layer": "数字キーパッドモード。数字と小数点はテンキーのコードを送る。左手がテンキー配列、右手が四則演算と =・バックスラッシュ。%s の位置はタップで Enter、押さえると Shift。左の親指は 2 と 3、右の親指は 0 と小数点。" % NAMES[13],
-    "game_layer": "ゲームモード。W が S の真上に来て WASD のダイヤ型になる。%s の位置が Escape、%s の位置が V、右上段は I O P、右のホーム行は Z X C。親指 4 つは Ctrl・Space・Space・Alt で、左の親指も文字入力モードとは違う。%s の位置は文字入力モードと同じ。" % (NAMES[0], NAMES[2], NAMES[13]),
+    "game_layer": "ゲームモード。W が S の真上に来て WASD のダイヤ型になる。%s の位置が Escape、%s の位置が V、右上段は GUI U Y、右のホーム行は Z X C。親指 4 つは Ctrl・Space・Space・Alt で、左の親指も文字入力モードとは違う。%s の位置は文字入力モードと同じ。" % (NAMES[0], NAMES[2], NAMES[13]),
     "fn_layer": "ファンクションモード。F キーは数字の面で同じ数字がある位置。%s の位置を押さえると Ctrl、%s の位置を押さえると Alt。%s の位置と薄い色の左の親指は文字入力モードと同じ。" % (mod_keys("fn_layer", "Ctrl"), mod_keys("fn_layer", "Alt"), NAMES[13]),
     "bluetooth_layer": "Bluetooth モード。左上はRGB LED、右上はOLEDの明るさを調整する。左小指のAIキーで戻る。左親指がBT 0・1、右親指がBT 2・3、右小指がBT 4。移動comboはこのモードでは無効。",
 }
@@ -287,8 +287,8 @@ SUBS = {
     "COMBO_MISC": combo_group([
         ("slash", "文字入力モードと %s の両方で効く" % PAGE_NAME[7]),
         ("lalt", "音声入力の起動用。文字入力モードで、打鍵後 150 ms おいてから"),
-        ("lgui", "Windows キー。文字入力モードとゲームモードで有効。ゲームモードでは %s"
-         % " と ".join(tap("game_layer", p) for p in CD["lgui"]["pos"])),
+        ("lgui", "Windows キー。文字入力モードだけ。ゲームモードでは %s の位置に GUI キーがある"
+         % NAMES[3]),
         ("ime", "日本語と英語の切替（Ctrl+Space）。上段の薬指とホーム行の人差し指。文字入力モードだけ、打鍵後 150 ms おいてから"),
         ("ime_japanese", "日本語入力へ直接切替。文字入力モードだけ、打鍵後 150 ms おいてから"),
         ("ime_english", "英語入力へ直接切替。文字入力モードだけ、打鍵後 150 ms おいてから"),

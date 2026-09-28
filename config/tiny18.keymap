@@ -292,8 +292,8 @@
         /*
          * Game mode's second face, the same mechanism as number mode's. Key 6
          * is a plain Shift there and is also the run key, so Shift is kept
-         * off everything used while running: W, A, S and D, I, O and P, and
-         * the two Spaces stay put. What changes is Escape to Z, V to R, the
+         * off everything used while running: W, A, S and D, GUI, U and Y,
+         * and the two Spaces stay put. What changes is Escape to Z, V to R, the
          * right home row's Z X C to G M K, and the thumbs' left Ctrl and left
          * Alt to their right-hand twins.
          *
@@ -544,15 +544,13 @@
 
         /*
          * GUI gets the same treatment on the right hand: index finger on the
-         * top and home rows, U and J. Live in text entry and game mode,
-         * where the two keys are I and Z. There
-         * is no idle condition, so in game mode I and Z each wait out the
-         * combo window when pressed alone.
+         * top and home rows, U and J. Text entry only: game mode has GUI as
+         * a key of its own on key 3.
          */
         lgui {
             bindings = <&kp LEFT_GUI>;
             key-positions = <3 10>;
-            layers = <0 5>;
+            layers = <0>;
         };
 
         /*
@@ -608,7 +606,7 @@
          * require-prior-idle-ms is what makes this safe. In number mode the
          * switch positions carry digits - 0 and 2 are 7 and 9, 7 and 9 are 4
          * and 6 - and in game mode 0 and 2 are Escape and V, 10 and 12 are Z
-         * and C, 3 and 5 are I and P, 5 and 10 are P and Z, so typing quickly
+         * and C, 3 and 5 are GUI and Y, 5 and 10 are Y and Z, so typing quickly
          * would otherwise throw you into another mode.
          * Holding off for 150 ms after the last keypress means a switch only
          * fires from a standstill. It also stops 10+12 and 3+5 misfiring
@@ -782,10 +780,10 @@
         /*
          * VRChat. W sits directly above S, so 1/7/8/9 form the usual WASD
          * diamond, with Escape just left of W to open the menu and V, the
-         * microphone, on R's key. I, O and P are text entry's right top row
-         * moved one key left, so P gets a key of its own here, and the right
-         * home row is Z X C. Key 6 stays a plain Shift, the run key, and key
-         * 13 is the text-entry Enter with Shift on hold.
+         * microphone, on R's key. The right top row is GUI, U and Y: GUI
+         * sits on U's key and replaces text entry's 3+10 chord here. The
+         * right home row is Z X C. Key 6 stays a plain Shift, the run key,
+         * and key 13 is the text-entry Enter with Shift on hold.
          *
          * The thumbs are left Ctrl, two Spaces and left Alt, so jump is under
          * either thumb. They are not &trans here, which costs the text-entry
@@ -798,7 +796,7 @@
          */
         game_layer {
             bindings = <
-&gm_esc  &kp W  &gm_v  &kp I  &kp O  &kp P  &kp LSHFT  &kp A  &kp S  &kp D  &gm_z  &gm_x  &gm_c  &bmt LSHFT ENTER  &gm_ctrl  &kp SPACE  &kp SPACE  &gm_alt
+&gm_esc  &kp W  &gm_v  &kp LGUI  &kp U  &kp Y  &kp LSHFT  &kp A  &kp S  &kp D  &gm_z  &gm_x  &gm_c  &bmt LSHFT ENTER  &gm_ctrl  &kp SPACE  &kp SPACE  &gm_alt
             >;
         };
 

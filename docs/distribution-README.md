@@ -25,13 +25,13 @@ display wiring need their own firmware and installation procedure.
    and extract it. Keep `minichlink.exe` and `libusb-1.0.dll` together in its
    `minichlink` folder. The flasher is downloaded separately.
 2. Extract this ZIP. In Windows PowerShell 5.1, enter the full paths to the
-   extracted `v0.8.1` folder and `minichlink.exe` when prompted, without quotes.
+   extracted `v0.8.2` folder and `minichlink.exe` when prompted, without quotes.
 3. Connect the UIAPduino directly to a PC USB port with a data cable. Hold
    reset while connecting it, then release reset immediately. Run the flash
    command. `Image written.` and `Booting` indicate that the BIN was written.
 
 ```powershell
-$bundle = Read-Host 'Path to the extracted v0.8.1 folder'
+$bundle = Read-Host 'Path to the extracted v0.8.2 folder'
 Set-Location -LiteralPath $bundle
 if (-not $?) { throw 'Bundle folder not found' }
 $flasher = Read-Host 'Path to minichlink.exe'
@@ -94,14 +94,14 @@ CH32V003とSSD1309 OLED向けです。先にこのZIPの左右両方のUF2を
    `minichlink.exe`と`libusb-1.0.dll`を同じ場所に置きます。
    書き込みツールはこの配布ZIPには入っていません。
 2. このZIPを展開します。Windows PowerShell 5.1で次のコマンドを実行し、
-   質問には展開後の`v0.8.1`フォルダーと`minichlink.exe`のフルパスを
+   質問には展開後の`v0.8.2`フォルダーと`minichlink.exe`のフルパスを
    引用符なしで入力します。
 3. データ対応USBケーブルでUIAPduinoをPCのUSBポートへ直接つなぎます。
    resetを押しながら接続し、すぐに離してから書き込みコマンドを
    実行します。`Image written.`と`Booting`が出れば書き込みは成功です。
 
 ```powershell
-$bundle = Read-Host 'Path to the extracted v0.8.1 folder'
+$bundle = Read-Host 'Path to the extracted v0.8.2 folder'
 Set-Location -LiteralPath $bundle
 if (-not $?) { throw 'Bundle folder not found' }
 $flasher = Read-Host 'Path to minichlink.exe'

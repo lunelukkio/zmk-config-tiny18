@@ -139,7 +139,7 @@ Bluetooth モードでは移動comboがすべて無効で、左小指の <code>A
 <p>ゲームモードでは <code>S</code> のキーが <code>A</code>、<code>F</code> のキーが <code>D</code> である。左右の平行移動を同時に押すのは
 ゲーム中のごく普通の操作なので、<code>{{SW_ai}}</code>（AI モードへ）はゲームモードで無効にしてある。ゲームモードへの切替 <code>{{SW_game}}</code> も、ゲームモードの中では意味が無いうえに、そこでの V と A の同時押しを食うので外した。
 ゲームモードから AI モードへ行くときは、いったん文字入力モードを経由する。
-残る 4 つの切替はゲームモードでも生きていて、<code>I</code> と <code>P</code>、<code>P</code> と <code>Z</code> のように文字の同時押しになる。
+残る 4 つの切替はゲームモードでも生きていて、<code>GUI</code> と <code>Y</code>、<code>Y</code> と <code>Z</code> のようにこのモードのキーの同時押しになる。
 打鍵後 150 ミリ秒の間合い条件があるので、連打の最中には誤爆しない。</p>
 
 <h2 id="s5">5. 文字入力モード</h2>
@@ -187,7 +187,7 @@ Ctrl+Space は <code>M</code> を押さえて <code>Space</code> を叩く形に
 <div class="note">
 <strong>文字入力モードのAltとGUIはcomboである。</strong>
 Alt が <code>{{LALT_KEYS}}</code>、GUI が <code>{{LGUI_KEYS}}</code>。AIモードには専用の左右Altキーと、Space長押し面のGUIキーがある。
-GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z</code> の同時押しになる。
+ゲームモードでは <code>U</code> のキーそのものが GUI である。
 </div>
 
 <h3>{{PAGE3}} — {{HOLD3}} を長押ししている間だけ</h3>
@@ -322,8 +322,8 @@ combo の側は、ホーム行の文字 combo の並びを崩さないために�
 2026-09-16 までは <code>F + Space</code> だったが、これは <code>V</code>（Space を押さえて F）と同じ 2 キーだったので、親指から離した。
 そのかわり打鍵後 150 ミリ秒の条件が付いた。<code>perfect</code> や <code>surface</code> のように <code>rf</code> は単語の途中に現れるためで、一呼吸おけば効く。
 GUI も同じ考えで、文字入力モードでは人差し指2本である。<br>
-Alt の combo はゲームモードとファンクションモードには無く、どちらのモードも親指に Alt のキーがある。GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z</code> の同時押しになる。
-間合いの条件が無いので、ゲームモードの <code>I</code> と <code>Z</code> は単独で押すと combo の判定を待つ分（最大 50 ミリ秒）だけ遅れる。<br>
+Alt の combo はゲームモードとファンクションモードには無く、どちらのモードも親指に Alt のキーがある。
+GUI の combo も文字入力モードだけで、ゲームモードでは <code>U</code> のキーに GUI がある。<br>
 日本語と英語の切替は <code>{{IME_KEYS}}</code>、中指を上段、人差し指をホーム行に置いて一緒に落とす。<strong>文字入力モードだけにある。</strong>
 ほかのモードには文字キーが無く、日本語を打つことがないためである。AI モードに置くと <code>↑</code> と <code>→</code> の同時押しと重なるという事情もある。<br>
 打鍵後 150 ミリ秒おかないと効かないので、単語の途中では候補にすら入らない。ローマ字に <code>ef</code> という並びは無く、英語でも <code>effort</code> の系統だけである。</p>
@@ -430,10 +430,10 @@ Alt を <code>M</code> に置かなかったのは、その癖で <code>F4</code
 {{LEGEND}}
 <p>VRChat 向け。<code>E</code> のキーが W、<code>S D F</code> のキーが A S D で、W が S の真上に来るので
 <strong>通常の WASD のダイヤ型</strong>になる。<code>A</code> のキーが Shift（走る）。
-<code>W</code> のキーには Escape を置いてあり、メニューを開ける。<code>R</code> のキーが V（マイク）、<code>U I O</code> のキーが I O P、右手のホーム行が Z X C である。<br>
+<code>W</code> のキーには Escape を置いてあり、メニューを開ける。<code>R</code> のキーが V（マイク）、<code>U I O</code> のキーが GUI U Y、右手のホーム行が Z X C である。<br>
 <strong>親指 4 つは左から Ctrl、Space、Space、Alt</strong>で、ジャンプは左右どちらの親指でも押せる。
 <code>Enter</code> の位置はタップで Enter、押さえると Shift で、文字入力モードと同じ。<br>
-<code>U</code> と <code>J</code> のキー（ここでは I と Z）を一緒に押すと Windows キーになる。</p>
+Windows キー（GUI）は <code>U</code> のキーを単独で押す。文字入力モードの <code>{{LGUI_KEYS}}</code> combo はこのモードには無い。</p>
 <div class="warn">
 <strong>このモードの左の親指は文字入力モードと違う。</strong>BackSpace が無く、{{PAGE3}}も{{PAGE4}}も開かない。
 チャットは文字と Space と Enter で打つことになり、消したり数字を入れたりするときは文字入力モードへ戻る。
@@ -442,7 +442,7 @@ Alt を <code>M</code> に置かなかったのは、その癖で <code>F4</code
 <h3>Shift を押している間は 7 キーが変わる</h3>
 <p><code>A</code> か <code>Enter</code> のキーで Shift を押さえている間だけ、Escape が Z、V が R、右手のホーム行の Z X C が G M K、
 親指の Ctrl と Alt が右 Ctrl と右 Alt になる。
-W A S D、I O P、2 つの Space は変わらないので、<strong>走りながら動くこともジャンプすることもできる</strong>。</p>
+W A S D、GUI U Y、2 つの Space は変わらないので、<strong>走りながら動くこともジャンプすることもできる</strong>。</p>
 {{FIG_game_layer_shift}}
 {{LEGEND}}
 <div class="note">
@@ -451,7 +451,7 @@ W A S D、I O P、2 つの Space は変わらないので、<strong>走りなが
 </div>
 <div class="note">
 ゲームモードでは AI モードへの切替（<code>{{SW_ai}}</code> = A と D）と、ゲームモードへの切替（<code>{{SW_game}}</code> = V と A）の combo を外してある。
-AI モード行きは移動キーの同時押しになり、ゲームモード行きはこのモードの中では意味が無いためである。ほかの切替 combo は生きているので、打鍵後 150 ミリ秒おいて <code>I</code> と <code>P</code> を一緒に押すとファンクションモードへ行く。
+AI モード行きは移動キーの同時押しになり、ゲームモード行きはこのモードの中では意味が無いためである。ほかの切替 combo は生きているので、打鍵後 150 ミリ秒おいて <code>GUI</code> と <code>Y</code> を一緒に押すとファンクションモードへ行く。
 </div>
 
 <div class="layer-head" style="background:#dd2222;">Bluetooth モード（LED: 赤）— combo <code>{{SW_bt}}</code></div>

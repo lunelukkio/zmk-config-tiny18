@@ -39,7 +39,7 @@ The canonical keymap is [`config/tiny18.keymap`](config/tiny18.keymap); the comm
 | AI | 2 | `S + F` outside Bluetooth; key 6 from Bluetooth | Startup mode; direct left/right modifiers, arrows and @; Space holds the nine-command page |
 | Text entry | 0 | `W + R` | Letters |
 | Number keypad | 3 | `J + L` | Keypad digits, which pass through an IME as half width |
-| Game | 5 | `R + S` | WASD for VRChat, with R I O P and chat keys |
+| Game | 5 | `R + S` | WASD for VRChat, with R, GUI, U, Y and chat keys |
 | Function | 4 | `U + O` | F1 to F12 |
 | Bluetooth | 1 | `O + J` | Profile selection |
 

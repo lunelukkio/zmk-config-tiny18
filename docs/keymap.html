@@ -76,11 +76,11 @@
 <p class="meta">作成日: 2026-09-06 ・ 全面改稿: 2026-09-11 / ZMK ファームウェア</p>
 
 <div class="sheet">
-<img src="./tiny18-keymap.png?v=42c7b3ff28cd" width="526" height="5649"
+<img src="./tiny18-keymap.png?v=044dbdd75d19" width="526" height="5649"
      alt="Tiny18 の全モードと押しっぱなしの面を縦に並べたキー配置表">
 </div>
 <p class="sheet-note">全モードと押しっぱなしの面を 1 枚に並べた表。ここでは全体の形が見える大きさに置いてある。
-<a href="./tiny18-keymap.png?v=42c7b3ff28cd" target="_blank" rel="noopener">画像だけを別タブで開く</a>と拡大して読める。</p>
+<a href="./tiny18-keymap.png?v=044dbdd75d19" target="_blank" rel="noopener">画像だけを別タブで開く</a>と拡大して読める。</p>
 
 <div class="takeaway">
 <strong>このノートの中心命題:</strong><br>
@@ -236,7 +236,7 @@ ZMK のキーマップ自体は position 番号の順に書くので、その番
 <tr><td><strong>AI</strong></td><td><span class="led" style="background:#1e6fd9;"></span>青</td><td><code>S + F</code></td><td>起動時のモード。左右に矢印と修飾キー。Space 長押しで9種類のslash command面を開く</td></tr>
 <tr><td><strong>文字入力</strong></td><td><span class="led" style="background:#22aa44;"></span>緑</td><td><code>W + R</code></td><td>毎日の文字入力</td></tr>
 <tr><td><strong>数字キーパッド</strong></td><td><span class="led" style="background:#d4a017;"></span>黄</td><td><code>J + L</code></td><td>左手がテンキー、右手が四則演算。Shift 中は移動・ロック・システムキー</td></tr>
-<tr><td><strong>ゲーム</strong></td><td><span class="led" style="background:#17b8c4;"></span>シアン</td><td><code>R + S</code></td><td>VRChat。WASD、I O P、Z X C、Esc と V。Shift を押さえると Esc が Z、V が R、Z X C が G M K に変わる。親指は Ctrl・Space・Space・Alt</td></tr>
+<tr><td><strong>ゲーム</strong></td><td><span class="led" style="background:#17b8c4;"></span>シアン</td><td><code>R + S</code></td><td>VRChat。WASD、GUI U Y、Z X C、Esc と V。Shift を押さえると Esc が Z、V が R、Z X C が G M K に変わる。親指は Ctrl・Space・Space・Alt</td></tr>
 <tr><td><strong>ファンクション</strong></td><td><span class="led" style="background:#b5389e;"></span>マゼンタ</td><td><code>U + O</code></td><td>F1 から F12。Ctrl は A と M の位置、Alt は N の位置</td></tr>
 <tr><td><strong>Bluetooth</strong></td><td><span class="led" style="background:#dd2222;"></span>赤</td><td><code>O + J</code></td><td>左上の3キーでLED、右上の2キーでOLEDの明るさを調整し、BTキーで接続プロファイルを切り替える</td></tr>
 </table>
@@ -257,8 +257,8 @@ Bluetooth モードでは移動comboがすべて無効で、左小指の <code>A
 <tr><td><code>W + R</code></td><td><span class="led" style="background:#22aa44;"></span>文字入力 モード</td><td>7 と 9</td><td>Esc と V</td></tr>
 <tr><td><code>J + L</code></td><td><span class="led" style="background:#d4a017;"></span>数字キーパッド モード</td><td>/ と \</td><td>Z と C</td></tr>
 <tr><td><code>R + S</code></td><td><span class="led" style="background:#17b8c4;"></span>ゲーム モード</td><td>9 と 4</td><td><strong>無効にしてある</strong></td></tr>
-<tr><td><code>U + O</code></td><td><span class="led" style="background:#b5389e;"></span>ファンクション モード</td><td>+ と =</td><td>I と P</td></tr>
-<tr><td><code>O + J</code></td><td><span class="led" style="background:#dd2222;"></span>Bluetooth モード</td><td>= と /</td><td>P と Z</td></tr>
+<tr><td><code>U + O</code></td><td><span class="led" style="background:#b5389e;"></span>ファンクション モード</td><td>+ と =</td><td>GUI と Y</td></tr>
+<tr><td><code>O + J</code></td><td><span class="led" style="background:#dd2222;"></span>Bluetooth モード</td><td>= と /</td><td>Y と Z</td></tr>
 </table>
 
 <h3>打鍵中は絶対にモードが変わらないようにしてある</h3>
@@ -283,7 +283,7 @@ Bluetooth モードでは移動comboがすべて無効で、左小指の <code>A
 <p>ゲームモードでは <code>S</code> のキーが <code>A</code>、<code>F</code> のキーが <code>D</code> である。左右の平行移動を同時に押すのは
 ゲーム中のごく普通の操作なので、<code>S + F</code>（AI モードへ）はゲームモードで無効にしてある。ゲームモードへの切替 <code>R + S</code> も、ゲームモードの中では意味が無いうえに、そこでの V と A の同時押しを食うので外した。
 ゲームモードから AI モードへ行くときは、いったん文字入力モードを経由する。
-残る 4 つの切替はゲームモードでも生きていて、<code>I</code> と <code>P</code>、<code>P</code> と <code>Z</code> のように文字の同時押しになる。
+残る 4 つの切替はゲームモードでも生きていて、<code>GUI</code> と <code>Y</code>、<code>Y</code> と <code>Z</code> のようにこのモードのキーの同時押しになる。
 打鍵後 150 ミリ秒の間合い条件があるので、連打の最中には誤爆しない。</p>
 
 <h2 id="s5">5. 文字入力モード</h2>
@@ -378,7 +378,7 @@ Ctrl+Space は <code>M</code> を押さえて <code>Space</code> を叩く形に
 <div class="note">
 <strong>文字入力モードのAltとGUIはcomboである。</strong>
 Alt が <code>R + F</code>、GUI が <code>U + J</code>。AIモードには専用の左右Altキーと、Space長押し面のGUIキーがある。
-GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z</code> の同時押しになる。
+ゲームモードでは <code>U</code> のキーそのものが GUI である。
 </div>
 
 <h3>数字の面 — BackSpace を長押ししている間だけ</h3>
@@ -708,7 +708,7 @@ ZXCV の面の <code>S D F</code> のキーは <code>X C V</code> だが、そ�
 <div class="combo-grid">
 <div class="combo-card"><div class="out">/</div><div class="keys">K + L</div><div class="desc">文字入力モードと ZXCV の両方で効く</div></div>
 <div class="combo-card"><div class="out">Alt</div><div class="keys">R + F</div><div class="desc">音声入力の起動用。文字入力モードで、打鍵後 150 ms おいてから</div></div>
-<div class="combo-card"><div class="out">GUI</div><div class="keys">U + J</div><div class="desc">Windows キー。文字入力モードとゲームモードで有効。ゲームモードでは I と Z</div></div>
+<div class="combo-card"><div class="out">GUI</div><div class="keys">U + J</div><div class="desc">Windows キー。文字入力モードだけ。ゲームモードでは U の位置に GUI キーがある</div></div>
 <div class="combo-card"><div class="out">Ctrl+Space<br><small>日英切替</small></div><div class="keys">E + F</div><div class="desc">日本語と英語の切替（Ctrl+Space）。上段の薬指とホーム行の人差し指。文字入力モードだけ、打鍵後 150 ms おいてから</div></div>
 <div class="combo-card"><div class="out">LANG1<br><small>日本語へ</small></div><div class="keys">E + D</div><div class="desc">日本語入力へ直接切替。文字入力モードだけ、打鍵後 150 ms おいてから</div></div>
 <div class="combo-card"><div class="out">LANG2<br><small>英語へ</small></div><div class="keys">W + S</div><div class="desc">英語入力へ直接切替。文字入力モードだけ、打鍵後 150 ms おいてから</div></div>
@@ -718,8 +718,8 @@ ZXCV の面の <code>S D F</code> のキーは <code>X C V</code> だが、そ�
 2026-09-16 までは <code>F + Space</code> だったが、これは <code>V</code>（Space を押さえて F）と同じ 2 キーだったので、親指から離した。
 そのかわり打鍵後 150 ミリ秒の条件が付いた。<code>perfect</code> や <code>surface</code> のように <code>rf</code> は単語の途中に現れるためで、一呼吸おけば効く。
 GUI も同じ考えで、文字入力モードでは人差し指2本である。<br>
-Alt の combo はゲームモードとファンクションモードには無く、どちらのモードも親指に Alt のキーがある。GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z</code> の同時押しになる。
-間合いの条件が無いので、ゲームモードの <code>I</code> と <code>Z</code> は単独で押すと combo の判定を待つ分（最大 50 ミリ秒）だけ遅れる。<br>
+Alt の combo はゲームモードとファンクションモードには無く、どちらのモードも親指に Alt のキーがある。
+GUI の combo も文字入力モードだけで、ゲームモードでは <code>U</code> のキーに GUI がある。<br>
 日本語と英語の切替は <code>E + F</code>、中指を上段、人差し指をホーム行に置いて一緒に落とす。<strong>文字入力モードだけにある。</strong>
 ほかのモードには文字キーが無く、日本語を打つことがないためである。AI モードに置くと <code>↑</code> と <code>→</code> の同時押しと重なるという事情もある。<br>
 打鍵後 150 ミリ秒おかないと効かないので、単語の途中では候補にすら入らない。ローマ字に <code>ef</code> という並びは無く、英語でも <code>effort</code> の系統だけである。</p>
@@ -1120,12 +1120,12 @@ Alt を <code>M</code> に置かなかったのは、その癖で <code>F4</code
 <text x="136" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">W</text>
 <rect x="164" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
 <text x="188" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">V</text>
-<rect x="372" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="396" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">I</text>
+<rect x="372" y="30" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
+<text x="396" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">GUI</text>
 <rect x="424" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="448" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">O</text>
+<text x="448" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">U</text>
 <rect x="476" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="500" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">P</text>
+<text x="500" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">Y</text>
 <rect x="8" y="108" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
 <text x="32" y="137" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">Shift</text>
 <rect x="60" y="82" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
@@ -1152,14 +1152,14 @@ Alt を <code>M</code> に置かなかったのは、その癖で <code>F4</code
 <rect x="346" y="134" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
 <text x="370" y="163" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">Alt</text>
 </svg>
-<div class="figure-caption">図 13. ゲームモード。W が S の真上に来て WASD のダイヤ型になる。W の位置が Escape、R の位置が V、右上段は I O P、右のホーム行は Z X C。親指 4 つは Ctrl・Space・Space・Alt で、左の親指も文字入力モードとは違う。Enter の位置は文字入力モードと同じ。</div>
+<div class="figure-caption">図 13. ゲームモード。W が S の真上に来て WASD のダイヤ型になる。W の位置が Escape、R の位置が V、右上段は GUI U Y、右のホーム行は Z X C。親指 4 つは Ctrl・Space・Space・Alt で、左の親指も文字入力モードとは違う。Enter の位置は文字入力モードと同じ。</div>
 <div class="legend"><span><i class="sw" style="background:#eef6ff;border-color:#1e6fd9;"></i>文字・数字・記号</span><span><i class="sw" style="background:#fdf2e9;border-color:#d35400;"></i>タップと長押しで二役</span><span><i class="sw" style="background:#eefaf3;border-color:#2a9d8f;"></i>修飾キー</span><span><i class="sw" style="background:#fff4e0;border-color:#b8860b;"></i>ショートカット</span><span><i class="sw" style="background:#f3ecfb;border-color:#7a4fb5;"></i>レイヤー操作</span><span><i class="sw" style="background:#f7f5ee;border-color:#c9c6b6;"></i>&mdash; 透過</span><span><i class="sw" style="background:#f1f1ea;"></i>&mdash; 無効</span></div>
 <p>VRChat 向け。<code>E</code> のキーが W、<code>S D F</code> のキーが A S D で、W が S の真上に来るので
 <strong>通常の WASD のダイヤ型</strong>になる。<code>A</code> のキーが Shift（走る）。
-<code>W</code> のキーには Escape を置いてあり、メニューを開ける。<code>R</code> のキーが V（マイク）、<code>U I O</code> のキーが I O P、右手のホーム行が Z X C である。<br>
+<code>W</code> のキーには Escape を置いてあり、メニューを開ける。<code>R</code> のキーが V（マイク）、<code>U I O</code> のキーが GUI U Y、右手のホーム行が Z X C である。<br>
 <strong>親指 4 つは左から Ctrl、Space、Space、Alt</strong>で、ジャンプは左右どちらの親指でも押せる。
 <code>Enter</code> の位置はタップで Enter、押さえると Shift で、文字入力モードと同じ。<br>
-<code>U</code> と <code>J</code> のキー（ここでは I と Z）を一緒に押すと Windows キーになる。</p>
+Windows キー（GUI）は <code>U</code> のキーを単独で押す。文字入力モードの <code>U + J</code> combo はこのモードには無い。</p>
 <div class="warn">
 <strong>このモードの左の親指は文字入力モードと違う。</strong>BackSpace が無く、数字の面もZXCV の面も開かない。
 チャットは文字と Space と Enter で打つことになり、消したり数字を入れたりするときは文字入力モードへ戻る。
@@ -1168,7 +1168,7 @@ Alt を <code>M</code> に置かなかったのは、その癖で <code>F4</code
 <h3>Shift を押している間は 7 キーが変わる</h3>
 <p><code>A</code> か <code>Enter</code> のキーで Shift を押さえている間だけ、Escape が Z、V が R、右手のホーム行の Z X C が G M K、
 親指の Ctrl と Alt が右 Ctrl と右 Alt になる。
-W A S D、I O P、2 つの Space は変わらないので、<strong>走りながら動くこともジャンプすることもできる</strong>。</p>
+W A S D、GUI U Y、2 つの Space は変わらないので、<strong>走りながら動くこともジャンプすることもできる</strong>。</p>
 <svg viewBox="0 0 584 190" role="img" aria-label="game_layer_shift">
 <text x="123" y="20" text-anchor="middle" font-size="13" fill="#5a6a72" font-family="sans-serif">左手側</text>
 <text x="435" y="20" text-anchor="middle" font-size="13" fill="#5a6a72" font-family="sans-serif">右手側</text>
@@ -1179,12 +1179,12 @@ W A S D、I O P、2 つの Space は変わらないので、<strong>走りなが
 <text x="136" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">W</text>
 <rect x="164" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
 <text x="188" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">R</text>
-<rect x="372" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="396" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">I</text>
+<rect x="372" y="30" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
+<text x="396" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">GUI</text>
 <rect x="424" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="448" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">O</text>
+<text x="448" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">U</text>
 <rect x="476" y="30" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
-<text x="500" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">P</text>
+<text x="500" y="59" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">Y</text>
 <rect x="8" y="108" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
 <text x="32" y="137" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">Shift</text>
 <rect x="60" y="82" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
@@ -1211,7 +1211,7 @@ W A S D、I O P、2 つの Space は変わらないので、<strong>走りなが
 <rect x="346" y="134" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
 <text x="370" y="163" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">R Alt</text>
 </svg>
-<div class="figure-caption">図 14. ゲームモードで A か Enter の位置を押さえている間。Esc が Z、V が R、Z が G、X が M、C が K、Ctrl が R Ctrl、Alt が R Alt になる。変わったキーは Shift を外して単独キーとして送る。ほかの 11 キー（W I O P Shift A S D Enter Space Space）は変わらないので、走りながら動いて跳べる。</div>
+<div class="figure-caption">図 14. ゲームモードで A か Enter の位置を押さえている間。Esc が Z、V が R、Z が G、X が M、C が K、Ctrl が R Ctrl、Alt が R Alt になる。変わったキーは Shift を外して単独キーとして送る。ほかの 11 キー（W GUI U Y Shift A S D Enter Space Space）は変わらないので、走りながら動いて跳べる。</div>
 <div class="legend"><span><i class="sw" style="background:#eef6ff;border-color:#1e6fd9;"></i>文字・数字・記号</span><span><i class="sw" style="background:#fdf2e9;border-color:#d35400;"></i>タップと長押しで二役</span><span><i class="sw" style="background:#eefaf3;border-color:#2a9d8f;"></i>修飾キー</span><span><i class="sw" style="background:#fff4e0;border-color:#b8860b;"></i>ショートカット</span><span><i class="sw" style="background:#f3ecfb;border-color:#7a4fb5;"></i>レイヤー操作</span><span><i class="sw" style="background:#f7f5ee;border-color:#c9c6b6;"></i>&mdash; 透過</span><span><i class="sw" style="background:#f1f1ea;"></i>&mdash; 無効</span></div>
 <div class="note">
 数字キーパッドモードと同じ mod-morph で、変わったキーは Shift を外して単独キーとして送る。そのため Shift を押さえて <code>R</code> のキーを叩くと R のキー入力が届き、押している一瞬だけ走りが止まる。<br>
@@ -1219,7 +1219,7 @@ W A S D、I O P、2 つの Space は変わらないので、<strong>走りなが
 </div>
 <div class="note">
 ゲームモードでは AI モードへの切替（<code>S + F</code> = A と D）と、ゲームモードへの切替（<code>R + S</code> = V と A）の combo を外してある。
-AI モード行きは移動キーの同時押しになり、ゲームモード行きはこのモードの中では意味が無いためである。ほかの切替 combo は生きているので、打鍵後 150 ミリ秒おいて <code>I</code> と <code>P</code> を一緒に押すとファンクションモードへ行く。
+AI モード行きは移動キーの同時押しになり、ゲームモード行きはこのモードの中では意味が無いためである。ほかの切替 combo は生きているので、打鍵後 150 ミリ秒おいて <code>GUI</code> と <code>Y</code> を一緒に押すとファンクションモードへ行く。
 </div>
 
 <div class="layer-head" style="background:#dd2222;">Bluetooth モード（LED: 赤）— combo <code>O + J</code></div>

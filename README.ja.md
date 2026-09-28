@@ -33,7 +33,7 @@ Seeed Studio XIAO nRF52840 を2個使う18キー左右分割キーボード [Tin
 | AI | 2 | Bluetooth以外から`S + F`、Bluetoothからは6番 | 起動時のモード。左右の修飾キー、矢印、@。Space長押しでAIコマンド面 |
 | 文字入力 | 0 | `W + R` | 文字 |
 | 数字キーパッド | 3 | `J + L` | テンキーのコード。日本語入力でも半角のまま通る |
-| ゲーム | 5 | `R + S` | VRChat 用の WASD と、R I O P、チャット用のキー |
+| ゲーム | 5 | `R + S` | VRChat 用の WASD と、R・GUI・U・Y、チャット用のキー |
 | ファンクション | 4 | `U + O` | F1 から F12 |
 | Bluetooth | 1 | `O + J` | 接続プロファイルの切り替え |
 

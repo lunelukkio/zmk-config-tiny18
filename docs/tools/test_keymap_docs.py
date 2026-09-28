@@ -123,7 +123,7 @@ class ChartModelTests(unittest.TestCase):
         )
         self.assertEqual(
             set(sections["edit_bracket_shift"].pressed_positions),
-            {13, 15, 16},
+            {6, 13, 15, 16},
         )
 
 
@@ -133,6 +133,8 @@ class HtmlOutputTests(unittest.TestCase):
 
         self.assertIn('aria-label="digit_symbol_layer_shift"', page)
         self.assertIn('aria-label="edit_bracket_layer_shift"', page)
+        self.assertIn("Z</code> / Shift", page)
+        self.assertIn("400 ミリ秒の長押しで左 Shift", page)
         self.assertIn("500 ms だけ表示する方式", page)
         self.assertIn("<code>LED</code>", page)
         self.assertIn("Bluetooth モードでは左小指の <code>AI</code> キーで戻る", page)

@@ -39,7 +39,8 @@ class LetterCaseTests(unittest.TestCase):
         self.assertEqual(self.labels(7)[0], ["ESC"])
         self.assertEqual(self.labels(7, 1)[0], ["TAB"])
         self.assertEqual(self.labels(7, 1)[12], ["?"])
-        self.assertEqual(self.labels(7, 2)[6], ["^Z"])
+        self.assertEqual(self.labels(7, 1)[6], ["Z", "SFT"])
+        self.assertEqual(self.labels(7, 2)[6], ["Z", "SFT"])
 
     def test_ai_arrows_stay_plain_under_shift_and_game_names_keep_case(self):
         for mods in (0, 1):

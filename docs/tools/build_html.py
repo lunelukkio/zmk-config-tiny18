@@ -90,7 +90,7 @@ FIGNO = [1]
 CAPTION = {
     "default_layer": "文字入力モード。英字は入力結果の大小ではなくキー名として大文字で表す。M は文字優先で、400ミリ秒の長押しでCtrlになる。左の親指 2 つがタップで BackSpace と Space、長押しで%sと%sを開く。" % (PAGE_LONG[6], PAGE_LONG[7]),
     "digit_symbol_layer": "%s を長押ししている間だけ。左手に 1 から 6、右手に 7 8 9 0 - =、右の親指に読点と句点。両端はタップで Enter、押さえると Shift。右の親指は Shift で ( ) になる。薄い色の左の親指は文字入力モードのまま。" % " か ".join(HOLDERS[6]),
-    "edit_bracket_layer": "%s を長押ししている間だけ。Escape・括弧・Z X C V・句読点。Shift 中はEscapeがTabになり、通常のShift記号が出る。%s の位置はタップで Enter、押さえると Shift。薄い色の左の親指は文字入力モードのまま。" % (" か ".join(HOLDERS[7]), NAMES[13]),
+    "edit_bracket_layer": "%s を長押ししている間だけ。Escape・括弧・Z X C V・句読点。Z はタップで Z、400 ミリ秒長押しで Shift。1回タップして175ミリ秒以内に押し直すと、Zを押し続けて自動反復する。Shift 中はEscapeがTabになり、通常のShift記号が出る。%s の位置はタップで Enter、押さえると Shift。薄い色の左の親指は文字入力モードのまま。" % (" か ".join(HOLDERS[7]), NAMES[13]),
     "nav_layer": "AI モード。左上段はCtrl・↑・Alt、右上段は右Alt・↑・右Ctrl。右親指は!と@。編集操作とモード切替は2キーのcombo。左右のEnterはタップでEnter、長押しで左右それぞれのShift。Space長押しでAIコマンドの面を開く。",
     "nav_shift": "AI モードで左右どちらかのEnterを長押しした状態。矢印はShift付きで送る。編集操作とモード切替のcomboは同じ位置。",
     "ai_command_layer": "AIモードのSpaceを長押ししている間だけ開く。上段とホーム行に9種類のslash command。commandは英数入力へ切り替えて文字だけを送り、Enterは送らない。左上はEscape・Tab・GUI。左親指はDelete、右親指は/。",

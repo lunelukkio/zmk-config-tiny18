@@ -86,6 +86,18 @@
             bindings = <&kp>, <&kp>;
         };
 
+        /* On the ZXCV page, tap Z; hold for left Shift after 400 ms.
+         * A quick tap followed by another press within 175 ms holds Z for
+         * host repeat, matching the letter and Space repeat gestures. */
+        zmt: z_shift_mod_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <400>;
+            quick-tap-ms = <175>;
+            bindings = <&kp>, <&kp>;
+        };
+
         led_mode: led_mode_behavior {
             compatible = "tiny18,behavior-led-mode";
             #binding-cells = <0>;
@@ -813,8 +825,8 @@
          * top row, Z X C V on the left home row, punctuation on the right,
          * the text-entry Enter on 13 with Shift on its hold, the comma and
          * the full stop on the right thumbs. B is a combo on the C and V
-         * keys. Key 6 is Z here rather than Shift, so this page's Shift is
-         * the right little finger.
+         * keys. Key 6 is Z on tap and left Shift after 400 ms, so both
+         * little fingers can provide Shift on this page.
          *
          * The right thumbs are the comma and the full stop, as on the digit
          * page. Copy and paste have no keys of their own here:
@@ -825,10 +837,11 @@
          * Key 14 is transparent and 15 keeps the ZXCV hold target. They used to
          * carry the IME toggle and a question mark: the toggle is now the
          * E+F chord, and the question mark is Shift over the slash on
-         * this page. */
+         * this page. Z taps as Z, holds for left Shift after 400 ms, and
+         * repeats when pressed again within 175 ms after a tap. */
         edit_bracket_layer {
             bindings = <
-&esc_tab  &kp GRAVE  &kp F10  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &trans  &slt 7 SPACE  &kp COMMA  &kp PERIOD
+&esc_tab  &kp GRAVE  &kp F10  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &zmt LSHFT Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &trans  &slt 7 SPACE  &kp COMMA  &kp PERIOD
             >;
         };
 

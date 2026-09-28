@@ -209,6 +209,8 @@ GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z<
 右の親指は読点と句点である。AIモードの右親指は ! と @。
 {{PAGE3}}でも右の親指は読点と句点で、Shift を重ねると <code>(</code> <code>)</code> になる。
 </p>
+<p><strong><code>Z</code> のキーはタップで Z、400 ミリ秒長押しで左 Shift。</strong>
+Z を1回タップしたあと、最初の押下から175ミリ秒以内に押し直してそのまま保持すると、Z の自動反復になる。</p>
 <div class="note">
 <strong>コピーと貼り付けは専用キーをやめた。</strong>右の親指を句読点に譲ったためである。
 まず <code>M</code> を 400 ミリ秒長押しして Ctrl にし、押さえたまま <code>N</code> か <code>Space</code> を長押ししてこの面を開く。
@@ -242,7 +244,7 @@ GUI はゲームモードでも効き、そこでは <code>I</code> と <code>Z<
 <h2 id="s6">6. 1 キー 2 役の仕組み</h2>
 <p>ZMK ではこれを hold-tap と呼ぶ。<strong>押している時間</strong>で意味が分かれる。
 通常の時間設定は 200 ミリ秒。文字入力モードの <code>A</code> と、AI モード・{{PAGE3}}の左 Enter は 350 ミリ秒、
-文字入力モードの <code>M</code> / Ctrl は <strong>400 ミリ秒</strong>である。別のキーとの重なりは、次の判定方式で扱う。</p>
+文字入力モードの <code>M</code> / Ctrl と{{PAGE4}}の <code>Z</code> / Shift は <strong>400 ミリ秒</strong>である。別のキーとの重なりは、次の判定方式で扱う。</p>
 
 <h3><code>M</code> / Ctrl は文字優先・400ミリ秒</h3>
 <p><code>M</code> は <strong>tap-preferred</strong> を使う。M を 400 ミリ秒未満で離せば文字入力になり、
@@ -260,6 +262,11 @@ AI モードの左右 Ctrl、ファンクション・ゲームモードの Ctrl 
 文字入力モードの <code>A</code> は、1回タップした直後にもう一度押さえ続けるとAのまま保持され、OSの自動反復になる。
 <code>Enter</code> や <code>M</code> も同じ仕組みで続けて打てる。
 </div>
+
+<h3><code>Z</code> / Shift は tap-preferred・400ミリ秒</h3>
+<p>{{PAGE4}}の <code>Z</code> は、タップで Z、400 ミリ秒の長押しで左 Shift になる。
+tap-preferred なので、400 ミリ秒を待つ前に別のキーを押しても Shift に早期確定しない。
+Z をタップした直後175ミリ秒以内に押し直した場合は、2回目が Z の押しっぱなしになり、自動反復する。</p>
 
 <h3><code>BackSpace</code> と <code>Space</code> の連打を残す判定</h3>
 <p>面を開く役目が乗ったキーは、長押しがふさがっている。

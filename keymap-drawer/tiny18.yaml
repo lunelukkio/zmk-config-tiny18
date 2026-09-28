@@ -99,9 +99,9 @@ layers:
   - {t: ESCAPE, s: Z}
   - W
   - {t: V, s: R}
-  - I
-  - O
-  - P
+  - LGUI
+  - U
+  - Y
   - LSHFT
   - A
   - S
@@ -228,7 +228,7 @@ combos:
   l: [default]
 - p: [3, 10]
   k: LEFT GUI
-  l: [default, game]
+  l: [default]
 - p: [1, 9]
   k: Ctl+SPACE
   l: [default]

@@ -527,10 +527,10 @@ def main():
                                         fill=group.colour if active else (237, 239, 241))
                 ai_names = [label(binding)[0].split("\n")[0]
                             for binding in B["nav_layer"]]
-                for position in (1, 7, 8, 9):
-                    ai_names[position] = "左" + ai_names[position]
-                for position in (4, 10, 11, 12):
-                    ai_names[position] = "右" + ai_names[position]
+                for position in (1, 7, 8, 9, 4, 10, 11, 12):
+                    if ai_names[position] in ("↑", "↓", "←", "→"):
+                        side = "左" if position in (1, 7, 8, 9) else "右"
+                        ai_names[position] = side + ai_names[position]
                 d.text((x + 190, cy + 12), pair(card.positions, ai_names, "+"),
                        font=f_sml, fill=(26, 58, 92))
                 d.text((x + 190, cy + 43), card.output, font=f_med, fill=(45, 45, 45))

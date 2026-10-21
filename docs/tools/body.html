@@ -186,7 +186,7 @@ Ctrl+Space は <code>M</code> を押さえて <code>Space</code> を叩く形に
 
 <div class="note">
 <strong>文字入力モードのAltとGUIはcomboである。</strong>
-Alt が <code>{{LALT_KEYS}}</code>、GUI が <code>{{LGUI_KEYS}}</code>。AIモードには専用の左右Altキーと、Space長押し面のGUIキーがある。
+Alt が <code>{{LALT_KEYS}}</code>、GUI が <code>{{LGUI_KEYS}}</code>。AIモードには専用の左Altキーと、Space長押し面のGUIキーがある。
 ゲームモードでは <code>U</code> のキーそのものが GUI である。
 </div>
 
@@ -206,7 +206,7 @@ Alt が <code>{{LALT_KEYS}}</code>、GUI が <code>{{LGUI_KEYS}}</code>。AIモ�
 <p><code>W</code> の位置は<strong>Escape、Shift を押さえている間は Tab</strong>で、<code>R</code> の位置が <code>F10</code>、そのほかに括弧 3 種と <code>Z X C V</code> がここにある。
 <code>E</code> の位置はバッククォートで、Shift を足せばチルダになる。
 <code>J</code> と <code>K</code> の位置はセミコロンとアポストロフィで、Shift を足せば <code>:</code> と <code>&quot;</code> になる。
-右の親指は読点と句点である。AIモードの右親指は ! と @。
+右の親指は読点と句点である。AIモードの右親指は C と M で、! と @ は右のホーム行にある。
 {{PAGE3}}でも右の親指は読点と句点で、Shift を重ねると <code>(</code> <code>)</code> になる。
 </p>
 <p><strong><code>Z</code> のキーはタップで Z、400 ミリ秒長押しで左 Shift。</strong>
@@ -250,7 +250,7 @@ Z を1回タップしたあと、最初の押下から175ミリ秒以内に押�
 <p><code>M</code> は <strong>tap-preferred</strong> を使う。M を 400 ミリ秒未満で離せば文字入力になり、
 相手のキーを先に離しても Ctrl へ早期確定しない。「ま・み・む・め・も」のような M に続くすべての入力に適用される。</p>
 <p>Ctrl を使うときは M を 400 ミリ秒押さえてから相手のキーを叩く。400 ミリ秒以上 M が押された場合は Ctrl になる。
-AI モードの左右 Ctrl、ファンクション・ゲームモードの Ctrl は文字との兼用ではない専用キーなので、この長押し判定を持たない。</p>
+AI モードの左 Ctrl、ファンクション・ゲームモードの Ctrl は文字との兼用ではない専用キーなので、この長押し判定を持たない。</p>
 
 <h3>Shift との兼用キーは balanced</h3>
 <p>Enter / Shift と A / Shift は <strong>balanced</strong> を使う。設定時間が過ぎるか、
@@ -325,7 +325,7 @@ GUI も同じ考えで、文字入力モードでは人差し指2本である。
 Alt の combo はゲームモードとファンクションモードには無く、どちらのモードも親指に Alt のキーがある。
 GUI の combo も文字入力モードだけで、ゲームモードでは <code>U</code> のキーに GUI がある。<br>
 日本語と英語の切替は <code>{{IME_KEYS}}</code>、中指を上段、人差し指をホーム行に置いて一緒に落とす。<strong>文字入力モードだけにある。</strong>
-ほかのモードには文字キーが無く、日本語を打つことがないためである。AI モードに置くと <code>↑</code> と <code>→</code> の同時押しと重なるという事情もある。<br>
+AI モードの右手の文字は短い返事用で日本語を打つことがなく、ほかのモードには文字キーが無いためである。AI モードに置くと <code>↑</code> と <code>→</code> の同時押しと重なるという事情もある。<br>
 打鍵後 150 ミリ秒おかないと効かないので、単語の途中では候補にすら入らない。ローマ字に <code>ef</code> という並びは無く、英語でも <code>effort</code> の系統だけである。</p>
 
 <h3>④ モード切替（6 個）</h3>
@@ -344,14 +344,13 @@ GUI の combo も文字入力モードだけで、ゲームモードでは <code
 {{FIG_nav_layer}}
 {{LEGEND}}
 {{FIG_nav_shift}}
-<p>左上段は左Ctrl・↑・左Alt、右上段は右Alt・↑・右Ctrl。左ホーム行と右ホーム行に矢印がある。
-両手のEnterはタップでEnter、長押しでそれぞれ左Shift・右Shift。Shift+矢印で選択できる。
+<p>左上段は左Ctrl・↑・左Alt、左ホーム行は ← ↓ →。右手は文字で、上段が <code>W E R</code>、ホーム行が <code>!</code> <code>@</code> <code>O</code>、親指が <code>C</code> <code>M</code>。
+両手のEnterはタップでEnter、長押しでそれぞれ左Shift・右Shift。Shift+矢印で選択でき、右手の文字は大文字になる。
 左親指BackSpaceは長押しで{{PAGE3}}。Spaceは最初の長押しでAIコマンドの面を開く。
-Spaceを短押ししてから175ミリ秒以内にもう一度押し続けると、Spaceを保持して繰り返す。
-右親指は <code>!</code> と <code>@</code>。</p>
+Spaceを短押ししてから175ミリ秒以内にもう一度押し続けると、Spaceを保持して繰り返す。</p>
 <p>左Ctrl+左Altは文字入力モード、左Alt+左←はゲームモード。
-右Ctrl+右Altはファンクションモード、右Ctrl+右←はBluetoothモード、
-右←+右→は数字キーパッドモードへ切り替える。2キーを同時に押す。</p>
+W+Rはファンクションモード、R+!はBluetoothモード、
+!+Oは数字キーパッドモードへ切り替える。打鍵後 150 ミリ秒おいて2キーを同時に押す。</p>
 <div class="layer-head" style="background:#d35400;">AIコマンドの面（LED: 白）— AIモードでSpace長押し</div>
 {{FIG_ai_command_layer}}
 {{LEGEND}}
@@ -365,7 +364,7 @@ macroは先に <code>LANG2</code> で英数入力に切り替え、Enterは送�
 
 <h3>AI モードの編集操作</h3>
 <p>AI モードでは2キーを同時に押す。左Ctrl+左↑はコピー、左Alt+左↑は貼り付け、左Ctrl+左←は元に戻す、左Alt+左→はCtrl+J。
-右Alt+右←はやり直し、右Alt+右↑は切り取り、右Ctrl+右→は検索。モード切替も同じ2キーcomboを使う。comboに含まれる矢印は成立判定を待って送られる。</p>
+W+!はやり直し、W+Eは切り取り、R+Oは検索。右手の 3 つは文字の上にあるので、打鍵後 150 ミリ秒おいてから同時に押す。モード切替も同じ2キーcomboを使う。comboに含まれるキーは成立判定を待って送られる。</p>
 {{COMBO_NAV}}
 
 <div class="layer-head" style="background:#d4a017;">数字キーパッドモード（LED: 黄）— combo <code>{{SW_num}}</code></div>
@@ -440,7 +439,7 @@ Windows キー（GUI）は <code>U</code> のキーを単独で押す。文字�
 </div>
 
 <h3>Shift を押している間は 7 キーが変わる</h3>
-<p><code>A</code> か <code>Enter</code> のキーで Shift を押さえている間だけ、Escape が Z、V が R、右手のホーム行の Z X C が G M K、
+<p><code>A</code> か <code>Enter</code> のキーで Shift を押さえている間だけ、Escape が Tab、V が R、右手のホーム行の Z X C が G M K、
 親指の Ctrl と Alt が右 Ctrl と右 Alt になる。
 W A S D、GUI U Y、2 つの Space は変わらないので、<strong>走りながら動くこともジャンプすることもできる</strong>。</p>
 {{FIG_game_layer_shift}}

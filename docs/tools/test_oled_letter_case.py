@@ -43,9 +43,15 @@ class LetterCaseTests(unittest.TestCase):
         self.assertEqual(self.labels(7, 2)[6], ["Z", "SFT"])
 
     def test_ai_arrows_stay_plain_under_shift_and_game_names_keep_case(self):
+        # Since 2026-10-22 only the left hand has arrows in AI mode; the right
+        # hand types letters and symbols, which Shift leaves as they are.
         for mods in (0, 1):
-            self.assertEqual([self.labels(2, mods)[p] for p in (4, 10, 11, 12)],
+            self.assertEqual([self.labels(2, mods)[p] for p in (1, 7, 8, 9)],
                              [["↑"], ["←"], ["↓"], ["→"]])
+            self.assertEqual([self.labels(2, mods)[p] for p in (4, 10, 11, 12)],
+                             [["E"], ["!"], ["@"], ["O"]])
+        self.assertEqual(self.labels(5)[0], ["ESC"])
+        self.assertEqual(self.labels(5, 1)[0], ["TAB"])
         self.assertEqual(self.labels(2, 2), self.labels(2))
         self.assertEqual(self.labels(2, 8), self.labels(2))
         self.assertEqual(oled.title_text(2, len(oled.LAYER_TITLES) * 10), "AI")
@@ -53,8 +59,10 @@ class LetterCaseTests(unittest.TestCase):
         self.assertEqual(self.labels(5)[1], ["W"])
 
     def test_ai_modifiers_use_shared_oled_labels(self):
-        self.assertEqual(self.labels(2)[3], ["ALT"])
-        self.assertEqual(self.labels(2)[5], ["CTL"])
+        self.assertEqual(self.labels(2)[0], ["CTL"])
+        self.assertEqual(self.labels(2)[2], ["ALT"])
+        self.assertEqual([self.labels(2)[p] for p in (3, 5, 16, 17)],
+                         [["W"], ["R"], ["C"], ["M"]])
         self.assertEqual(self.labels(8)[14], ["DEL"])
         self.assertEqual(self.labels(8)[16], ["/"])
 

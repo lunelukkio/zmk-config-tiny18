@@ -6,8 +6,9 @@
 #include <dt-bindings/zmk/keys.h>
 
 /*
- * The right-hand image is tiny18-right.uf2. AI mode has direct modifiers,
- * arrows and an @ key. Holding its Space opens the AI command page.
+ * The right-hand image is tiny18-right.uf2. AI mode has modifiers and
+ * arrows on the left hand and letters, ! and @ on the right. Holding its
+ * Space opens the AI command page.
  *
  * Six modes, entered by one pair of keys from supported non-Bluetooth modes:
  *   text entry  layer 0   green     0+2
@@ -31,7 +32,7 @@
  * still hold them, which is all of them but number and game mode.
  *
  * In text entry, Alt remains the 2+9 chord and GUI the 3+10 chord.
- * AI has dedicated left/right Ctrl and Alt; its command page has GUI.
+ * AI has dedicated left Ctrl and Alt; its command page has GUI.
  * The IME toggle is E and F, 1+9, in text entry only.
  *
  * Key positions (see tiny18.dtsi default_transform):
@@ -293,9 +294,11 @@
          * Game mode's second face, the same mechanism as number mode's. Key 6
          * is a plain Shift there and is also the run key, so Shift is kept
          * off everything used while running: W, A, S and D, GUI, U and Y,
-         * and the two Spaces stay put. What changes is Escape to Z, V to R, the
+         * and the two Spaces stay put. What changes is Escape to Tab, V to R, the
          * right home row's Z X C to G M K, and the thumbs' left Ctrl and left
-         * Alt to their right-hand twins.
+         * Alt to their right-hand twins. Escape's Shift face was Z until
+         * 2026-10-22; Z is on the right home row already, and the game had
+         * no Tab.
          *
          * ZMK masks the triggering Shift for as long as a morphed key is
          * held, so a run pauses for that moment. keep-mods would stop that,
@@ -309,7 +312,7 @@
         gm_esc: gm_esc {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
-            bindings = <&kp ESCAPE>, <&kp Z>;
+            bindings = <&kp ESCAPE>, <&kp TAB>;
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
@@ -507,20 +510,30 @@
             key-positions = <2 9>;
             layers = <2>;
         };
+        /*
+         * The right hand types W E R, ! @ O and C M in AI mode since
+         * 2026-10-22, so these three chords sit on letters: W+!, W+E and
+         * R+O. require-prior-idle-ms keeps a rolled "we" or "ro" from
+         * firing them; they answer only from a standstill, like the mode
+         * switches.
+         */
         ai_redo {
             bindings = <&kp LC(LS(Z))>;
             key-positions = <3 10>;
             layers = <2>;
+            require-prior-idle-ms = <150>;
         };
         ai_cut {
             bindings = <&kp LC(X)>;
             key-positions = <3 4>;
             layers = <2>;
+            require-prior-idle-ms = <150>;
         };
         ai_find {
             bindings = <&kp LC(F)>;
             key-positions = <5 12>;
             layers = <2>;
+            require-prior-idle-ms = <150>;
         };
         /*
          * Left Alt triggers voice input, so it gets one gesture that works the
@@ -574,9 +587,10 @@
          * hand.
          *
          * Text entry only, as of 2026-09-16. AI mode used to have it too, but
-         * there is no way to type a letter in AI mode, so the IME is never
-         * changed there; leaving it out also keeps the chord off Tab and the
-         * down arrow, which do get pressed together.
+         * its left hand types no letters and its right-hand letters are for
+         * short replies, not Japanese, so the IME is never changed there;
+         * leaving it out also keeps the chord off the left up and right
+         * arrows, which do get pressed together.
          */
         ime {
             bindings = <&kp LC(SPACE)>;
@@ -714,14 +728,18 @@
         };
 
         /*
-         * AI mode. Simultaneous key combos select shortcuts and mode changes.
-         * Plain arrows remain available. Key 6 holds left
-         * Shift and key 13 holds right Shift. Space opens layer 8 on hold,
-         * while BackSpace keeps its digit page. The right thumbs type ! and @.
+         * AI mode. The left hand keeps left Ctrl, up and left Alt on the top
+         * row and left, down, right on the home row; simultaneous key combos
+         * on those keys select shortcuts and mode changes. Since 2026-10-22
+         * the right hand no longer mirrors the left: it types W E R on the
+         * top row, ! @ O on the home row and C M on the thumbs, for short
+         * replies without leaving the mode. Key 6 holds left Shift and key
+         * 13 holds right Shift. Space opens layer 8 on hold, while BackSpace
+         * keeps its digit page.
          */
         nav_layer {
             bindings = <
-&kp LCTRL  &kp UP_ARROW  &kp LALT  &kp RALT  &kp UP_ARROW  &kp RCTRL  &lmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &bmt RSHFT ENTER  &trans  &slt 8 SPACE  &kp EXCLAMATION  &kp AT_SIGN
+&kp LCTRL  &kp UP_ARROW  &kp LALT  &kp W  &kp E  &kp R  &lmt LSHFT ENTER  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp EXCLAMATION  &kp AT_SIGN  &kp O  &bmt RSHFT ENTER  &trans  &slt 8 SPACE  &kp C  &kp M
             >;
         };
 
@@ -765,7 +783,7 @@
          *
          * The right thumbs are Alt on key 16 and Ctrl on key 17, plain keys
          * because nothing here needs their taps. Key 17 is the thumb that
-         * holds Ctrl in text entry and AI mode, and reaching for it here found
+         * holds Ctrl in text entry, and reaching for it here found
          * a dead key (2026-09-17), so it is Ctrl here as well. Alt went to
          * key 16 rather than 17 so that the same habit before F4 gives
          * Ctrl+F4, which closes a tab, and never Alt+F4, which closes the
@@ -791,7 +809,7 @@
          * Enter, and anything more means going back to text entry.
          *
          * Holding Shift gives the second face through the gm_ mod-morphs
-         * above: Z on Escape's key, R on V's, G M K on the right home row,
+         * above: Tab on Escape's key, R on V's, G M K on the right home row,
          * and right Ctrl and right Alt on the thumbs. Nothing else changes.
          */
         game_layer {

@@ -95,8 +95,11 @@ class ChartModelTests(unittest.TestCase):
         actual = {combo["name"]: (tuple(combo["pos"]), combo["binding"])
                   for combo in combos if combo["name"].startswith("ai_")}
         self.assertEqual(actual, expected)
-        self.assertEqual(ai[4], "&kp UP_ARROW")
-        self.assertEqual(ai[17], "&kp AT_SIGN")
+        self.assertEqual(ai[3:6], ["&kp W", "&kp E", "&kp R"])
+        self.assertEqual(ai[10:13], ["&kp EXCLAMATION", "&kp AT_SIGN", "&kp O"])
+        self.assertEqual(ai[16:18], ["&kp C", "&kp M"])
+        for name in ("ai_redo", "ai_cut", "ai_find"):
+            self.assertEqual(next(c for c in combos if c["name"] == name)["idle"], "150")
         self.assertEqual(ai[15], "&slt 8 SPACE")
         self.assertEqual(bindings["ai_command_layer"][14], "&kp DELETE")
         self.assertEqual(bindings["ai_command_layer"][16], "&kp SLASH")
@@ -109,6 +112,14 @@ class ChartModelTests(unittest.TestCase):
             },
         )
         self.assertEqual(sum(2 in combo["layers"] for combo in combos), 13)
+
+    def test_game_shift_face_puts_tab_on_escape(self):
+        layers, _ = read_keymap()
+        game = dict(layers)["game_layer"]
+        self.assertEqual(game[0], "&gm_esc")
+        self.assertEqual(gen_svg.shifted(game[0]), "&kp TAB")
+        self.assertEqual(gen_svg.shifted(game[10]), "&kp G")
+        self.assertNotIn("&kp Z", [gen_svg.shifted(tok) for tok in game])
 
     def test_held_shift_faces_show_every_alternative_hold_position(self):
         layers, combos = read_keymap()

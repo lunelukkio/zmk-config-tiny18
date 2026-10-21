@@ -77,10 +77,10 @@ def fig1():
 
 # display name, layer, LED colour name, hex, switch combo, one-line description
 MODES = [
-    ("AI", "nav_layer", "青", "#1e6fd9", "mode_ai", "起動時のモード。左右に矢印と修飾キー。Space 長押しで9種類のslash command面を開く"),
+    ("AI", "nav_layer", "青", "#1e6fd9", "mode_ai", "起動時のモード。左手は修飾キーと矢印、右手は W E R・! @ O・C M の文字。Space 長押しで9種類のslash command面を開く"),
     ("文字入力", "default_layer", "緑", "#22aa44", "mode_text", "毎日の文字入力"),
     ("数字キーパッド", "number_layer", "黄", "#d4a017", "mode_num", "左手がテンキー、右手が四則演算。Shift 中は移動・ロック・システムキー"),
-    ("ゲーム", "game_layer", "シアン", "#17b8c4", "mode_game", "VRChat。WASD、GUI U Y、Z X C、Esc と V。Shift を押さえると Esc が Z、V が R、Z X C が G M K に変わる。親指は Ctrl・Space・Space・Alt"),
+    ("ゲーム", "game_layer", "シアン", "#17b8c4", "mode_game", "VRChat。WASD、GUI U Y、Z X C、Esc と V。Shift を押さえると Esc が Tab、V が R、Z X C が G M K に変わる。親指は Ctrl・Space・Space・Alt"),
     ("ファンクション", "fn_layer", "マゼンタ", "#b5389e", "mode_fn", "F1 から F12。Ctrl は %s の位置、Alt は %s の位置"
      % (mod_keys("fn_layer", "Ctrl"), mod_keys("fn_layer", "Alt"))),
     ("Bluetooth", "bluetooth_layer", "赤", "#dd2222", "mode_bt", "左上の3キーでLED、右上の2キーでOLEDの明るさを調整し、BTキーで接続プロファイルを切り替える"),
@@ -91,8 +91,8 @@ CAPTION = {
     "default_layer": "文字入力モード。英字は入力結果の大小ではなくキー名として大文字で表す。M は文字優先で、400ミリ秒の長押しでCtrlになる。左の親指 2 つがタップで BackSpace と Space、長押しで%sと%sを開く。" % (PAGE_LONG[6], PAGE_LONG[7]),
     "digit_symbol_layer": "%s を長押ししている間だけ。左手に 1 から 6、右手に 7 8 9 0 - =、右の親指に読点と句点。両端はタップで Enter、押さえると Shift。右の親指は Shift で ( ) になる。薄い色の左の親指は文字入力モードのまま。" % " か ".join(HOLDERS[6]),
     "edit_bracket_layer": "%s を長押ししている間だけ。Escape・括弧・Z X C V・句読点。Z はタップで Z、400 ミリ秒長押しで Shift。1回タップして175ミリ秒以内に押し直すと、Zを押し続けて自動反復する。Shift 中はEscapeがTabになり、通常のShift記号が出る。%s の位置はタップで Enter、押さえると Shift。薄い色の左の親指は文字入力モードのまま。" % (" か ".join(HOLDERS[7]), NAMES[13]),
-    "nav_layer": "AI モード。左上段はCtrl・↑・Alt、右上段は右Alt・↑・右Ctrl。右親指は!と@。編集操作とモード切替は2キーのcombo。左右のEnterはタップでEnter、長押しで左右それぞれのShift。Space長押しでAIコマンドの面を開く。",
-    "nav_shift": "AI モードで左右どちらかのEnterを長押しした状態。矢印はShift付きで送る。編集操作とモード切替のcomboは同じ位置。",
+    "nav_layer": "AI モード。左上段はCtrl・↑・Alt、左ホーム行は矢印。右手は上段が W E R、ホーム行が ! @ O、親指が C M。編集操作とモード切替は2キーのcombo。左右のEnterはタップでEnter、長押しで左右それぞれのShift。Space長押しでAIコマンドの面を開く。",
+    "nav_shift": "AI モードで左右どちらかのEnterを長押しした状態。矢印はShift付きで送り、右手の文字は大文字になる。編集操作とモード切替のcomboは同じ位置。",
     "ai_command_layer": "AIモードのSpaceを長押ししている間だけ開く。上段とホーム行に9種類のslash command。commandは英数入力へ切り替えて文字だけを送り、Enterは送らない。左上はEscape・Tab・GUI。左親指はDelete、右親指は/。",
     "number_layer": "数字キーパッドモード。数字と小数点はテンキーのコードを送る。左手がテンキー配列、右手が四則演算と =・バックスラッシュ。%s の位置はタップで Enter、押さえると Shift。左の親指は 2 と 3、右の親指は 0 と小数点。" % NAMES[13],
     "game_layer": "ゲームモード。W が S の真上に来て WASD のダイヤ型になる。%s の位置が Escape、%s の位置が V、右上段は GUI U Y、右のホーム行は Z X C。親指 4 つは Ctrl・Space・Space・Alt で、左の親指も文字入力モードとは違う。%s の位置は文字入力モードと同じ。" % (NAMES[0], NAMES[2], NAMES[13]),

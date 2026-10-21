@@ -42,21 +42,21 @@ layers:
   - LCTRL
   - UP ARROW
   - LALT
-  - RALT
-  - UP ARROW
-  - RCTRL
+  - W
+  - E
+  - R
   - {t: ENTER, h: LSHFT}
   - LEFT ARROW
   - DOWN ARROW
   - RIGHT ARROW
-  - LEFT ARROW
-  - DOWN ARROW
-  - RIGHT ARROW
+  - '!'
+  - '@'
+  - O
   - {t: ENTER, h: RSHFT}
   - {t: ▽, type: trans}
   - {t: SPACE, h: ai_command}
-  - '!'
-  - '@'
+  - C
+  - M
   number:
   - {t: KP 7, s: INSERT}
   - {t: KP 8, s: HOME}
@@ -96,7 +96,7 @@ layers:
   - LALT
   - LCTRL
   game:
-  - {t: ESCAPE, s: Z}
+  - {t: ESCAPE, s: TAB}
   - W
   - {t: V, s: R}
   - LGUI

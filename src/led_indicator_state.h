@@ -21,7 +21,8 @@ struct tiny18_led_state {
     int64_t pulse_deadline_ms;
     uint8_t notice_color;
     int64_t notice_deadline_ms;
-    bool sleeping;
+    /* True while ZMK reports the idle or sleep activity state: no output. */
+    bool inactive;
 };
 
 uint8_t tiny18_led_evaluate(const struct tiny18_led_state *state, int64_t now_ms);

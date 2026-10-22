@@ -21,11 +21,11 @@ ZMK firmware for [Tiny18](https://github.com/k3peta/tiny18), an 18-key wireless 
 
 - **Keymap.** Six modes and three held pages across nine layers, with 31 combos. AI Space opens a command page while held. The current chart is [included here](docs/keymap.html).
 - **One right-hand image.** `tiny18-right.uf2` has left/right Ctrl and Alt, arrows, @ and ! in AI mode. Two-key combos select shortcuts and mode switches outside Bluetooth mode. Bluetooth uses key 6 to return to AI. Holding Space opens nine slash commands. Held modifiers during command macros are outside the supported gesture.
-- **AI at startup.** Power-on, reset and wake from deep sleep all start in AI mode. The right-half RGB LED starts blue when brightness is at least 1%, and the text-entry combo remains available when typing is needed.
+- **AI at startup.** Power-on and reset start in AI mode. The right-half RGB LED starts blue when brightness is at least 1%, and the text-entry combo remains available when typing is needed.
 - **Layer colours.** The right half's RGB LED shows the mode: green for text entry, blue for AI, yellow for the number keypad, cyan for game, magenta for function, red for Bluetooth, and white while a held page is open.
 - **Right RGB LED brightness.** In Bluetooth mode, the left top row has `LED` (steady/500 ms pulse), `LED-` (dimmer), and `LED+` (brighter). The seven settings are 0, 1, 5, 10, 25, 50, and 100% PWM duty. At 0%, mode and battery/Bluetooth notices are dark; one `LED+` press restores 1%. Mode and brightness are saved separately, with 100% as the brightness default. This does not adjust the optional OLED display.
 - **Optional OLED brightness.** In Bluetooth mode, the right top row has a disabled key, `OLED-` (dimmer), and `OLED+` (brighter). Its four levels are 0, 1, 50, and 100%, saved in UIAPduino flash. At 100%, contrast is the former `0x7F`. At 0%, ordinary typing leaves it dark; power-on and wake from one-hour idle promote a saved 0% to 100%, while nonzero levels are restored. No hardware changes are needed.
-- **Deep sleep.** Both halves sleep after one hour idle (`CONFIG_ZMK_SLEEP=y`, `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=3600000`). Waking takes a key press on the right half, and that press is lost.
+- **No deep sleep.** Both halves stay connected (`CONFIG_ZMK_SLEEP=n`), so the first key press after any pause is delivered and the mode is kept. The right-half LED turns off after thirty minutes without a key press (`CONFIG_ZMK_IDLE_TIMEOUT=1800000`) and comes back on the next one. Up to v0.8.3 both halves entered deep sleep after one hour, waking took a key press on the right half, and that press was lost.
 - **Learning display.** [`src/layer_uart.c`](src/layer_uart.c) sends a three-byte state frame over UART1 (D1, TX only, 9600 baud, 8N1): layer, left modifiers and right modifiers. OLED controls remain one byte. Use keyboard and OLED firmware from the same version; the [wiring guide](docs/oled-setup.md) is unchanged.
 
 ## Keymap
@@ -131,7 +131,7 @@ material. Publication is a separate manual step after review; see the
 | Path | Purpose |
 | --- | --- |
 | `config/tiny18.keymap` | Canonical keymap |
-| `config/tiny18_*.conf` | Per-half ZMK configuration: LED colours, deep sleep, and on the right half ZMK Studio and the layer UART |
+| `config/tiny18_*.conf` | Per-half ZMK configuration: LED colours, no deep sleep, the LED idle timeout, and on the right half ZMK Studio and the layer UART |
 | `boards/shields/tiny18/` | Tiny18 shield and direct-pin hardware definition; the right overlay adds UART1 on D1 |
 | `src/layer_uart.c`, `src/start_in_ai.c`, `Kconfig`, `CMakeLists.txt`, `zephyr/module.yml` | The learning display sender and AI-mode startup, built as a Zephyr module of this repository |
 | `build.yaml` | Firmware build matrix and stable artifact names |

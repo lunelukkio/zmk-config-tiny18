@@ -111,7 +111,7 @@ ZMK のファイルを読むときに要る position 番号は <a href="#s2">2 �
 <li><a href="#s8">8. combo 全 31 個</a></li>
 <li><a href="#s9">9. 他の 5 モードの配置</a></li>
 <li><a href="#s10">10. LED の点灯方式・明るさとモード色</a></li>
-<li><a href="#s11">11. deep sleep と復帰</a></li>
+<li><a href="#s11">11. 待機と LED の消灯（deep sleep はやめた）</a></li>
 <li><a href="#src">出典</a></li>
 </ul></nav>
 
@@ -1307,13 +1307,20 @@ Bluetooth モードの左上にある <code>LED</code> キーで、<strong>色�
 2026-09-11 まで<strong>数字キーパッドモードがシアンに光っていた</strong>。シアンはゲームモードの色である。
 </div>
 
-<h2 id="s11">11. deep sleep と復帰</h2>
-<p>明るさ1%以上の常時点灯では、待機中もモード色が点灯する。一瞬点灯では、モード変更後 500 ms で消える。明るさ0%では通知を含めて消灯する。
-deep sleep に入ると、どちらの方式でも LED を消す。<code>CONFIG_ZMK_SLEEP=y</code> は左右で有効にし、
-<strong>1 時間</strong>無操作で deep sleep に入る。
-既定は 15 分だが、待たされる回数のほうが気になったので <code>CONFIG_ZMK_IDLE_SLEEP_TIMEOUT</code> を 1 時間にした。
+<h2 id="s11">11. 待機と LED の消灯（deep sleep はやめた）</h2>
+<p><strong>v0.8.4（2026-10-22）から deep sleep を使わない。</strong><code>CONFIG_ZMK_SLEEP=n</code> を左右に置き、
+無操作のあいだも Bluetooth の接続とキー割り込みを保つ。何時間放置しても最初の打鍵がそのまま届き、
+再起動も、左右を別々に起こす操作も無い。モードも直前のまま残る。
+代わりに電池は待機中も減り続けるので、持ちは実機で確かめる。</p>
+<p>LED は無操作 <strong>30 分</strong>で消える。ZMK の idle 状態（<code>CONFIG_ZMK_IDLE_TIMEOUT=1800000</code>）を
+右手の LED controller が受けて消灯し、次の打鍵で点灯に戻る。それまでは、明るさ1%以上の常時点灯ならモード色が点灯し、
+一瞬点灯ならモード変更後 500 ms で消え、明るさ0%なら通知を含めて消灯している。
+この build で idle に反応するのは LED だけで、外付け OLED は別電源のまま 1 時間無通信で自分で消える。</p>
+<p>以下は v0.8.3 まで使っていた deep sleep の記録である。当時は <code>CONFIG_ZMK_SLEEP=y</code> を左右で有効にし、
+<strong>1 時間</strong>無操作で deep sleep に入れていた。
+既定は 15 分だが、待たされる回数のほうが気になったので <code>CONFIG_ZMK_IDLE_SLEEP_TIMEOUT</code> を 1 時間にしていた。
 <strong>この値は左右そろえること。</strong>短いほうが先に眠ると、どちらが落ちたかで挙動が変わる。
-ただし USB 給電中は仕様上眠らないので、確認は必ず電池のみで行う。</p>
+USB 給電中は仕様上眠らないので、確認は必ず電池のみで行う。</p>
 
 <h3>キーで起こすには <code>wakeup-source;</code> が要る</h3>
 <p>最初はスリープに入ったきり、どのキーを押しても復帰できなかった。原因は
@@ -1351,6 +1358,7 @@ Zephyr 3.5 の <code>Z_PM_DEVICE_FLAGS</code> は、この devicetree プロパ�
 親機を起こしっぱなしにすれば左手だけで復帰できるようになるが、
 そのぶん電池を食い続けることになるため、<strong>両側ともスリープを有効にしたまま、時間だけ 1 時間へ延ばした</strong>。
 起こす回数を半分にする折衷であって、左手だけで復帰できるようになるわけではない。
+この折衷も v0.8.4 で取りやめ、deep sleep 自体を無効にした（この節の冒頭）。
 </div>
 
 <h3>左手側の UART がキーを 2 つ奪っていた</h3>
@@ -1379,7 +1387,7 @@ D6 は <code>S</code> のキー、D7 は <code>D</code> のキーにあたる。
 <p>いずれも上流の <a href="https://github.com/k3peta/zmk-config-tiny18">k3peta/zmk-config-tiny18</a> を fork した自分のリポジトリ内。</p>
 <ul class="tight">
 <li><code>config/tiny18.keymap</code> — このページの図はすべてこのファイルから生成している</li>
-<li><code>config/tiny18_l.conf</code> / <code>tiny18_r.conf</code> — LED の色・PWM、deep sleep</li>
+<li><code>config/tiny18_l.conf</code> / <code>tiny18_r.conf</code> — LED の色・PWM、deep sleep の無効化、LED の消灯時間</li>
 <li><code>boards/shields/tiny18/tiny18.dtsi</code> — 物理配置、<code>default_transform</code>、<code>wakeup-source;</code></li>
 <li><code>boards/shields/tiny18/tiny18_l.overlay</code> / <code>tiny18_r.overlay</code> — UART・PWM、<code>col-offset</code></li>
 <li><code>boards/shields/tiny18/Kconfig.defconfig</code> — 親機の指定</li>

@@ -15,11 +15,11 @@ Seeed Studio XIAO nRF52840 を2個使う18キー左右分割キーボード [Tin
 
 - **キーマップ。** 6つのモードと押しっぱなしで開く3つの面、全9レイヤー、combo 31個。現在の配置図は[同梱のHTML](docs/keymap.html)にあります。
 - **右手の uf2 は1種類。** `tiny18-right.uf2` のAIモードには左右Ctrl・Alt、矢印、@、!があります。Bluetooth以外では2キーのcomboでモードを切り替え、Bluetoothからは6番のAIキーで戻ります。Space長押しで9つのslash command面を開きます。修飾キーを保持したままのcommand入力は保証対象外です。
-- **起動時は AI。** 電源投入、リセット、deep sleepからの復帰はいずれもAIモードから始まります。右手のRGB LEDは明るさが1%以上なら青で始まり、文字を入力するときは従来どおりcomboで文字入力モードへ切り替えます。
+- **起動時は AI。** 電源投入とリセットはAIモードから始まります。右手のRGB LEDは明るさが1%以上なら青で始まり、文字を入力するときは従来どおりcomboで文字入力モードへ切り替えます。
 - **レイヤーの色。** 右手側の RGB LED がモードを示します。文字入力は緑、AI は青、数字キーパッドは黄、ゲームはシアン、ファンクションはマゼンタ、Bluetooth は赤、押しっぱなしの面を開いている間は白です。
 - **右手RGB LEDの明るさ。** Bluetoothモードの左上段は`LED`（常時／500 ms点灯）、`LED-`（暗くする）、`LED+`（明るくする）の順です。明るさは0、1、5、10、25、50、100%の7段階で、0%では電池・接続通知も消灯します。`LED+`1回で0%から1%に戻ります。方式と明るさは保存され、初期の明るさは100%です。OLED画面の輝度は変えません。
 - **学習用OLEDの明るさ。** Bluetoothモードの右上段は無効キー、`OLED-`（暗くする）、`OLED+`（明るくする）です。0、1、50、100%の4段階をUIAPduinoに保存し、100%は従来と同じcontrast `0x7F`です。0%で通常キーを押しても消灯を維持し、起動・1時間の自動消灯からの復帰時だけ0%を100%にします。1%以上は前回値を維持します。配線や部品の変更は不要です。
-- **deep sleep。** 左右とも無操作1時間で眠ります（`CONFIG_ZMK_SLEEP=y`、`CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=3600000`）。起こすには右手側のキーを1回押す必要があり、その打鍵は送られません。
+- **deep sleepなし。** 左右とも接続を保ちます（`CONFIG_ZMK_SLEEP=n`）。どれだけ放置しても最初の打鍵がそのまま届き、モードも直前のまま残ります。右手のLEDは無操作30分で消え（`CONFIG_ZMK_IDLE_TIMEOUT=1800000`）、次の打鍵で点きます。v0.8.3までは左右とも1時間で眠り、起こすには右手側のキーを1回押す必要があり、その打鍵は送られませんでした。
 - **学習用表示器。** [`src/layer_uart.c`](src/layer_uart.c) がUART1（D1、送信のみ、9600 baud、8N1）で状態3 byte（面番号、左修飾キー、右修飾キー）を送ります。OLED操作は従来どおり1 byteです。表示器と左右のキーボードは同じ版を使用します。配線は[導入手順](docs/oled-setup.md)のままです。
 
 ## キーマップ
@@ -117,7 +117,7 @@ OLED用toolchainは不要です。`v0.3.1`のようなtagをpushすると、統�
 | パス | 役割 |
 | --- | --- |
 | `config/tiny18.keymap` | キーマップの正本 |
-| `config/tiny18_*.conf` | 左右それぞれの ZMK 設定。LED の色、deep sleep、右手側は ZMK Studio とレイヤー送信 UART |
+| `config/tiny18_*.conf` | 左右それぞれの ZMK 設定。LED の色、deep sleep の無効化、LED の消灯時間、右手側は ZMK Studio とレイヤー送信 UART |
 | `boards/shields/tiny18/` | Tiny18 のシールド定義と direct-pin の配線。右手側の overlay が D1 に UART1 を足す |
 | `src/layer_uart.c`、`src/start_in_ai.c`、`Kconfig`、`CMakeLists.txt`、`zephyr/module.yml` | 学習用表示器への送信とAIモードでの起動。このリポジトリ自体を Zephyr モジュールとしてビルドする |
 | `build.yaml` | ビルドの組み合わせと成果物の名前 |

@@ -56,13 +56,13 @@ static void test_notice_then_steady_layer(void) {
     assert(tiny18_led_evaluate(&state, 2000) == 1);
 }
 
-static void test_sleep_suppresses_all_output(void) {
+static void test_inactive_suppresses_all_output(void) {
     const struct tiny18_led_state state = {
         .mode = TINY18_LED_MODE_STEADY,
         .layer_color = 1,
         .notice_color = 4,
         .notice_deadline_ms = 2000,
-        .sleeping = true,
+        .inactive = true,
     };
 
     assert(tiny18_led_evaluate(&state, 1000) == 0);
@@ -106,7 +106,7 @@ int main(void) {
     test_steady_mode_has_no_expiry();
     test_notice_overrides_then_restores_layer_mode();
     test_notice_then_steady_layer();
-    test_sleep_suppresses_all_output();
+    test_inactive_suppresses_all_output();
     test_pulse_deadline_starts_from_latest_change();
     test_mode_setting_validation();
     test_seven_brightness_steps_and_saved_values();

@@ -192,10 +192,14 @@ static int activity_listener_cb(const zmk_event_t *eh) {
         return ZMK_EV_EVENT_BUBBLE;
     }
 
+    /* ZMK reports IDLE after CONFIG_ZMK_IDLE_TIMEOUT without a keypress and
+     * ACTIVE on the next one. IDLE and SLEEP both turn the LED off; ACTIVE
+     * restores the layer colour. Deep sleep is disabled in the conf files, so
+     * IDLE is the state that actually occurs. */
     k_spinlock_key_t key = k_spin_lock(&runtime_lock);
     if (runtime.settings_loaded) {
-        runtime.output.sleeping = (ev->state == ZMK_ACTIVITY_SLEEP);
-        if (runtime.output.sleeping) {
+        runtime.output.inactive = (ev->state != ZMK_ACTIVITY_ACTIVE);
+        if (runtime.output.inactive) {
             runtime.output.notice_color = 0;
             runtime.boot_stage = BOOT_STAGE_DONE;
         }
@@ -420,7 +424,7 @@ static int led_settings_commit(void) {
     runtime.initialized = true;
     runtime.active_layer = layer;
     runtime.output.layer_color = color_for_layer(layer);
-    runtime.output.sleeping = false;
+    runtime.output.inactive = false;
     runtime.output.notice_color = 0;
     runtime.battery_retries = 0;
     runtime.boot_stage = BOOT_STAGE_BATTERY;

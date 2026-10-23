@@ -17,8 +17,9 @@
  * repository.
  *
  * Power. The panel is the largest consumer, so it is switched off after
- * IDLE_BLANK_MS without a valid byte and back on by the next one, the same
- * one hour the keyboard waits before its own deep sleep. The MCU runs from
+ * IDLE_BLANK_MS without a valid byte and back on by the next one: thirty
+ * minutes since v0.8.5, the same idle time after which the keyboard turns
+ * its mode LED off and parks the D1 line. The MCU runs from
  * the 24 MHz HSI divided to 8 MHz (funconfig.h and the top of main) and
  * sleeps in WFI between interrupts: the USART wakes it for a byte, SysTick
  * every TICK_MS to count idle time. Datasheet figures at 5 V: 48 MHz run
@@ -52,7 +53,7 @@
 #define TICKS_PER_TICK Ticks_from_Ms(TICK_MS)
 
 // Time without a valid byte is idle time.
-#define IDLE_BLANK_MS (60 * 60 * 1000)
+#define IDLE_BLANK_MS (30 * 60 * 1000)
 #define IDLE_BLANK_TICKS (IDLE_BLANK_MS / TICK_MS)
 
 static const uint8_t init_bytes[] = {

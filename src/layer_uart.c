@@ -13,6 +13,19 @@
  *
  * Listeners enqueue records without blocking. A worker reads modifier state
  * after event processing; a dedicated thread writes complete records to UART.
+ *
+ * Idle (v0.8.5). The UART idles with D1 high. While the display is wired but
+ * unpowered, that 3.3 V pushes up to about 2.6 mA through the 1 kOhm series
+ * resistor and PD6's protection diode into the dead board, enough to drain
+ * the right half's battery overnight. When ZMK reports its idle state
+ * (CONFIG_ZMK_IDLE_TIMEOUT, thirty minutes, the same event that turns the
+ * mode LED off), the thread suspends uart1 through device power management:
+ * the driver waits for the last byte, disables the UARTE and applies the
+ * overlay's sleep pinctrl, which leaves D1 as a disconnected input. The
+ * receiver's pull-down then reads it as an unplugged cable. The thread
+ * resumes the device before the next record, or when ZMK reports activity,
+ * and waits one frame time so that the receiver sees an idle line first.
+ * Up to v0.8.3 deep sleep did the same through the same pinctrl state.
  */
 
 #include <errno.h>
@@ -21,8 +34,12 @@
 #include <zephyr/drivers/uart.h>
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/pm/device.h>
 
+#include <zmk/activity.h>
 #include <zmk/event_manager.h>
+#include <zmk/events/activity_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
 #include <zmk/events/layer_state_changed.h>
 #include <zmk/events/position_state_changed.h>
@@ -31,31 +48,83 @@
 #include <zmk/keys.h>
 #include "tiny18_oled_uart.h"
 
+LOG_MODULE_REGISTER(tiny18_layer_uart, CONFIG_ZMK_LOG_LEVEL);
+
 static const struct device *const layer_uart = DEVICE_DT_GET(DT_NODELABEL(uart1));
+
+enum oled_record_kind {
+    OLED_RECORD_BYTES,
+    OLED_RECORD_PARK,   /* suspend uart1: D1 becomes a disconnected input */
+    OLED_RECORD_UNPARK, /* resume uart1 without sending anything */
+};
+
 struct oled_record {
+    uint8_t kind;
     uint8_t length;
     uint8_t bytes[3];
 };
 K_MSGQ_DEFINE(oled_tx_queue, sizeof(struct oled_record), 64, 1);
 
+/* One 8N1 byte at 9600 baud takes about 1.04 ms. After a resume the line has
+ * only just returned to idle high; waiting one frame time lets the receiver
+ * see it before the first start bit. */
+#define UART_RESUME_SETTLE_MS 2
+
+/* Owned by the TX thread. */
+static bool uart_parked;
+
+static void set_parked(bool park) {
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+    if (park == uart_parked) {
+        return;
+    }
+    const enum pm_device_action action =
+        park ? PM_DEVICE_ACTION_SUSPEND : PM_DEVICE_ACTION_RESUME;
+    const int rc = pm_device_action_run(layer_uart, action);
+    if (rc != 0 && rc != -EALREADY) {
+        LOG_WRN("uart1 %s failed (%d)", park ? "suspend" : "resume", rc);
+        return;
+    }
+    uart_parked = park;
+    if (!park) {
+        k_sleep(K_MSEC(UART_RESUME_SETTLE_MS));
+    }
+#else
+    ARG_UNUSED(park);
+#endif
+}
+
 static void oled_tx_thread(void *a, void *b, void *c) {
     struct oled_record record;
     while (true) {
         k_msgq_get(&oled_tx_queue, &record, K_FOREVER);
-        if (device_is_ready(layer_uart)) {
-            for (uint8_t i = 0; i < record.length; i++) {
-                uart_poll_out(layer_uart, record.bytes[i]);
-            }
+        if (!device_is_ready(layer_uart)) {
+            continue;
+        }
+        if (record.kind == OLED_RECORD_PARK) {
+            set_parked(true);
+            continue;
+        }
+        /* Bytes and UNPARK both need the device awake; UNPARK carries none. */
+        set_parked(false);
+        for (uint8_t i = 0; i < record.length; i++) {
+            uart_poll_out(layer_uart, record.bytes[i]);
         }
     }
 }
-K_THREAD_DEFINE(oled_tx_thread_id, 512, oled_tx_thread, NULL, NULL, NULL, 10, 0, 0);
+K_THREAD_DEFINE(oled_tx_thread_id, 1024, oled_tx_thread, NULL, NULL, NULL, 10, 0, 0);
+
+static int enqueue_control(enum oled_record_kind kind) {
+    const struct oled_record record = {.kind = kind, .length = 0};
+    return k_msgq_put(&oled_tx_queue, &record, K_NO_WAIT);
+}
 
 int tiny18_oled_send(uint8_t command) {
     if (command < TINY18_OLED_ACTIVITY || command > TINY18_OLED_BOOT) {
         return -EINVAL;
     }
-    const struct oled_record record = {.length = 1, .bytes = {command}};
+    const struct oled_record record = {
+        .kind = OLED_RECORD_BYTES, .length = 1, .bytes = {command}};
     return k_msgq_put(&oled_tx_queue, &record, K_NO_WAIT);
 }
 
@@ -76,6 +145,7 @@ static struct oled_record current_state(void) {
     const zmk_mod_flags_t mods = zmk_hid_get_explicit_mods();
     const uint8_t layer = zmk_keymap_highest_layer_active();
     return (struct oled_record){
+        .kind = OLED_RECORD_BYTES,
         .length = 3,
         .bytes = {TINY18_STATE_HEADER | layer,
                   TINY18_STATE_LEFT | side_mods(mods, false),
@@ -132,6 +202,26 @@ ZMK_LISTENER(tiny18_layer_uart, layer_uart_listener);
 ZMK_SUBSCRIPTION(tiny18_layer_uart, zmk_layer_state_changed);
 ZMK_SUBSCRIPTION(tiny18_layer_uart, zmk_keycode_state_changed);
 ZMK_SUBSCRIPTION(tiny18_layer_uart, zmk_position_state_changed);
+
+/* ZMK reports IDLE after CONFIG_ZMK_IDLE_TIMEOUT without a key press and
+ * ACTIVE on the next one (SLEEP cannot occur: deep sleep is disabled). The
+ * records keep the order with any frames already queued, so a frame that is
+ * still waiting goes out before the line is parked. */
+static int activity_listener(const zmk_event_t *eh) {
+    const struct zmk_activity_state_changed *ev = as_zmk_activity_state_changed(eh);
+    if (ev == NULL) {
+        return ZMK_EV_EVENT_BUBBLE;
+    }
+    const enum oled_record_kind kind =
+        ev->state == ZMK_ACTIVITY_ACTIVE ? OLED_RECORD_UNPARK : OLED_RECORD_PARK;
+    if (enqueue_control(kind) != 0) {
+        LOG_WRN("OLED queue full; activity state %d not applied", ev->state);
+    }
+    return ZMK_EV_EVENT_BUBBLE;
+}
+
+ZMK_LISTENER(tiny18_layer_uart_activity, activity_listener);
+ZMK_SUBSCRIPTION(tiny18_layer_uart_activity, zmk_activity_state_changed);
 
 static int layer_uart_init(void) {
     if (!device_is_ready(layer_uart)) {

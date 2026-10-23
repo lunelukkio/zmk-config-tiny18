@@ -80,10 +80,14 @@ struct led_runtime {
     bool initialized;
 };
 
+/* Defaults for a half without saved settings (v0.8.5): pulse mode at 25% duty,
+ * so the LED lights only for the boot notices and for CONFIG_TINY18_LED_PULSE_MS
+ * after a mode change. Saved settings override both. Up to v0.8.4 the defaults
+ * were steady mode at 100%. */
 static struct led_runtime runtime = {
-    .output = {.mode = TINY18_LED_MODE_STEADY},
+    .output = {.mode = TINY18_LED_MODE_PULSE},
     .boot_stage = BOOT_STAGE_BATTERY,
-    .brightness = 100,
+    .brightness = 25,
 };
 
 static struct k_spinlock runtime_lock;

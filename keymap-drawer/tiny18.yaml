@@ -154,13 +154,13 @@ layers:
   - .
   ai_command:
   - ESCAPE
-  - TAB
   - LGUI
+  - '&m_clear'
   - '&m_diff'
   - '&m_compact'
   - '&m_status'
   - {t: ENTER, h: LSHFT}
-  - '&m_clear'
+  - TAB
   - '&m_resume'
   - '&m_model'
   - '&m_pr'

@@ -101,6 +101,9 @@ class ChartModelTests(unittest.TestCase):
         for name in ("ai_redo", "ai_cut", "ai_find"):
             self.assertEqual(next(c for c in combos if c["name"] == name)["idle"], "150")
         self.assertEqual(ai[15], "&slt 8 SPACE")
+        self.assertEqual(bindings["ai_command_layer"][0:3],
+                         ["&kp ESCAPE", "&kp LGUI", "&m_clear"])
+        self.assertEqual(bindings["ai_command_layer"][7], "&kp TAB")
         self.assertEqual(bindings["ai_command_layer"][14], "&kp DELETE")
         self.assertEqual(bindings["ai_command_layer"][16], "&kp SLASH")
         self.assertEqual(

@@ -93,7 +93,7 @@ CAPTION = {
     "edit_bracket_layer": "%s を長押ししている間だけ。Escape・括弧・Z X C V・句読点。Z はタップで Z、400 ミリ秒長押しで Shift。1回タップして175ミリ秒以内に押し直すと、Zを押し続けて自動反復する。Shift 中はEscapeがTabになり、通常のShift記号が出る。%s の位置はタップで Enter、押さえると Shift。薄い色の左の親指は文字入力モードのまま。" % (" か ".join(HOLDERS[7]), NAMES[13]),
     "nav_layer": "AI モード。左上段はCtrl・↑・Alt、左ホーム行は矢印。右手は上段が W E R、ホーム行が ! @ O、親指が C M。編集操作とモード切替は2キーのcombo。左右のEnterはタップでEnter、長押しで左右それぞれのShift。Space長押しでAIコマンドの面を開く。",
     "nav_shift": "AI モードで左右どちらかのEnterを長押しした状態。矢印はShift付きで送り、右手の文字は大文字になる。編集操作とモード切替のcomboは同じ位置。",
-    "ai_command_layer": "AIモードのSpaceを長押ししている間だけ開く。上段とホーム行に9種類のslash command。commandは英数入力へ切り替えて文字だけを送り、Enterは送らない。左上はEscape・Tab・GUI。左親指はDelete、右親指は/。",
+    "ai_command_layer": "AIモードのSpaceを長押ししている間だけ開く。上段とホーム行に9種類のslash command。commandは英数入力へ切り替えて文字だけを送り、Enterは送らない。左上段はEscape・GUI・/clear、Tabはその下のホーム行。左親指はDelete、右親指は/。",
     "number_layer": "数字キーパッドモード。数字と小数点はテンキーのコードを送る。左手がテンキー配列、右手が四則演算と =・バックスラッシュ。%s の位置はタップで Enter、押さえると Shift。左の親指は 2 と 3、右の親指は 0 と小数点。" % NAMES[13],
     "game_layer": "ゲームモード。W が S の真上に来て WASD のダイヤ型になる。%s の位置が Escape、%s の位置が V、右上段は GUI U Y、右のホーム行は Z X C。親指 4 つは Ctrl・Space・Space・Alt で、左の親指も文字入力モードとは違う。%s の位置は文字入力モードと同じ。" % (NAMES[0], NAMES[2], NAMES[13]),
     "fn_layer": "ファンクションモード。F キーは数字の面で同じ数字がある位置。%s の位置を押さえると Ctrl、%s の位置を押さえると Alt。%s の位置と薄い色の左の親指は文字入力モードと同じ。" % (mod_keys("fn_layer", "Ctrl"), mod_keys("fn_layer", "Alt"), NAMES[13]),

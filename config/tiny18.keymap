@@ -863,7 +863,7 @@
 
         ai_command_layer {
             bindings = <
-&kp ESCAPE  &kp TAB  &kp LGUI  &m_diff  &m_compact  &m_status  &lmt LSHFT ENTER  &m_clear  &m_resume  &m_model  &m_pr  &m_review  &m_insights  &bmt RSHFT ENTER  &kp DELETE  &trans  &kp SLASH  &kp PERIOD
+&kp ESCAPE  &kp LGUI  &m_clear  &m_diff  &m_compact  &m_status  &lmt LSHFT ENTER  &kp TAB  &m_resume  &m_model  &m_pr  &m_review  &m_insights  &bmt RSHFT ENTER  &kp DELETE  &trans  &kp SLASH  &kp PERIOD
             >;
         };
     };

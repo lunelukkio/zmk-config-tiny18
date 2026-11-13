@@ -102,8 +102,12 @@ class ChartModelTests(unittest.TestCase):
             self.assertEqual(next(c for c in combos if c["name"] == name)["idle"], "150")
         self.assertEqual(ai[15], "&slt 8 SPACE")
         self.assertEqual(bindings["ai_command_layer"][0:3],
-                         ["&kp ESCAPE", "&kp LGUI", "&m_clear"])
-        self.assertEqual(bindings["ai_command_layer"][7], "&kp TAB")
+                         ["&kp ESCAPE", "&kp TAB", "&kp LGUI"])
+        self.assertEqual(bindings["ai_command_layer"][7], "&m_clear")
+        zxcv = bindings["edit_bracket_layer"]
+        self.assertEqual(zxcv[0:3], ["&esc_grave", "&kp TAB", "&f10_tilde"])
+        self.assertEqual(gen_svg.shift_face(zxcv)[0:3],
+                         ["&kp GRAVE", "&kp TAB", "&kp TILDE"])
         self.assertEqual(bindings["ai_command_layer"][14], "&kp DELETE")
         self.assertEqual(bindings["ai_command_layer"][16], "&kp SLASH")
         self.assertEqual(

@@ -168,7 +168,12 @@ def shift_face(bindings):
     """
     out = []
     for tok in bindings:
-        tok = shifted(tok)
+        morphed = shifted(tok)
+        # A mod-morph masks the Shift that triggered it, so its key reaches
+        # the host unshifted: Shift on the ZXCV Escape sends a backquote.
+        if morphed != tok:
+            out.append(morphed)
+            continue
         match = re.fullmatch(r"&kp (\w+)", tok)
         if match and match.group(1) in HOST_SHIFT_OUTPUT:
             tok = "&kp " + HOST_SHIFT_OUTPUT[match.group(1)]

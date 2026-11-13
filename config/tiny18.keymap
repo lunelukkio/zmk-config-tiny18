@@ -165,11 +165,21 @@
             bindings = <&mo>, <&kp>;
         };
 
-        /* The ZXCV page: Escape normally, plain Tab with Shift. */
-        esc_tab: escape_tab {
+        /* The ZXCV page: Escape normally, the backquote with Shift. Tab
+         * has its own key to the right since 2026-11-14. */
+        esc_grave: escape_grave {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
-            bindings = <&m_esc>, <&kp TAB>;
+            bindings = <&m_esc>, <&kp GRAVE>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        /* The ZXCV page: F10 normally, the tilde with Shift. Shift+F10
+         * stays on function mode, whose F10 is a plain key. */
+        f10_tilde: f10_tilde {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp F10>, <&kp TILDE>;
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
@@ -364,7 +374,7 @@
      * modifiers are outside the supported command gesture. */
     macros {
         /*
-         * One Escape, pressed and released. esc_tab uses it so Escape cannot
+         * One Escape, pressed and released. esc_grave uses it so Escape cannot
          * turn into a run of Escapes while the key is held.
          */
         m_esc: m_esc {
@@ -836,9 +846,8 @@
             >;
         };
 
-        /* Hold key 15 (Space) or 16 (N): Escape, with Tab while Shift is
-         * held, F10 and the brackets on the
-         * top row, Z X C V on the left home row, punctuation on the right,
+        /* Hold key 15 (Space) or 16 (N): Escape, Tab, F10 and the brackets
+         * on the top row, Z X C V on the left home row, punctuation on the right,
          * the text-entry Enter on 13 with Shift on its hold, the comma and
          * the full stop on the right thumbs. B is a combo on the C and V
          * keys. Key 6 is Z on tap and left Shift after 400 ms, so both
@@ -854,16 +863,20 @@
          * carry the IME toggle and a question mark: the toggle is now the
          * E+F chord, and the question mark is Shift over the slash on
          * this page. Z taps as Z, holds for left Shift after 400 ms, and
-         * repeats when pressed again within 175 ms after a tap. */
+         * repeats when pressed again within 175 ms after a tap.
+         *
+         * Since 2026-11-14 key 1 is a plain Tab, so Shift+Tab is Shift with
+         * it, and the backquote and tilde moved to the Shift faces of
+         * Escape and F10. */
         edit_bracket_layer {
             bindings = <
-&esc_tab  &kp GRAVE  &kp F10  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &zmt LSHFT Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &trans  &slt 7 SPACE  &kp COMMA  &kp PERIOD
+&esc_grave  &kp TAB  &f10_tilde  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &zmt LSHFT Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &trans  &slt 7 SPACE  &kp COMMA  &kp PERIOD
             >;
         };
 
         ai_command_layer {
             bindings = <
-&kp ESCAPE  &kp LGUI  &m_clear  &m_diff  &m_compact  &m_status  &lmt LSHFT ENTER  &kp TAB  &m_resume  &m_model  &m_pr  &m_review  &m_insights  &bmt RSHFT ENTER  &kp DELETE  &trans  &kp SLASH  &kp PERIOD
+&kp ESCAPE  &kp TAB  &kp LGUI  &m_diff  &m_compact  &m_status  &lmt LSHFT ENTER  &m_clear  &m_resume  &m_model  &m_pr  &m_review  &m_insights  &bmt RSHFT ENTER  &kp DELETE  &trans  &kp SLASH  &kp PERIOD
             >;
         };
     };

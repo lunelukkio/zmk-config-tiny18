@@ -200,11 +200,12 @@ Alt が <code>{{LALT_KEYS}}</code>、GUI が <code>{{LGUI_KEYS}}</code>。AIモ�
 <h3>{{PAGE4}} — {{HOLD4}} を長押ししている間だけ</h3>
 {{FIG_edit_bracket_layer}}
 {{LEGEND}}
-<p>Shift 中の図では Escape が Tab になり、各キーから実際に届く側を同じ配列で表示する。</p>
+<p>Shift 中の図では Escape がバッククォート、F10 がチルダになり、各キーから実際に届く側を同じ配列で表示する。</p>
 {{FIG_edit_bracket_layer_shift}}
 {{LEGEND}}
-<p><code>W</code> の位置は<strong>Escape、Shift を押さえている間は Tab</strong>で、<code>R</code> の位置が <code>F10</code>、そのほかに括弧 3 種と <code>Z X C V</code> がここにある。
-<code>E</code> の位置はバッククォートで、Shift を足せばチルダになる。
+<p>上段左手は <code>W</code> の位置が <strong>Escape</strong>、<code>E</code> の位置が <strong>Tab</strong>、<code>R</code> の位置が <code>F10</code> で、そのほかに括弧 3 種と <code>Z X C V</code> がここにある。
+Shift を押さえている間は、Escape の位置がバッククォート、F10 の位置がチルダになる。Tab は Shift を足せば Shift+Tab になる。
+Shift+F10 はファンクションモードで送る。
 <code>J</code> と <code>K</code> の位置はセミコロンとアポストロフィで、Shift を足せば <code>:</code> と <code>&quot;</code> になる。
 右の親指は読点と句点である。AIモードの右親指は C と M で、! と @ は右のホーム行にある。
 {{PAGE3}}でも右の親指は読点と句点で、Shift を重ねると <code>(</code> <code>)</code> になる。
@@ -277,8 +278,8 @@ ZMK 標準の layer-tap は <code>quick-tap-ms</code> が無効なので、
 <p>空白を打った直後に{{PAGE4}}を開くときは、<code>Space</code> を押さえ直す代わりに
 <code>N</code> を押さえる。</p>
 <div class="note">
-<strong>Escape は通常時、Tab は Shift 中である。</strong>
-{{PAGE4}}の <code>W</code> の位置は通常時に Escape を1回だけ送り、Shiftを押さえている間は通常のTabを送る。
+<strong>Escape は通常時、バッククォートは Shift 中である。</strong>
+{{PAGE4}}の <code>W</code> の位置は通常時に Escape を1回だけ送り、Shiftを押さえている間はバッククォートを送る。
 Escape側はmacroで押下と解放をまとめて送るため、押さえ続けてもEscapeが自動反復しない。2回目は指を離して押し直す。
 </div>
 <div class="note">
@@ -355,7 +356,7 @@ W+Rはファンクションモード、R+!はBluetoothモード、
 {{FIG_ai_command_layer}}
 {{LEGEND}}
 <p>左親指は <code>Delete</code>、右親指は <code>/</code> を送る。</p>
-<p>左上段はEscape・GUI・<code>/clear</code>で、Tabはその下のホーム行にある。残る上段とホーム行のcommandキーで
+<p>左上段はEscape・Tab・GUIで、<code>/clear</code>はEscapeの下のホーム行にある。残る上段とホーム行のcommandキーで
 <code>/clear</code>、<code>/resume</code>、<code>/model</code>、
 <code>/diff</code>、<code>/compact</code>、<code>/status</code>、
 <code>/pr</code>、<code>/review</code>、<code>/insights</code>を入力する。

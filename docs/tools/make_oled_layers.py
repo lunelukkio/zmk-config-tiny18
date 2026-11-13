@@ -311,9 +311,13 @@ def label_sets(layers: list, keys: str) -> tuple[list[list[list[str]]], list[int
             active.add("MOD_RALT")
         inherited = ai_base if layer == 8 else base
         bindings = [inherited[position] if binding == "&trans" else binding for position, binding in enumerate(layers[layer][1])]
-        bindings = [gen_svg.resolve_morph(binding, active) for binding in bindings]
+        resolved = [gen_svg.resolve_morph(binding, active) for binding in bindings]
         letter_case = layers[layer][0] in gen_svg.LETTER_CASE_LAYERS
-        labels = [state_lines(bindings[position], shift, ctrl and layer != 2, max_chars,
+        # A key a mod-morph already swapped reaches the host without the
+        # Shift, so it must not be shifted a second time (` must not become ~).
+        labels = [state_lines(resolved[position],
+                              shift and resolved[position] == bindings[position],
+                              ctrl and layer != 2, max_chars,
                               letter_case=letter_case) for position, _, _ in cells]
         if labels not in sets:
             sets.append(labels)

@@ -106,6 +106,8 @@ class ChartModelTests(unittest.TestCase):
         self.assertEqual(bindings["ai_command_layer"][7], "&m_clear")
         zxcv = bindings["edit_bracket_layer"]
         self.assertEqual(zxcv[0:3], ["&esc_grave", "&kp TAB", "&f10_tilde"])
+        self.assertEqual(zxcv[14], "&kp DELETE")
+        self.assertEqual(bindings["ai_command_layer"][14], zxcv[14])
         self.assertEqual(gen_svg.shift_face(zxcv)[0:3],
                          ["&kp GRAVE", "&kp TAB", "&kp TILDE"])
         self.assertEqual(bindings["ai_command_layer"][14], "&kp DELETE")

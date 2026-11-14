@@ -46,7 +46,8 @@
  * An unassigned key is &none, not &trans, so it does nothing rather than
  * falling through to the layer below. The one exception is the pair of left
  * thumbs, keys 14 and 15: most modes inherit BackSpace and Space from
- * text entry. AI binds Space explicitly to its command page. Key 13 is
+ * text entry. AI binds Space explicitly to its command page, and that
+ * page and the ZXCV page put Delete on key 14. Key 13 is
  * Enter on tap and Shift on hold (right Shift in AI and its command page).
  * In text entry, AI mode and on the digit page, key 6 is a tap/hold key with
  * a longer term for the left little finger: A / Shift in text entry and
@@ -859,7 +860,9 @@
          * left home row - the same shape that already gives Ctrl+Z and
          * Ctrl+X.
          *
-         * Key 14 is transparent and 15 keeps the ZXCV hold target. They used to
+         * Key 14 is Delete, as on the AI command page, since 2026-11-14, so
+         * Space and BackSpace give Delete in text entry as they do in AI.
+         * Key 15 keeps the ZXCV hold target. The thumbs used to
          * carry the IME toggle and a question mark: the toggle is now the
          * E+F chord, and the question mark is Shift over the slash on
          * this page. Z taps as Z, holds for left Shift after 400 ms, and
@@ -870,7 +873,7 @@
          * Escape and F10. */
         edit_bracket_layer {
             bindings = <
-&esc_grave  &kp TAB  &f10_tilde  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &zmt LSHFT Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &trans  &slt 7 SPACE  &kp COMMA  &kp PERIOD
+&esc_grave  &kp TAB  &f10_tilde  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &zmt LSHFT Z  &kp X  &kp C  &kp V  &kp SEMICOLON  &kp SINGLE_QUOTE  &kp SLASH  &bmt LSHFT ENTER  &kp DELETE  &slt 7 SPACE  &kp COMMA  &kp PERIOD
             >;
         };
 

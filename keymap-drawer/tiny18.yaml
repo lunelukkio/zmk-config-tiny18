@@ -148,7 +148,7 @@ layers:
   - ''''
   - /
   - {t: ENTER, h: LSHFT}
-  - {t: ▽, type: trans}
+  - DELETE
   - {t: SPACE, h: edit_bracket, type: held}
   - ','
   - .

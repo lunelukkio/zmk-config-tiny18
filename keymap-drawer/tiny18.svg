@@ -1144,9 +1144,9 @@ path.combo {
 <text x="0" y="0" class="key tap">ENTER</text>
 <text x="0" y="26" class="key hold">LSHFT</text>
 </g>
-<g transform="translate(180, 150)" class="key trans keypos-14">
-<rect rx="6" ry="6" x="-28" y="-28" width="56" height="56" class="key trans"/>
-<text x="0" y="0" class="key trans tap">▽</text>
+<g transform="translate(180, 150)" class="key keypos-14">
+<rect rx="6" ry="6" x="-28" y="-28" width="56" height="56" class="key"/>
+<text x="0" y="0" class="key tap">DELETE</text>
 </g>
 <g transform="translate(240, 150)" class="key held keypos-15">
 <rect rx="6" ry="6" x="-28" y="-28" width="56" height="56" class="key held"/>

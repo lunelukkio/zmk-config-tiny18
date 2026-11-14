@@ -134,9 +134,9 @@ layers:
   - {t: ',', s: (}
   - {t: ., s: )}
   edit_bracket:
-  - {t: '&m_esc', s: TAB}
-  - '`'
-  - F10
+  - {t: '&m_esc', s: '`'}
+  - TAB
+  - {t: F10, s: '~'}
   - '['
   - ']'
   - \
@@ -154,13 +154,13 @@ layers:
   - .
   ai_command:
   - ESCAPE
+  - TAB
   - LGUI
-  - '&m_clear'
   - '&m_diff'
   - '&m_compact'
   - '&m_status'
   - {t: ENTER, h: LSHFT}
-  - TAB
+  - '&m_clear'
   - '&m_resume'
   - '&m_model'
   - '&m_pr'

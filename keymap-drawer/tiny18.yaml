@@ -156,16 +156,16 @@ layers:
   - ESCAPE
   - TAB
   - LGUI
-  - '&m_diff'
-  - '&m_compact'
   - '&m_status'
-  - {t: ENTER, h: LSHFT}
+  - '&m_usage'
   - '&m_clear'
-  - '&m_resume'
+  - {t: ENTER, h: LSHFT}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
   - '&m_model'
-  - '&m_pr'
-  - '&m_review'
-  - '&m_insights'
+  - '&m_effort'
+  - '&m_resume'
   - {t: ENTER, h: RSHFT}
   - DELETE
   - {type: held}

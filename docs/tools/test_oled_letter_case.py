@@ -59,7 +59,7 @@ class LetterCaseTests(unittest.TestCase):
         self.assertEqual(self.labels(2, 2), self.labels(2))
         self.assertEqual(self.labels(2, 8), self.labels(2))
         self.assertEqual(oled.title_text(2, len(oled.LAYER_TITLES) * 10), "AI")
-        self.assertEqual(self.labels(8)[3], ["/DIF"])
+        self.assertEqual(self.labels(8)[3], ["/STA"])
         self.assertEqual(self.labels(5)[1], ["W"])
 
     def test_ai_modifiers_use_shared_oled_labels(self):

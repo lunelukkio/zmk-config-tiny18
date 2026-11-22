@@ -49,6 +49,8 @@
  * text entry. AI binds Space explicitly to its command page, and that
  * page and the ZXCV page put Delete on key 14. Key 13 is
  * Enter on tap and Shift on hold (right Shift in AI and its command page).
+ * The AI command page is the other exception: its left home row, keys 7 to
+ * 9, is &trans so the AI arrows left, down and right show through.
  * In text entry, AI mode and on the digit page, key 6 is a tap/hold key with
  * a longer term for the left little finger: A / Shift in text entry and
  * Enter / Shift elsewhere. Function mode holds Ctrl on key 6 instead, and
@@ -405,30 +407,15 @@
             #binding-cells = <0>;
             bindings = <&macro_tap &kp LANG2 &kp SLASH &kp R &kp E &kp S &kp U &kp M &kp E>;
         };
-        m_diff: m_diff {
+        m_usage: m_usage {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp D &kp I &kp F &kp F>;
+            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp U &kp S &kp A &kp G &kp E>;
         };
-        m_compact: m_compact {
+        m_effort: m_effort {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp C &kp O &kp M &kp P &kp A &kp C &kp T>;
-        };
-        m_pr: m_pr {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp P &kp R>;
-        };
-        m_review: m_review {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp R &kp E &kp V &kp I &kp E &kp W>;
-        };
-        m_insights: m_insights {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp I &kp N &kp S &kp I &kp G &kp H &kp T &kp S>;
+            bindings = <&macro_tap &kp LANG2 &kp SLASH &kp E &kp F &kp F &kp O &kp R &kp T>;
         };
     };
 
@@ -877,9 +864,15 @@
             >;
         };
 
+        /* Hold key 15 (Space) in AI: six slash commands on the right hand,
+         * /status /usage /clear on the top row and /model /effort /resume
+         * on the home row. The left top row is Escape, Tab and GUI. The
+         * left home row is transparent since 2026-11-22, so the AI arrows
+         * left, down and right stay under the fingers; up is under Tab and
+         * is not reachable from this page, which is intended. */
         ai_command_layer {
             bindings = <
-&kp ESCAPE  &kp TAB  &kp LGUI  &m_diff  &m_compact  &m_status  &lmt LSHFT ENTER  &m_clear  &m_resume  &m_model  &m_pr  &m_review  &m_insights  &bmt RSHFT ENTER  &kp DELETE  &trans  &kp SLASH  &kp PERIOD
+&kp ESCAPE  &kp TAB  &kp LGUI  &m_status  &m_usage  &m_clear  &lmt LSHFT ENTER  &trans  &trans  &trans  &m_model  &m_effort  &m_resume  &bmt RSHFT ENTER  &kp DELETE  &trans  &kp SLASH  &kp PERIOD
             >;
         };
     };

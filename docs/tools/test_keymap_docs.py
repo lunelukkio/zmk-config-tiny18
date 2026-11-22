@@ -103,7 +103,12 @@ class ChartModelTests(unittest.TestCase):
         self.assertEqual(ai[15], "&slt 8 SPACE")
         self.assertEqual(bindings["ai_command_layer"][0:3],
                          ["&kp ESCAPE", "&kp TAB", "&kp LGUI"])
-        self.assertEqual(bindings["ai_command_layer"][7], "&m_clear")
+        self.assertEqual(bindings["ai_command_layer"][7:10],
+                         ["&trans", "&trans", "&trans"])
+        self.assertEqual(bindings["ai_command_layer"][3:6],
+                         ["&m_status", "&m_usage", "&m_clear"])
+        self.assertEqual(bindings["ai_command_layer"][10:13],
+                         ["&m_model", "&m_effort", "&m_resume"])
         zxcv = bindings["edit_bracket_layer"]
         self.assertEqual(zxcv[0:3], ["&esc_grave", "&kp TAB", "&f10_tilde"])
         self.assertEqual(zxcv[14], "&kp DELETE")

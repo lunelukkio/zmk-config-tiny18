@@ -76,11 +76,11 @@
 <p class="meta">作成日: 2026-09-06 ・ 全面改稿: 2026-09-11 / ZMK ファームウェア</p>
 
 <div class="sheet">
-<img src="./tiny18-keymap.png?v=12d813ef90fe" width="526" height="5649"
+<img src="./tiny18-keymap.png?v=97c3288223d4" width="526" height="5649"
      alt="Tiny18 の全モードと押しっぱなしの面を縦に並べたキー配置表">
 </div>
 <p class="sheet-note">全モードと押しっぱなしの面を 1 枚に並べた表。ここでは全体の形が見える大きさに置いてある。
-<a href="./tiny18-keymap.png?v=12d813ef90fe" target="_blank" rel="noopener">画像だけを別タブで開く</a>と拡大して読める。</p>
+<a href="./tiny18-keymap.png?v=97c3288223d4" target="_blank" rel="noopener">画像だけを別タブで開く</a>と拡大して読める。</p>
 
 <div class="takeaway">
 <strong>このノートの中心命題:</strong><br>
@@ -233,7 +233,7 @@ ZMK のキーマップ自体は position 番号の順に書くので、その番
 <h2 id="s3">3. 6 つのモードの全体像</h2>
 <p>モードは 6 つある。既定の一瞬点灯（v0.8.5 から）では、モードが変わったときだけ LED がその色で 500 ms 光る。<code>LED</code> キーで常時点灯に切り替えると、明るさが 1% 以上のあいだ LED の色がモードを表し続ける（<a href="#s10">10 節</a>）。</p>
 <table><tr><th style="width:8em;">モード</th><th style="width:4em;">LED</th><th style="width:7em;">入り方</th><th>中身</th></tr>
-<tr><td><strong>AI</strong></td><td><span class="led" style="background:#1e6fd9;"></span>青</td><td><code>S + F</code></td><td>起動時のモード。左手は修飾キーと矢印、右手は W E R・! @ O・C M の文字。Space 長押しで9種類のslash command面を開く</td></tr>
+<tr><td><strong>AI</strong></td><td><span class="led" style="background:#1e6fd9;"></span>青</td><td><code>S + F</code></td><td>起動時のモード。左手は修飾キーと矢印、右手は W E R・! @ O・C M の文字。Space 長押しで6種類のslash command面を開く</td></tr>
 <tr><td><strong>文字入力</strong></td><td><span class="led" style="background:#22aa44;"></span>緑</td><td><code>W + R</code></td><td>毎日の文字入力</td></tr>
 <tr><td><strong>数字キーパッド</strong></td><td><span class="led" style="background:#d4a017;"></span>黄</td><td><code>J + L</code></td><td>左手がテンキー、右手が四則演算。Shift 中は移動・ロック・システムキー</td></tr>
 <tr><td><strong>ゲーム</strong></td><td><span class="led" style="background:#17b8c4;"></span>シアン</td><td><code>R + S</code></td><td>VRChat。WASD、GUI U Y、Z X C、Esc と V。Shift を押さえると Esc が Tab、V が R、Z X C が G M K に変わる。親指は Ctrl・Space・Space・Alt</td></tr>
@@ -860,27 +860,26 @@ W+Rはファンクションモード、R+!はBluetoothモード、
 <rect x="164" y="30" width="48" height="48" rx="6" fill="#eefaf3" stroke="#2a9d8f" stroke-width="2"/>
 <text x="188" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#17544c" font-family="sans-serif">GUI</text>
 <rect x="372" y="30" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
-<text x="396" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/diff</text>
+<text x="396" y="59" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/status</text>
 <rect x="424" y="30" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
-<text x="448" y="59" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/compact</text>
+<text x="448" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/usage</text>
 <rect x="476" y="30" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
-<text x="500" y="59" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/status</text>
+<text x="500" y="59" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/clear</text>
 <rect x="8" y="108" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
 <text x="32" y="131" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Enter</text>
 <text x="32" y="144" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Shift</text>
-<rect x="60" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
-<text x="84" y="111" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/clear</text>
-<rect x="112" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
-<text x="136" y="111" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/resume</text>
-<rect x="164" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
-<text x="188" y="111" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/model</text>
+<rect x="60" y="82" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
+<text x="84" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">←</text>
+<rect x="112" y="82" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
+<text x="136" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">↓</text>
+<rect x="164" y="82" width="48" height="48" rx="6" fill="#f7f5ee" stroke="#c9c6b6" stroke-width="1"/>
+<text x="188" y="111" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#8a8676" font-family="sans-serif">→</text>
 <rect x="372" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
-<text x="396" y="111" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/pr</text>
+<text x="396" y="111" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/model</text>
 <rect x="424" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
-<text x="448" y="111" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/review</text>
+<text x="448" y="111" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/effort</text>
 <rect x="476" y="82" width="48" height="48" rx="6" fill="#fff4e0" stroke="#b8860b" stroke-width="2"/>
-<text x="500" y="105" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/insi</text>
-<text x="500" y="118" text-anchor="middle" font-size="11.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">ghts</text>
+<text x="500" y="111" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#6f5106" font-family="sans-serif">/resume</text>
 <rect x="528" y="108" width="48" height="48" rx="6" fill="#fdf2e9" stroke="#d35400" stroke-width="2"/>
 <text x="552" y="131" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">Enter</text>
 <text x="552" y="144" text-anchor="middle" font-size="9.0" font-weight="bold" fill="#7a3000" font-family="sans-serif">R Shift</text>
@@ -894,13 +893,12 @@ W+Rはファンクションモード、R+!はBluetoothモード、
 <rect x="346" y="134" width="48" height="48" rx="6" fill="#eef6ff" stroke="#1e6fd9" stroke-width="2"/>
 <text x="370" y="163" text-anchor="middle" font-size="15.0" font-weight="bold" fill="#123a6b" font-family="sans-serif">.</text>
 </svg>
-<div class="figure-caption">図 9. AIモードのSpaceを長押ししている間だけ開く。上段とホーム行に9種類のslash command。commandは英数入力へ切り替えて文字だけを送り、Enterは送らない。左上段はEscape・Tab・GUI、/clearはEscapeの下のホーム行。左親指はDelete、右親指は/。</div>
+<div class="figure-caption">図 9. AIモードのSpaceを長押ししている間だけ開く。右手の上段とホーム行に6種類のslash command。commandは英数入力へ切り替えて文字だけを送り、Enterは送らない。左上段はEscape・Tab・GUI、左のホーム行は透過でAIモードの← ↓ →。左親指はDelete、右親指は/。</div>
 <div class="legend"><span><i class="sw" style="background:#eef6ff;border-color:#1e6fd9;"></i>文字・数字・記号</span><span><i class="sw" style="background:#fdf2e9;border-color:#d35400;"></i>タップと長押しで二役</span><span><i class="sw" style="background:#eefaf3;border-color:#2a9d8f;"></i>修飾キー</span><span><i class="sw" style="background:#fff4e0;border-color:#b8860b;"></i>ショートカット</span><span><i class="sw" style="background:#f3ecfb;border-color:#7a4fb5;"></i>レイヤー操作</span><span><i class="sw" style="background:#f7f5ee;border-color:#c9c6b6;"></i>&mdash; 透過</span><span><i class="sw" style="background:#f1f1ea;"></i>&mdash; 無効</span></div>
 <p>左親指は <code>Delete</code>、右親指は <code>/</code> を送る。</p>
-<p>左上段はEscape・Tab・GUIで、<code>/clear</code>はEscapeの下のホーム行にある。残る上段とホーム行のcommandキーで
-<code>/clear</code>、<code>/resume</code>、<code>/model</code>、
-<code>/diff</code>、<code>/compact</code>、<code>/status</code>、
-<code>/pr</code>、<code>/review</code>、<code>/insights</code>を入力する。
+<p>左上段はEscape・Tab・GUI。左のホーム行は透過で、AIモードの左← ↓ →がそのまま出る（↑の位置はTabなので、この面では出ない）。
+右手の上段で<code>/status</code>、<code>/usage</code>、<code>/clear</code>、
+ホーム行で<code>/model</code>、<code>/effort</code>、<code>/resume</code>を入力する。
 macroは先に <code>LANG2</code> で英数入力に切り替え、Enterは送らない。
 修飾キーを保持したままのcommand入力は保証対象外。</p>
 
